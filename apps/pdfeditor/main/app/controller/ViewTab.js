@@ -361,10 +361,10 @@ define([
         },
 
         onClickMacros: function() {
-            var macrosWindow = new Common.Views.MacrosDialog({
-                api: this.api,
-            });
-            macrosWindow.show();
+            if ( typeof Common.Views.MacrosDialog == "function" )
+                (new Common.Views.MacrosDialog({
+                    api: this.api,
+                })).show();
         },
 
         onComboBlur: function() {
