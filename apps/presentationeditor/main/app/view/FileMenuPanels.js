@@ -355,6 +355,10 @@ define([], function () {
                     '<td><label><%= scope.strUnit %></label></td>',
                     '<td><span id="fms-cmb-unit"></span></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td><label><%= scope.strTextBoxAutoFit %></label></td>',
+                    '<td><span id="fms-cmb-textbox-autofit"></span></td>',
+                '</tr>',
                 '<tr>',
                     '<td><label><%= scope.strZoom %></label></td>',
                     '<td><div id="fms-cmb-zoom" class="input-group-nr"></div></td>',
@@ -574,6 +578,26 @@ define([], function () {
                 dataHintOffset: 'big'
             });
 
+            /* #2442: the AutoFit a newly drawn text box starts with. The editor default is
+               "Resize shape to fit text", which collapses a box to a single line the moment
+               it is drawn, discarding the size the user just dragged out. */
+            this.cmbTextBoxAutoFit = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-textbox-autofit'),
+                style       : 'width: 160px;',
+                editable    : false,
+                restoreMenuHeightAndTop: true,
+                menuStyle   : 'min-width:100%;',
+                cls         : 'input-group-nr',
+                data        : [
+                    { value: AscFormat.text_fit_Auto,     displayValue: this.txtAutoFitResize },
+                    { value: AscFormat.text_fit_NormAuto, displayValue: this.txtAutoFitShrink },
+                    { value: AscFormat.text_fit_No,       displayValue: this.txtAutoFitNone }
+                ],
+                dataHint: '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+
             this.cmbMacros = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-macros'),
                 style       : 'width: 160px;',
@@ -723,6 +747,7 @@ define([], function () {
                 this.cmbFontRender.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTheme.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbTextBoxAutoFit.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTabStyle.options.menuAlignEl = scrolled ? this.pnlSettings : null;
             }
         },
@@ -808,6 +833,10 @@ define([], function () {
 
             this.chAlignGuides.setValue(Common.Utils.InternalSettings.get("pe-settings-showsnaplines"));
 
+            value = Common.Utils.InternalSettings.get("pe-settings-textbox-autofit");
+            item = this.cmbTextBoxAutoFit.store.findWhere({value: parseInt(value)});
+            this.cmbTextBoxAutoFit.setValue(item ? item.get('value') : AscFormat.text_fit_Auto);
+
             item = this.cmbMacros.store.findWhere({value: Common.Utils.InternalSettings.get("pe-macros-mode")});
             this.cmbMacros.setValue(item ? item.get('value') : 0);
             this.lblMacrosDesc.text(item ? item.get('descValue') : this.txtWarnMacrosDesc);
@@ -861,6 +890,10 @@ define([], function () {
                 Common.localStorage.setItem("pe-settings-forcesave", this.chForcesave.isChecked() ? 1 : 0);
 
             Common.localStorage.setBool("pe-settings-showsnaplines", this.chAlignGuides.isChecked());
+
+            Common.localStorage.setItem("pe-settings-textbox-autofit", this.cmbTextBoxAutoFit.getValue());
+            Common.Utils.InternalSettings.set("pe-settings-textbox-autofit", this.cmbTextBoxAutoFit.getValue());
+            this.api && this.api.asc_setDefaultTextBoxAutoFit && this.api.asc_setDefaultTextBoxAutoFit(parseInt(this.cmbTextBoxAutoFit.getValue()));
 
             Common.localStorage.setItem("pe-macros-mode", this.cmbMacros.getValue());
             Common.Utils.InternalSettings.set("pe-macros-mode", this.cmbMacros.getValue());
@@ -937,6 +970,10 @@ define([], function () {
         txtMac: 'as OS X',
         txtNative: 'Native',
         strFontRender: 'Font Hinting',
+        strTextBoxAutoFit: 'Default AutoFit for new text boxes',
+        txtAutoFitResize: 'Resize shape to fit text',
+        txtAutoFitShrink: 'Shrink text on overflow',
+        txtAutoFitNone: 'Do not Autofit',
         strUnit: 'Unit of Measurement',
         txtCm: 'Centimeter',
         txtPt: 'Point',

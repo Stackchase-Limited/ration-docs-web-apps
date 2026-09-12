@@ -1008,6 +1008,14 @@ define([
                 Common.Utils.InternalSettings.set("pe-settings-showsnaplines", value);
                 me.api.asc_setShowSmartGuides(value);
 
+                // #2442: the AutoFit a newly drawn text box starts with. Defaults to
+                // AscFormat.text_fit_Auto, which is what the editor did before the setting
+                // existed, so an untouched install behaves exactly as it always has.
+                value = parseInt(Common.localStorage.getItem("pe-settings-textbox-autofit"));
+                if (isNaN(value)) value = AscFormat.text_fit_Auto;
+                Common.Utils.InternalSettings.set("pe-settings-textbox-autofit", value);
+                me.api.asc_setDefaultTextBoxAutoFit && me.api.asc_setDefaultTextBoxAutoFit(value);
+
                 value = Common.localStorage.getBool("pe-settings-showguides");
                 Common.Utils.InternalSettings.set("pe-settings-showguides", value);
                 me.api.asc_setShowGuides(value);
