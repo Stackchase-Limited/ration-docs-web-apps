@@ -222,7 +222,12 @@ define([
 
         var create_colors_css = function (id, colors) {
             if ( !!colors && !!id ) {
-                var _css_array = [':root .', id, '{'];
+                // ":root body.<id>" (specificity 0,2,1) must outrank the built-in colour
+                // tables in app.css, which are ":root .theme-type-dark" / ":root .theme-<id>"
+                // (0,2,0). A bare ":root .<id>" only ties with them and then loses, because
+                // app.css is linked as the last child of <body> while this <style> is appended
+                // to <head>.
+                var _css_array = [':root body.', id, '{'];
                 for (var c in colors) {
                     if (c==='highlight-toolbar-tab-underline') {
                         _css_array.push('--', c + '-document', ':', colors[c], ';');
@@ -290,11 +295,18 @@ define([
             let theme_id = window.uitheme.id;
             if ( themes_map[theme_id] ) {
                 if ( themes_map[theme_id].source != 'static') {
-                    const m = document.body.className.match('theme-type-' + themes_map[theme_id].type);
-                    if ( !m )
-                        document.body.classList.add('theme-type-' + themes_map[theme_id].type);
-                    else if ( m.length )
-                        document.body.className = document.body.className.replace(/theme-type-(?:dark|ligth)/i, 'theme-type-' + themes_map[theme_id].type);
+                    // Drop any stale theme-type-* left over from the boot-time class in
+                    // htmlutils.js or from Themes.init(), then apply this theme's own type.
+                    // The previous code only ran its replace() when the wanted class was
+                    // already present (a no-op), and its regexp spelt 'light' as 'ligth',
+                    // so the body could end up carrying theme-type-light and theme-type-dark
+                    // at the same time and pick up the wrong baseline palette.
+                    const type_class = 'theme-type-' + themes_map[theme_id].type;
+                    const stale = document.body.className.match(/\btheme-type-[\w-]+/g);
+                    stale && stale.forEach(function (c) {
+                        c !== type_class && document.body.classList.remove(c);
+                    });
+                    document.body.classList.add(type_class);
                 }
             } else {
                 theme_id = get_system_default_theme().id;

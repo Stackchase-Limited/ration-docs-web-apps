@@ -156,7 +156,13 @@
                         colors.push('--' + c + ':' + objtheme.colors[c]);
                     }
 
-                    inject_style_tag('.' + objtheme.id + '{' + colors.join(';') + ';}');
+                    // The built-in palettes in app.css are emitted as ":root .theme-type-dark"
+                    // (specificity 0,2,0) and app.css is linked as the last child of <body>,
+                    // so it always comes later in document order than this <style> appended to
+                    // <head>. A plain ".<theme-id>" (0,1,0) therefore loses the cascade and the
+                    // theme's own colours are ignored. ":root body.<theme-id>" is (0,2,1) and
+                    // outranks every built-in colour table regardless of source order.
+                    inject_style_tag(':root body.' + objtheme.id + '{' + colors.join(';') + ';}');
                 }
 
                 if ( objtheme.icons && !(window.uitheme.embedicons === true) ) {
