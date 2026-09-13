@@ -109,9 +109,35 @@ Common.Locale = new(function() {
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     };
 
+    /* #2199: tell the renderer which language the interface is in.
+       Chinese is the case that makes this matter. The translation file is chosen by
+       language alone - "zh-CN" is reduced to "zh" below, since there is no zh-cn.json -
+       but which glyphs are drawn is decided by the region, and a great many Han
+       characters are written differently in Simplified and Traditional. Without a lang
+       attribute the renderer has nothing to go on and falls back to whatever fontconfig
+       ranks first, which is how a Simplified interface ends up drawn in Traditional
+       forms. The tag written here keeps the region even when the translation does not.
+       This is also the standard signal for hyphenation and for a screen reader. */
+    var _setDocumentLang = function (tag) {
+        if (tag && document.documentElement)
+            document.documentElement.setAttribute('lang', tag);
+    };
+
+    /* "zh-cn" -> "zh-CN", "sr-cyrl" -> "sr-Cyrl": a two-letter subtag is a region and is
+       upper case, a four-letter one is a script and is title case. */
+    var _canonicalTag = function (parts) {
+        if (parts.length < 2 || !parts[1])
+            return parts[0];
+        var sub = parts[1];
+        sub = (sub.length === 4) ? sub.charAt(0).toUpperCase() + sub.slice(1)
+                                 : sub.toUpperCase();
+        return parts[0] + '-' + sub;
+    };
+
     var _requireLang = function (l) {
         typeof l != 'string' && (l = null);
         var lang = (l || _getUrlParameterByName('lang') || defLang).toLowerCase().split(/[\-_]/);
+        _setDocumentLang(_canonicalTag(lang));
         lang = lang[0] + (lang.length>1 ? '-' + lang[1] : '');
         var idx4Letters = _4letterLangs.indexOf(lang); // try to load 4 letters language
         lang = (idx4Letters<0) ? lang.split(/[\-]/)[0] : _4letterLangs[idx4Letters];
