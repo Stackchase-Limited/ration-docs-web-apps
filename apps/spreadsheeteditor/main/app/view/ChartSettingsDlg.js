@@ -448,8 +448,13 @@ define([
 
             this.spnSparkMinValue = new Common.UI.MetricSpinner({
                 el          : $('#spark-dlg-input-min-value'),
-                maxValue    : 1000000,
-                minValue    : -1000000,
+                // #2244: an axis bound is a data value, so it must not be tighter than the data.
+                // 1000000 stopped a chart of light frequencies (~1e14) dead. MAX_SAFE_INTEGER is
+                // where integer arithmetic in the spinner stops being exact, and stays well below
+                // 1e21, where JavaScript starts writing numbers in exponential notation that the
+                // field cannot read back.
+                maxValue    : Number.MAX_SAFE_INTEGER,
+                minValue    : -Number.MAX_SAFE_INTEGER,
                 step        : 0.1,
                 defaultUnit : "",
                 defaultValue : 0,
@@ -482,8 +487,8 @@ define([
 
             this.spnSparkMaxValue = new Common.UI.MetricSpinner({
                 el          : $('#spark-dlg-input-max-value'),
-                maxValue    : 1000000,
-                minValue    : -1000000,
+                maxValue    : Number.MAX_SAFE_INTEGER,
+                minValue    : -Number.MAX_SAFE_INTEGER,
                 step        : 0.1,
                 defaultUnit : "",
                 defaultValue : 0,
@@ -679,8 +684,8 @@ define([
 
             me.spnMinValue[i] = new Common.UI.MetricSpinner({
                 el: $('#chart-dlg-input-min-value-' + i),
-                maxValue: 1000000,
-                minValue: -1000000,
+                maxValue: Number.MAX_SAFE_INTEGER,
+                minValue: -Number.MAX_SAFE_INTEGER,
                 step: 0.1,
                 defaultUnit: "",
                 defaultValue: 0,
@@ -718,8 +723,8 @@ define([
 
             me.spnMaxValue[i] = new Common.UI.MetricSpinner({
                 el: $('#chart-dlg-input-max-value-' + i),
-                maxValue: 1000000,
-                minValue: -1000000,
+                maxValue: Number.MAX_SAFE_INTEGER,
+                minValue: -Number.MAX_SAFE_INTEGER,
                 step: 0.1,
                 defaultUnit: "",
                 defaultValue: 0,
@@ -768,8 +773,8 @@ define([
 
             me.spnVAxisCrosses[i] = new Common.UI.MetricSpinner({
                 el: $('#chart-dlg-input-v-axis-crosses-' + i),
-                maxValue: 1000000,
-                minValue: -1000000,
+                maxValue: Number.MAX_SAFE_INTEGER,
+                minValue: -Number.MAX_SAFE_INTEGER,
                 step: 0.1,
                 defaultUnit: "",
                 defaultValue: 0,
@@ -988,8 +993,8 @@ define([
 
             me.spnHAxisCrosses[i] = new Common.UI.MetricSpinner({
                 el: $('#chart-dlg-input-h-axis-crosses-' + i),
-                maxValue: 1000000,
-                minValue: -1000000,
+                maxValue: Number.MAX_SAFE_INTEGER,
+                minValue: -Number.MAX_SAFE_INTEGER,
                 step: 0.1,
                 defaultUnit: "",
                 defaultValue: 0,
