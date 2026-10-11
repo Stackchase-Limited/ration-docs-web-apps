@@ -883,7 +883,7 @@ define([], function () {
         },
         
         onHelp: function() {
-            window.open('https://api.onlyoffice.com/docs/plugin-and-macros/macros/getting-started/', '_blank')
+            window.open('https://www.ration.works/docs', '_blank')
         },
         onBtnClick: function(event) {
             this._handleInput(event.currentTarget.attributes['result'].value);

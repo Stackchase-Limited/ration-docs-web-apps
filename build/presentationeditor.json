@@ -2,7 +2,7 @@
     "name": "presentationeditor",
     "version": "4.3.0",
     "build": 790,
-    "homepage": "http://www.onlyoffice.com",
+    "homepage": "https://www.ration.works/docs",
     "private": true,
     "main": {
         "clean": {

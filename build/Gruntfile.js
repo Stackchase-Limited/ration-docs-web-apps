@@ -71,52 +71,52 @@ module.exports = function(grunt) {
     global.jsreplacements = [
                 {
                     from: /\{\{SUPPORT_EMAIL\}\}/g,
-                    to: _encode(process.env.SUPPORT_EMAIL) || 'support@onlyoffice.com'
+                    to: _encode(process.env.SUPPORT_EMAIL) || 'apps@stackchase.com'
                 },{
                     from: /\{\{SUPPORT_URL\}\}/g,
-                    to: _encode(process.env.SUPPORT_URL) || 'https://support.onlyoffice.com'
+                    to: _encode(process.env.SUPPORT_URL) || 'https://www.ration.works/docs'
                 },{
                     from: /\{\{SALES_EMAIL\}\}/g,
-                    to: _encode(process.env.SALES_EMAIL) || 'sales@onlyoffice.com'
+                    to: _encode(process.env.SALES_EMAIL) || 'apps@stackchase.com'
                 },{
                     from: /\{\{PUBLISHER_URL\}\}/g,
-                    to: _encode(process.env.PUBLISHER_URL) || 'https://www.onlyoffice.com'
+                    to: _encode(process.env.PUBLISHER_URL) || 'https://www.ration.works/docs'
                 },{
                     from: /\{\{PUBLISHER_PHONE\}\}/,
-                    to: process.env['PUBLISHER_PHONE'] || '+371 633-99867'
+                    to: process.env['PUBLISHER_PHONE'] || ''
                 },{
                     from: /\{\{PUBLISHER_NAME\}\}/g,
-                    to: _encode(process.env.PUBLISHER_NAME) || 'Ascensio System SIA'
+                    to: _encode(process.env.PUBLISHER_NAME) || 'Stackchase Limited'
                 },{
                     from: /\{\{PUBLISHER_ADDRESS\}\}/,
-                    to: _encode(process.env.PUBLISHER_ADDRESS) || '20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050'
+                    to: _encode(process.env.PUBLISHER_ADDRESS) || ''
                 },{
                     from: /\{\{API_URL_EDITING_CALLBACK\}\}/,
-                    to: _encode(process.env.API_URL_EDITING_CALLBACK) || 'https://api.onlyoffice.com/editors/callback'
+                    to: _encode(process.env.API_URL_EDITING_CALLBACK) || 'https://www.ration.works/docs'
                 },{
                     from: /\{\{COMPANY_NAME\}\}/g,
-                    to: _encode(process.env.COMPANY_NAME) || 'ONLYOFFICE'
+                    to: _encode(process.env.COMPANY_NAME) || 'Ration'
                 }, {
                     from: /\{\{APP_TITLE_TEXT\}\}/g,
-                    to: _encode(process.env.APP_TITLE_TEXT) || 'ONLYOFFICE'
+                    to: _encode(process.env.APP_TITLE_TEXT) || 'Ration Docs'
                 }, {
                     from: /\{\{HELP_URL\}\}/g,
-                    to: _encode(process.env.HELP_URL) || 'https://helpcenter.onlyoffice.com'
+                    to: _encode(process.env.HELP_URL) || 'https://www.ration.works/docs'
                 }, {
                     from: /\{\{HELP_CENTER_WEB_DE\}\}/g,
-                    to: _encode(process.env.HELP_CENTER_WEB_DE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://helpcenter.onlyoffice.com/userguides/docs-de.aspx'
+                    to: _encode(process.env.HELP_CENTER_WEB_DE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://www.ration.works/docs'
                 }, {
                     from: /\{\{HELP_CENTER_WEB_SSE\}\}/g,
-                    to: _encode(process.env.HELP_CENTER_WEB_SSE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://helpcenter.onlyoffice.com/userguides/docs-se.aspx'
+                    to: _encode(process.env.HELP_CENTER_WEB_SSE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://www.ration.works/docs'
                 }, {
                     from: /\{\{HELP_CENTER_WEB_PE\}\}/g,
-                    to: _encode(process.env.HELP_CENTER_WEB_PE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://helpcenter.onlyoffice.com/userguides/docs-pe.aspx'
+                    to: _encode(process.env.HELP_CENTER_WEB_PE) || _encode(process.env.HELP_CENTER_WEB_EDITORS) || 'https://www.ration.works/docs'
                 }, {
                     from: /\{\{DEFAULT_LANG\}\}/g,
                     to: _encode(process.env.DEFAULT_LANG) || 'en'
                 }, {
                     from: /\{\{SUGGEST_URL\}\}/g,
-                    to: _encode(process.env.SUGGEST_URL) || 'https://feedback.onlyoffice.com/forums/966080-your-voice-matters?category_id=519084'
+                    to: _encode(process.env.SUGGEST_URL) || 'https://www.ration.works/docs'
                 }];
 
     var helpreplacements = [
@@ -125,10 +125,10 @@ module.exports = function(grunt) {
                     to: _encode(process.env.COEDITING_DESKTOP) || 'Connect to cloud'
                 },{
                     from: /\{\{PLUGIN_LINK\}\}/g,
-                    to: _encode(process.env.PLUGIN_LINK) || 'https://api.onlyoffice.com/plugin/basic'
+                    to: _encode(process.env.PLUGIN_LINK) || 'https://www.ration.works/docs'
                 },{
                     from: /\{\{PLUGIN_LINK_MACROS\}\}/g,
-                    to: _encode(process.env.PLUGIN_LINK_MACROS) || 'https://api.onlyoffice.com/plugin/macros'
+                    to: _encode(process.env.PLUGIN_LINK_MACROS) || 'https://www.ration.works/docs'
                 }];
 
     let path = require('path');
@@ -286,7 +286,7 @@ module.exports = function(grunt) {
                           to: packageFile.version
                       },{
                           from: /\{\{APP_CUSTOMER_NAME\}\}/g,
-                          to: process.env['APP_CUSTOMER_NAME'] || 'ONLYOFFICE'
+                          to: process.env['APP_CUSTOMER_NAME'] || 'Ration Docs'
                       },{
                           from: /\/\*\*[\s\S]+\.com\s+\*\//,
                           to: copyright

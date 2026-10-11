@@ -69,17 +69,6 @@ const SettingsController = props => {
     const showHelp = () => {
         let url = __HELP_URL__;
 
-        if (url.charAt(url.length-1) !== '/') {
-            url += '/';
-        }
-
-        if (Device.sailfish || Device.android) {
-            url+='mobile-applications/documents/mobile-web-editors/android/index.aspx';
-        }
-        else {
-            url+='mobile-applications/documents/mobile-web-editors/ios/index.aspx';
-        }
-
         closeModal();
         setTimeout(() => {
             window.open(url, "_blank");
