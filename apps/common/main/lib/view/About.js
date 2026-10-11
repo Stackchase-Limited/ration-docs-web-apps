@@ -159,7 +159,39 @@ define([
                             '<a href="<%= publisherurl %>" target="_blank"><% print(publisherurl.replace(/https?:\\/{2}/, "").replace(/\\/$/,"")) %></a>',
                         '</td>',
                     '</tr>',
-                '</table>'
+                '</table>',
+                // Open Source Notices. Required, not decorative. The additional
+                // terms oblige a modified version to let users identify ONLYOFFICE
+                // as the original developer, see that this build is modified, and
+                // reach the licence; AGPL s.13 requires a network-facing instance to
+                // offer its users the Corresponding Source, and for Ration Docs that
+                // is here: users reach the editor through Ration Drive and never see
+                // the server's own welcome page, so an offer made only there would
+                // reach nobody. s.4 grants no trademark rights, hence the
+                // attribution line.
+                '<div class="box-oss-notices">',
+                    '<h4 class="oss-title">' + this.ossTitle + '</h4>',
+                    '<p class="oss-line">' + this.ossBasedOn + '</p>',
+                    '<p class="oss-line">' + this.ossOriginal + '</p>',
+                    '<p class="oss-line">' + this.ossPortions + '</p>',
+                    '<p class="oss-line">' + this.ossModified + '</p>',
+                    '<p class="oss-line">' + this.ossLicence + '</p>',
+                    '<p class="oss-line oss-muted">' + this.ossWarranty + '</p>',
+                    '<p class="oss-links">',
+                        '<a target="_blank" href="https://www.gnu.org/licenses/agpl-3.0.html">' + this.ossViewLicence + '</a>',
+                        '<a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/legalcode">' + this.ossViewCC + '</a>',
+                        '<a target="_blank" href="https://ration.works/source">' + this.ossViewSource + '</a>',
+                    '</p>',
+                    // Additional term 5: the non-code elements we ship are CC BY-SA
+                    // 4.0, which carries its own attribution requirement, so it is
+                    // named and linked rather than folded into the AGPL line.
+                    '<p class="oss-line oss-muted">' + this.ossNonCode + '</p>',
+                    '<p class="oss-line oss-muted">' + this.ossTrademark + '</p>',
+                    '<h4 class="oss-title">' + this.ossTechnical + '</h4>',
+                    '<dl class="oss-tech">',
+                        '<dt>' + this.ossBaseline + '</dt><dd>ONLYOFFICE 9.4.0</dd>',
+                    '</dl>',
+                '</div>'
             ].join(''));
             this.menu = options.menu;
         },
@@ -295,7 +327,21 @@ define([
         txtAddress: 'address: ',
         txtMail: 'email: ',
         txtTel: 'tel.: ',
-        txtEdition: 'Integration Edition '
+        txtEdition: 'Integration Edition ',
+        ossTitle: 'Open Source Notices',
+        ossBasedOn: 'Ration Docs is a modified version of ONLYOFFICE Docs.',
+        ossOriginal: 'Original software developed by Ascensio System SIA.',
+        ossPortions: 'Portions copyright \u00a9 Ascensio System SIA, 2009-2026.',
+        ossModified: 'Modified by Stackchase Limited, 2026.',
+        ossLicence: 'Distributed under the GNU Affero General Public License version 3, together with applicable additional terms.',
+        ossWarranty: 'Provided without warranty except where separately agreed with Stackchase Limited.',
+        ossViewLicence: 'View Licence',
+        ossViewCC: 'View CC BY-SA 4.0',
+        ossViewSource: 'View Corresponding Source',
+        ossNonCode: 'Illustrations, icon sets and documentation content are licensed under CC BY-SA 4.0.',
+        ossTrademark: 'ONLYOFFICE is a trademark of Ascensio System SIA. Ration Docs is not produced by, endorsed by, or affiliated with Ascensio System SIA.',
+        ossTechnical: 'Technical Information',
+        ossBaseline: 'Editor baseline'
 
     }, Common.Views.About || {}));
 });

@@ -96,3 +96,51 @@
         margin-bottom: 20px;
     }
 }
+
+// Open Source Notices, matching the treatment in the desktop About panel
+// (desktop-apps/common/loginpage/src/css/styles.less). Same class names and
+// same metrics, so the two About surfaces read as one product. The desktop's
+// @scaled-one-px hidpi helper has no equivalent here, so the rule is a plain 1px.
+.box-oss-notices {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid @border-divider;
+  max-width: 62ch;
+
+  .oss-title {
+    margin: 16px 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: @text-secondary;
+  }
+  .oss-title:first-child { margin-top: 0; }
+
+  .oss-line {
+    margin: 0 0 6px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: @text-normal;
+  }
+  .oss-muted { color: @text-secondary; }
+
+  .oss-links {
+    margin: 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 12.5px;
+  }
+
+  .oss-tech {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+    font-size: 12.5px;
+
+    dt { color: @text-secondary; }
+    dd { margin: 0; color: @text-normal; font-variant-numeric: tabular-nums; }
+  }
+}
