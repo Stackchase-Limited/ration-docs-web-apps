@@ -147,6 +147,54 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
+
+    // optipng-bin, jpegtran-bin and gifsicle ship prebuilt x86-64 binaries. On
+    // an arm64 builder they cannot run, imagemin errors on every image, and under
+    // build_tools' --force the task carries on having written none of them: the
+    // editors then ship with no PNG/JPG/GIF images at all. Probe the binaries
+    // once; if any cannot run, imagemin runs only the plugins whose binaries do,
+    // and the images the broken ones would have handled are copied unoptimised.
+    const imageminOptions = (() => {
+        const options = { optimizationLevel: 3 };
+        const cp = require('child_process');
+        let from;
+        try { from = path.dirname(require.resolve('grunt-contrib-imagemin/package.json')); } catch (e) { from = __dirname; }
+        // [binary package, probe args, imagemin plugin, plugin options]: the
+        // plugins and options grunt-contrib-imagemin would use by default.
+        const probes = [
+            ['optipng-bin', ['-v'], 'imagemin-optipng', { optimizationLevel: options.optimizationLevel }],
+            ['jpegtran-bin', ['-version'], 'imagemin-jpegtran', { progressive: true }],
+            ['gifsicle', ['--version'], 'imagemin-gifsicle', { interlaced: true }]
+        ];
+        const resolve = (name) => require(require.resolve(name, { paths: [from, __dirname] }));
+        const working = [];
+        let broken = false;
+        for (const [name, args, plugin, pluginOptions] of probes) {
+            let reason = null;
+            try {
+                const bin = resolve(name);
+                const r = cp.spawnSync(bin, args, { encoding: 'utf8', timeout: 20000 });
+                const output = `${r.stdout || ''}${r.stderr || ''}`;
+                if (r.error) reason = r.error.message;
+                else if (r.signal) reason = `killed by ${r.signal}`;
+                else if (/rosetta error|exec format error|cannot execute/i.test(output)) reason = output.trim().split('\n')[0];
+                else if (r.status !== 0 && !output) reason = `exit ${r.status}`;
+            } catch (e) {
+                reason = e.message;
+            }
+            if (reason) {
+                broken = true;
+                grunt.log.writeln(`imagemin: ${name} cannot run here (${reason}); its images are copied unoptimised`.yellow);
+            } else {
+                try { working.push(resolve(plugin)(pluginOptions)); } catch (e) { broken = true; }
+            }
+        }
+        // Only override the defaults when something is broken: with `use` set,
+        // imagemin runs exactly these plugins, and none means a plain copy.
+        if (broken) options.use = working;
+        return options;
+    })();
+
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-json-minify');
@@ -316,9 +364,7 @@ module.exports = function(grunt) {
     doRegisterTask('apps-common', (defaultConfig, packageFile) => {
         return {
             imagemin: {
-                options: {
-                    optimizationLevel: 3
-                },
+                options: imageminOptions,
                 dynamic: {
                     files: packageFile['apps-common']['imagemin']['images-common']
                 }
@@ -441,9 +487,7 @@ module.exports = function(grunt) {
             },
 
             imagemin: {
-                options: {
-                    optimizationLevel: 3
-                },
+                options: imageminOptions,
                 dynamic: {
                     files: []
                         .concat(packageFile['main']['imagemin']['images-app'])
