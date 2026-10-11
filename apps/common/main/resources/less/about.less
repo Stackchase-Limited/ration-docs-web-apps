@@ -102,7 +102,9 @@
 // same metrics, so the two About surfaces read as one product. The desktop's
 // @scaled-one-px hidpi helper has no equivalent here, so the rule is a plain 1px.
 .box-oss-notices {
-  margin-top: 20px;
+  // Centred under the publisher block; its text stays left-aligned.
+  margin: 20px auto 0;
+  text-align: left;
   padding-top: 16px;
   border-top: 1px solid @border-divider;
   max-width: 62ch;
