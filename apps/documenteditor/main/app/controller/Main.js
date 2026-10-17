@@ -470,6 +470,9 @@ define([
                 this.appOptions.canRequestCompareFile = this.editorConfig.canRequestCompareFile;
                 this.appOptions.canRequestMailMergeRecipients = this.editorConfig.canRequestMailMergeRecipients;
                 this.appOptions.canRequestSharingSettings = this.editorConfig.canRequestSharingSettings;
+                this.appOptions.canRequestDuplicate = this.editorConfig.canRequestDuplicate;
+                this.appOptions.canRequestSendByEmail = this.editorConfig.canRequestSendByEmail;
+                this.appOptions.canRequestDelete = this.editorConfig.canRequestDelete;
                 this.appOptions.canRequestSelectDocument = this.editorConfig.canRequestSelectDocument;
                 this.appOptions.canRequestSelectSpreadsheet = this.editorConfig.canRequestSelectSpreadsheet;
                 this.appOptions.canRequestReferenceData = this.editorConfig.canRequestReferenceData;

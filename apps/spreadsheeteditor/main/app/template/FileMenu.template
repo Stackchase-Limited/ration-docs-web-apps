@@ -8,10 +8,13 @@
     <li id="fm-btn-edit" class="fm-btn"></li>
     <li id="fm-btn-download" class="fm-btn"></li>
     <li id="fm-btn-save-copy" class="fm-btn"></li>
+    <li id="fm-btn-duplicate" class="fm-btn"></li>
     <li id="fm-btn-save-desktop" class="fm-btn"></li>
     <li id="fm-btn-export-pdf" class="fm-btn"></li>
     <li id="fm-btn-print-with-preview" class="fm-btn"></li>
+    <li id="fm-btn-send-email" class="fm-btn"></li>
     <li id="fm-btn-rename" class="fm-btn"></li>
+    <li id="fm-btn-delete" class="fm-btn"></li>
     <li id="fm-btn-protect" class="fm-btn"></li>
     <li class="devider"></li>
     <li id="fm-btn-info" class="fm-btn" data-layout-name="toolbar-file-info"></li>

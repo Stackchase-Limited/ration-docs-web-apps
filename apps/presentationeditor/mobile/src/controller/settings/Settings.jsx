@@ -66,6 +66,23 @@ const SettingsController = props => {
         }, 400);
     };
 
+    // Host actions (onRequestDuplicate, onRequestSendByEmail, onRequestDelete):
+    // the integrator does the work, the editor only asks.
+    const onDuplicate = () => {
+        closeModal();
+        Common.Gateway.requestDuplicate();
+    };
+
+    const onSendByEmail = () => {
+        closeModal();
+        Common.Gateway.requestSendByEmail();
+    };
+
+    const onDelete = () => {
+        closeModal();
+        Common.Gateway.requestDelete();
+    };
+
     const showHelp = () => {
         // let url = '{{HELP_URL}}';
         let url = __HELP_URL__;
@@ -199,6 +216,9 @@ const SettingsController = props => {
     return (
         <SettingsContext.Provider value={{
             onPrint,
+            onDuplicate,
+            onSendByEmail,
+            onDelete,
             showHelp,
             showFeedback,
             onDownloadOrigin,

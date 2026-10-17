@@ -135,6 +135,9 @@ export class storeAppOptions {
         this.location = (typeof (config.location) == 'string') ? config.location.toLowerCase() : '';
         this.region = (typeof (config.region) == 'string') ? config.region.toLowerCase() : config.region;
         this.sharingSettingsUrl = config.sharingSettingsUrl;
+        this.canRequestDuplicate = config.canRequestDuplicate;
+        this.canRequestSendByEmail = config.canRequestSendByEmail;
+        this.canRequestDelete = config.canRequestDelete;
         this.fileChoiceUrl = config.fileChoiceUrl;
         this.isEditDiagram = config.mode == 'editdiagram';
         this.isEditMailMerge = config.mode == 'editmerge';

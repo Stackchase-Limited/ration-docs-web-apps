@@ -369,6 +369,9 @@ define([
                 this.appOptions.canRequestSaveAs = this.editorConfig.canRequestSaveAs;
                 this.appOptions.canRequestInsertImage = false;//this.editorConfig.canRequestInsertImage;
                 this.appOptions.canRequestSharingSettings = this.editorConfig.canRequestSharingSettings;
+                this.appOptions.canRequestDuplicate = this.editorConfig.canRequestDuplicate;
+                this.appOptions.canRequestSendByEmail = this.editorConfig.canRequestSendByEmail;
+                this.appOptions.canRequestDelete = this.editorConfig.canRequestDelete;
                 this.appOptions.compatibleFeatures = true;
                 this.appOptions.mentionShare = !((typeof (this.appOptions.customization) == 'object') && (this.appOptions.customization.mentionShare==false));
                 this.appOptions.canSaveDocumentToBinary = this.editorConfig.canSaveDocumentToBinary;

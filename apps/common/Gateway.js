@@ -385,6 +385,18 @@ if (window.Common === undefined) {
                 _postMessage({event:'onRequestCreateNew'});
             },
 
+            requestDuplicate:  function () {
+                _postMessage({event:'onRequestDuplicate'});
+            },
+
+            requestSendByEmail:  function () {
+                _postMessage({event:'onRequestSendByEmail'});
+            },
+
+            requestDelete:  function () {
+                _postMessage({event:'onRequestDelete'});
+            },
+
             requestReferenceData:  function (data) {
                 _postMessage({event:'onRequestReferenceData', data: data});
             },

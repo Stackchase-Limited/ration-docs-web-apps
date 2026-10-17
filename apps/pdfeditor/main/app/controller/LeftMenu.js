@@ -255,6 +255,9 @@ define([
                 break;
             case 'print': this.api.asc_Print(new Asc.asc_CDownloadOptions(null, Common.Utils.isChrome || Common.Utils.isOpera || Common.Utils.isGecko && Common.Utils.firefoxVersion>86)); break;
             case 'exit': Common.NotificationCenter.trigger('goback'); break;
+            case 'duplicate': Common.Gateway.requestDuplicate(); break;
+            case 'send-email': Common.Gateway.requestSendByEmail(); break;
+            case 'delete': Common.Gateway.requestDelete(); break;
             case 'edit':
                 this.getApplication().getController('Statusbar').setStatusCaption(this.requestEditRightsText);
                 Common.Gateway.requestEditRights();

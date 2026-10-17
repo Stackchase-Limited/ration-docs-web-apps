@@ -211,6 +211,41 @@ define([
                 delete this.options.miRename;
             }
 
+            // Host actions: each shown only when the integrator handles its
+            // event (onRequestDuplicate, onRequestSendByEmail, onRequestDelete).
+            this.miDuplicate = new Common.UI.MenuItem({
+                el      : $markup.elementById('#fm-btn-duplicate'),
+                action  : 'duplicate',
+                caption : this.btnDuplicateCaption,
+                canFocused: false,
+                dataHint: 1,
+                dataHintDirection: 'left-top',
+                dataHintOffset: [-2, 22],
+                iconCls: 'menu__icon btn-copy'
+            });
+
+            this.miSendEmail = new Common.UI.MenuItem({
+                el      : $markup.elementById('#fm-btn-send-email'),
+                action  : 'send-email',
+                caption : this.btnSendEmailCaption,
+                canFocused: false,
+                dataHint: 1,
+                dataHintDirection: 'left-top',
+                dataHintOffset: [-2, 22],
+                iconCls: 'menu__icon btn-send-email'
+            });
+
+            this.miDelete = new Common.UI.MenuItem({
+                el      : $markup.elementById('#fm-btn-delete'),
+                action  : 'delete',
+                caption : this.btnDeleteCaption,
+                canFocused: false,
+                dataHint: 1,
+                dataHintDirection: 'left-top',
+                dataHintOffset: [-2, 22],
+                iconCls: 'menu__icon btn-cc-remove'
+            });
+
             this.miProtect = new Common.UI.MenuItem({
                 el      : $markup.elementById('#fm-btn-protect'),
                 action  : 'protect',
@@ -336,9 +371,12 @@ define([
                 this.miEdit,
                 this.miDownload,
                 this.miSaveCopyAs,
+                this.miDuplicate,
                 this.miSaveAs,
                 this.miPrintWithPreview,
+                this.miSendEmail,
                 this.miRename,
+                this.miDelete,
                 this.miProtect,
                 this.miRecent,
                 this.miNew,
@@ -440,6 +478,9 @@ define([
             this.miEdit[!this.mode.isEdit && this.mode.canEdit && this.mode.canRequestEditRights ?'show':'hide']();
             this.miPrintWithPreview[this.mode.canPrint?'show':'hide']();
             this.miRename[(this.mode.canRename && !this.mode.isDesktopApp) ?'show':'hide']();
+            this.miDuplicate[(this.mode.canRequestDuplicate && !this.mode.isDesktopApp) ?'show':'hide']();
+            this.miSendEmail[(this.mode.canRequestSendByEmail && !this.mode.isDesktopApp) ?'show':'hide']();
+            this.miDelete[(this.mode.canRequestDelete && !this.mode.isDesktopApp) ?'show':'hide']();
             this.miProtect[(this.mode.isSignatureSupport || this.mode.isPasswordSupport) ?'show':'hide']();
 
             this.miRecent[this.mode.canOpenRecent?'show':'hide']();
@@ -751,6 +792,9 @@ define([
         btnCloseMenuCaption     : 'Back',
         btnProtectCaption: 'Protect',
         btnSaveCopyAsCaption    : 'Save Copy as...',
+        btnDuplicateCaption     : 'Duplicate',
+        btnSendEmailCaption     : 'Email as attachment',
+        btnDeleteCaption        : 'Move to trash',
         btnExitCaption          : 'Exit',
         btnFileOpenCaption      : 'Open...',
         btnCloseEditor          : 'Close File',

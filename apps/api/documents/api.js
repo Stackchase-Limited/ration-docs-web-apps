@@ -347,6 +347,9 @@
                 'onRequestCompareFile': <request file to compare>,// must call setRevisedFile method. must be deprecated
                 'onRequestSharingSettings': <request sharing settings>,// must call setSharingSettings method
                 'onRequestCreateNew': <try to create document>,
+                'onRequestDuplicate': <try to make a copy of the document next to it>,
+                'onRequestSendByEmail': <try to send the document as an email attachment>,
+                'onRequestDelete': <try to move the document to trash>,
                 'onRequestReferenceData': <try to refresh external data>,
                 'onRequestOpen': <try to open external link>,
                 'onRequestSelectDocument': <try to open document>, // used for compare and combine documents. must call setRequestedDocument method. use instead of onRequestCompareFile/setRevisedFile
@@ -421,6 +424,9 @@
         _config.editorConfig.canRequestCompareFile = _config.events && !!_config.events.onRequestCompareFile;
         _config.editorConfig.canRequestSharingSettings = _config.events && !!_config.events.onRequestSharingSettings;
         _config.editorConfig.canRequestCreateNew = _config.events && !!_config.events.onRequestCreateNew;
+        _config.editorConfig.canRequestDuplicate = _config.events && !!_config.events.onRequestDuplicate;
+        _config.editorConfig.canRequestSendByEmail = _config.events && !!_config.events.onRequestSendByEmail;
+        _config.editorConfig.canRequestDelete = _config.events && !!_config.events.onRequestDelete;
         _config.editorConfig.canRequestReferenceData = _config.events && !!_config.events.onRequestReferenceData;
         _config.editorConfig.canRequestOpen = _config.events && !!_config.events.onRequestOpen;
         _config.editorConfig.canRequestSelectDocument = _config.events && !!_config.events.onRequestSelectDocument;

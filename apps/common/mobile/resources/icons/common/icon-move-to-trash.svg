@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <g class="icon-move-to-trash">
+    <path stroke="#444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7.5 8.5v9a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-9m-9 0h-1m1 0h2m7 0h-2m2 0h1m-4 3v4m-3-4v4m-1-7h5m-5 0v-2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" class="icon-stroke-gray-primary"/>
+  </g>
+</svg>

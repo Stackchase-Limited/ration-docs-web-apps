@@ -415,6 +415,9 @@ define([
                 this.appOptions.canRequestSaveAs = this.editorConfig.canRequestSaveAs;
                 this.appOptions.canRequestInsertImage = this.editorConfig.canRequestInsertImage;
                 this.appOptions.canRequestSharingSettings = this.editorConfig.canRequestSharingSettings;
+                this.appOptions.canRequestDuplicate = this.editorConfig.canRequestDuplicate;
+                this.appOptions.canRequestSendByEmail = this.editorConfig.canRequestSendByEmail;
+                this.appOptions.canRequestDelete = this.editorConfig.canRequestDelete;
                 this.appOptions.canRequestOpen = this.editorConfig.canRequestOpen;
                 this.appOptions.canRequestReferenceSource = this.editorConfig.canRequestReferenceSource;
                 this.appOptions.canRequestReferenceData = this.editorConfig.canRequestReferenceData;

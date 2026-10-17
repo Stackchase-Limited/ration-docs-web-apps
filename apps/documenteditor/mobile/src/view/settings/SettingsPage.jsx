@@ -57,6 +57,9 @@ import IconDownload from '@common-icons/icon-download.svg';
 import IconAppSettings from '@common-icons/icon-app-settings.svg';
 import IconExport from '@common-icons/icon-export.svg';
 import IconPrint from '@common-icons/icon-print.svg';
+import IconCopy from '@common-icons/icon-copy.svg';
+import IconSendEmail from '@common-icons/icon-send-email.svg';
+import IconMoveToTrash from '@common-icons/icon-move-to-trash.svg';
 import IconInfo from '@common-icons/icon-info.svg';
 import IconHelp from '@common-icons/icon-help.svg';
 import IconAbout from '@common-icons/icon-about.svg';
@@ -271,6 +274,21 @@ const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo
                     {_canPrint &&
                         <ListItem title={_t.textPrint} onClick={settingsContext.onPrint} link='#' className='no-indicator'>
                             <SvgIcon slot="media" symbolId={IconPrint.id} className={'icon icon-svg'} />
+                        </ListItem>
+                    }
+                    {appOptions.canRequestDuplicate &&
+                        <ListItem title={_t.textDuplicate} onClick={settingsContext.onDuplicate} link='#' className='no-indicator'>
+                            <SvgIcon slot="media" symbolId={IconCopy.id} className={'icon icon-svg'} />
+                        </ListItem>
+                    }
+                    {appOptions.canRequestSendByEmail &&
+                        <ListItem title={_t.textSendByEmail} onClick={settingsContext.onSendByEmail} link='#' className='no-indicator'>
+                            <SvgIcon slot="media" symbolId={IconSendEmail.id} className={'icon icon-svg'} />
+                        </ListItem>
+                    }
+                    {appOptions.canRequestDelete &&
+                        <ListItem title={_t.textMoveToTrash} onClick={settingsContext.onDelete} link='#' className='no-indicator'>
+                            <SvgIcon slot="media" symbolId={IconMoveToTrash.id} className={'icon icon-svg'} />
                         </ListItem>
                     }
                     {!(!_canDisplayInfo && isBranding) &&
