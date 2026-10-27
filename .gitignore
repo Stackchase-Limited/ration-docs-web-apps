@@ -23,6 +23,9 @@ apps/**/main/resources/**/iconshuge*.png
 apps/**/main/resources/**/iconshuge*.less
 apps/**/main/resources/**/iconshuge*.svg
 apps/**/mobile/dist/*.*
+apps/**/mobile/dist/js/
+# webpack writes this from mobile/src/index_dev.html
+apps/*/mobile/index.html
 apps/**/mobile/hot/*.*
 apps/**/mobile/css/*.*
 
