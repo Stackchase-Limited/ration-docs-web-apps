@@ -2986,6 +2986,7 @@
   "PE.Views.ParagraphSettingsAdvanced.textTitle": "Paragraph - Advanced settings",
   "PE.Views.ParagraphSettingsAdvanced.txtAutoText": "Auto",
   "PE.Views.PrintWithPreview.txtAllPages": "All slides",
+  "PE.Views.PrintWithPreview.txtAllSlidesHidden": "There is nothing to print because all slides are hidden",
   "PE.Views.PrintWithPreview.txtBlackAndWhitePrinting": "Black and white printing",
   "PE.Views.PrintWithPreview.txtBothSides": "Print on both sides",
   "PE.Views.PrintWithPreview.txtBothSidesLongDesc": "Flip pages on long edge",

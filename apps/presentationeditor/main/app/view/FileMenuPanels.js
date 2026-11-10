@@ -2778,6 +2778,7 @@ define([], function () {
         txtOf: 'of {0}',
         txtPageNumInvalid: 'Slide number invalid',
         txtEmptyTable: 'There is nothing to print because the presentation is empty',
+        txtAllSlidesHidden: 'There is nothing to print because all slides are hidden',
         txtPages: 'Slides',
         txtPaperSize: 'Paper size',
         txtCopies: 'Copies',

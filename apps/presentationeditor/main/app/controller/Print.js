@@ -55,7 +55,8 @@ define([
             this._navigationPreview = {
                 pageCount: false,
                 currentPage: 0,
-                currentPreviewPage: 0
+                currentPreviewPage: 0,
+                slides: [] // #1672: the slide shown on each preview page
             };
 
             this._isPreviewVisible = false;
@@ -135,8 +136,8 @@ define([
             this._paperSize = this.printSettings.cmbPaperSize.getSelectedRecord().size;
 
             Common.NotificationCenter.on('window:resize', _.bind(function () {
-                if (this._isPreviewVisible) {
-                    this.api.asc_drawPrintPreview(this._navigationPreview.currentPreviewPage, this._paperSize);
+                if (this._isPreviewVisible && this._navigationPreview.pageCount) {
+                    this.api.asc_drawPrintPreview(this._navigationPreview.slides[this._navigationPreview.currentPreviewPage], this._paperSize);
                 }
             }, this));
 
@@ -169,31 +170,57 @@ define([
                 this.printSettings.inputPages.setValue('');
             }
             this.printSettings.inputPages.showError();
+            this._isPreviewVisible && this.updatePreview();
         },
 
-        onCountPages: function(count) {
-            this._navigationPreview.pageCount = count;
+        // the pages value of the print options for the chosen range
+        getPrintRange: function() {
+            var range = this.printSettings.cmbRange.getValue();
+            if (range === -1)
+                return this.printSettings.inputPages.getValue();
+            else if (range === 'all')
+                return 'all';
+            else if (range === 'current')
+                return String(this.api.getCurrentPage() + 1);
+        },
+
+        /* #1672: hidden slides are not printed, so the preview pages are the slides the print
+           (and the PDF) will output for the chosen range, as sdkjs picks them, numbered
+           1..n. They used to be every slide, numbered by slide. */
+        updatePreview: function() {
+            var nav = this._navigationPreview,
+                range = this.getPrintRange();
+            if (this.printSettings.cmbRange.getValue() === -1 && this.printSettings.inputPages.validation(range) !== true)
+                return; // keep the last preview while the range is being typed
+
+            if (this.api.asc_getSlidesToPrint)
+                nav.slides = this.api.asc_getSlidesToPrint(range);
+            else
+                nav.slides = _.range(this.api.getCountPages());
+            nav.pageCount = nav.slides.length;
+
+            // the page of the current slide, or the next one printed after it
+            var current = this.api.getCurrentPage(),
+                index = _.sortedIndex(nav.slides, current);
+            nav.currentPreviewPage = Math.max(0, Math.min(index, nav.pageCount - 1));
 
             if (this.printSettings && this.printSettings.isVisible()) {
-                this.printSettings.$previewBox.toggleClass('hidden', !this._navigationPreview.pageCount);
-                this.printSettings.$previewEmpty.toggleClass('hidden', !!this._navigationPreview.pageCount);
-            }
-            if (!!this._navigationPreview.pageCount) {
-                if (this._navigationPreview.currentPreviewPage > count - 1)
-                    this._navigationPreview.currentPreviewPage = Math.max(0, count - 1);
-                if (this.printSettings && this.printSettings.isVisible()) {
-                    this.api.asc_drawPrintPreview(this._navigationPreview.currentPreviewPage, this._paperSize);
-                    this.updateNavigationButtons(this._navigationPreview.currentPreviewPage, count);
+                this.printSettings.$previewBox.toggleClass('hidden', !nav.pageCount);
+                this.printSettings.$previewEmpty.toggleClass('hidden', !!nav.pageCount);
+                this.printSettings.$previewEmpty.find('div').text(this.api.getCountPages() ? this.printSettings.txtAllSlidesHidden : this.printSettings.txtEmptyTable);
+                if (nav.pageCount) {
+                    this.api.asc_drawPrintPreview(nav.slides[nav.currentPreviewPage], this._paperSize);
+                    this.updateNavigationButtons(nav.currentPreviewPage, nav.pageCount);
                 }
             }
         },
 
+        onCountPages: function(count) {
+            this._isPreviewVisible && this.updatePreview();
+        },
+
         onCurrentPage: function(number) {
-            this._navigationPreview.currentPreviewPage = number;
-            if (this.printSettings && this.printSettings.isVisible()) {
-                this.api.asc_drawPrintPreview(this._navigationPreview.currentPreviewPage, this._paperSize);
-                this.updateNavigationButtons(this._navigationPreview.currentPreviewPage, this._navigationPreview.pageCount);
-            }
+            this._isPreviewVisible && this.updatePreview();
         },
 
         onLockSlideHdrFtrApplyToAll: function(isLocked) {
@@ -208,15 +235,9 @@ define([
             opts.asc_setAdvancedOptions(this.adjPrintParams);
             this.api.asc_initPrintPreview('print-preview', opts);
 
-            this.printSettings.$previewBox.toggleClass('hidden', !this._navigationPreview.pageCount);
-            this.printSettings.$previewEmpty.toggleClass('hidden', !!this._navigationPreview.pageCount);
-            if (!!this._navigationPreview.pageCount) {
-                this._navigationPreview.currentPreviewPage = this._navigationPreview.currentPage = this.api.getCurrentPage();
-                this.api.asc_drawPrintPreview(this._navigationPreview.currentPreviewPage, this._paperSize);
-                this.updateNavigationButtons(this._navigationPreview.currentPreviewPage, this._navigationPreview.pageCount);
-                this.SetDisabled();
-            }
             this._isPreviewVisible = true;
+            this.updatePreview();
+            !!this._navigationPreview.pageCount && this.SetDisabled();
 
             if(this._state.shouldUpdateCmbPrinter) {
                 this.updateCmbPrinter();      
@@ -236,6 +257,8 @@ define([
 
         onChangePreviewPage: function (next) {
             var index = this._navigationPreview.currentPreviewPage;
+            if (!this._navigationPreview.pageCount)
+                return;
             if (next) {
                 index++;
                 index = Math.min(index, this._navigationPreview.pageCount - 1);
@@ -243,7 +266,7 @@ define([
                 index--;
                 index = Math.max(index, 0);
             }
-            this.api.goToPage(index);
+            this.api.goToPage(this._navigationPreview.slides[index]);
         },
 
         onKeypressPageNumber: function (input, e) {
@@ -259,7 +282,7 @@ define([
 
                 box.focus(); // for IE
 
-                this.api.goToPage(page-1);
+                this.api.goToPage(this._navigationPreview.slides[page-1]);
                 return false;
             }
         },
@@ -337,14 +360,7 @@ define([
             if (this._navigationPreview.pageCount<1)
                 return;
 
-            let pages; 
-            if(this.printSettings.cmbRange.getValue() === -1) {
-                pages = this.printSettings.inputPages.getValue();
-            } else if (this.printSettings.cmbRange.getValue() === 'all') {
-                pages = 'all';
-            } else if (this.printSettings.cmbRange.getValue() === 'current') {
-                pages = String(this._navigationPreview.currentPage + 1);
-            }
+            let pages = this.getPrintRange();
 
             var rec = this.printSettings.cmbPaperSize.getSelectedRecord();
             var printerOption = this.printSettings.cmbPrinter.getSelectedRecord();
@@ -383,13 +399,14 @@ define([
                 this.printSettings.cmbRange.setValue('all');
             else if (this.printSettings.cmbRange.getValue()!==-1)
                 this.printSettings.cmbRange.setValue(-1);
+            this._isPreviewVisible && this.updatePreview();
         },
 
         onPaperSizeSelect: function(combo, record) {
             if (record) {
                 this._paperSize = record.size;
                 this.printSettings.setOriginalPageSize(record.size[0], record.size[1]);
-                this.api.asc_drawPrintPreview(this._navigationPreview.currentPreviewPage, this._paperSize);
+                this._navigationPreview.pageCount && this.api.asc_drawPrintPreview(this._navigationPreview.slides[this._navigationPreview.currentPreviewPage], this._paperSize);
             }
         },
 
