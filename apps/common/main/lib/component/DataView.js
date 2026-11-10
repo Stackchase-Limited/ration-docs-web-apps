@@ -753,7 +753,8 @@ define([
             window._event = e;  //  for FireFox only
 
             if(this.multiSelect) {
-                if (e && e.ctrlKey) {
+                // on macOS ctrl+click is a right click, Cmd+click adds/removes an item instead
+                if (e && (e.ctrlKey || Common.Utils.isMac && e.metaKey)) {
                     this.pressedCtrl = true;
                 } else if (e && e.shiftKey) {
                     this.pressedShift = true;
@@ -985,6 +986,8 @@ define([
             if(e.keyCode == Common.UI.Keys.SHIFT)
                 this.pressedShift = false;
             if(e.keyCode == Common.UI.Keys.CTRL)
+                this.pressedCtrl = false;
+            if (Common.Utils.isMac && (e.keyCode == Common.UI.Keys.META || e.keyCode == 93 || e.keyCode == 224)) // left/right Cmd, 224 in FireFox
                 this.pressedCtrl = false;
             this.trigger('item:keyup', this, e);
         },
