@@ -707,6 +707,23 @@ define([
                     return webapp.getController('ApplicationController').appOptions.isOffline;
                 return webapp.getController('Main').appOptions.isOffline;
             },
+            // a local file opened from a downloads, mail-attachment or temp folder has just
+            // come from somewhere else (web, mail, chat): its macros must not run unasked
+            isLocalFileFromUntrustedPlace: function () {
+                if ( !native || !native.LocalFileGetSourcePath ) return false;
+
+                var path = native.LocalFileGetSourcePath();
+                if ( !path || typeof path != 'string' ) return false;
+
+                path = path.replace(/\\/g, '/').toLowerCase();
+                return /\/downloads\//.test(path) ||                                // macOS, Windows, Linux browsers
+                        /\/library\/containers\/com\.apple\.mail\//.test(path) ||   // macOS Mail attachments
+                        /^(\/private)?\/var\/folders\//.test(path) ||              // macOS per-user temp
+                        /^(\/private)?\/tmp\//.test(path) ||
+                        /\/appdata\/local\/temp\//.test(path) ||                   // Windows temp
+                        /\/content\.outlook\//.test(path) ||                        // Outlook attachments
+                        /\/inetcache\//.test(path);
+            },
             isFeatureAvailable: function (feature) {
                 return !!native && !!native[feature];
             },

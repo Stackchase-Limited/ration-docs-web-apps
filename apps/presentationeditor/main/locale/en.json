@@ -1525,6 +1525,7 @@
   "PE.Controllers.Main.textDisconnect": "Connection is lost",
   "PE.Controllers.Main.textGuest": "Guest",
   "PE.Controllers.Main.textHasMacros": "The file contains automatic macros.<br>Do you want to run macros?",
+  "PE.Controllers.Main.textMacrosTrust": "Macros are programs: a macro you run can read and change files on this computer. Run macros only if you trust where this file came from.",
   "PE.Controllers.Main.textLearnMore": "Learn More",
   "PE.Controllers.Main.textLoadingDocument": "Loading presentation",
   "PE.Controllers.Main.textLongName": "Enter a name that is less than 128 characters.",

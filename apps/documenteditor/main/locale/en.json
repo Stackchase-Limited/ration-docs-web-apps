@@ -1507,6 +1507,7 @@
   "DE.Controllers.Main.textDisconnect": "Connection is lost",
   "DE.Controllers.Main.textGuest": "Guest",
   "DE.Controllers.Main.textHasMacros": "The file contains automatic macros.<br>Do you want to run macros?",
+  "DE.Controllers.Main.textMacrosTrust": "Macros are programs: a macro you run can read and change files on this computer. Run macros only if you trust where this file came from.",
   "DE.Controllers.Main.textLearnMore": "Learn More",
   "DE.Controllers.Main.textLoadingDocument": "Loading document",
   "DE.Controllers.Main.textLongName": "Enter a name that is less than 128 characters.",

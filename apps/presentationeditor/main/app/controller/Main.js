@@ -2662,13 +2662,18 @@ define([
                     enable = !this.editorConfig.customization || (this.editorConfig.customization.macros!==false);
                 if (enable) {
                     var value = Common.Utils.InternalSettings.get("pe-macros-mode");
+                    // "Enable all" does not cover a file that has just come from the web or a mail
+                    if (value==1 && Common.Controllers.Desktop.isLocalFileFromUntrustedPlace())
+                        value = 0;
                     if (value==1)
                         this.api.asc_runAutostartMacroses();
                     else if (value === 0) {
                         Common.UI.warning({
-                            msg: this.textHasMacros + '<br>',
-                            buttons: ['yes', 'no'],
-                            primary: 'yes',
+                            maxwidth: 500,
+                            msg: this.textHasMacros + '<br>' + this.textMacrosTrust + '<br>',
+                            // a macro is a program with access to this computer: Enter must not run it
+                            buttons: ['no', 'yes'],
+                            primary: 'no',
                             dontshow: true,
                             textDontShow: this.textRemember,
                             callback: function(btn, dontshow){
