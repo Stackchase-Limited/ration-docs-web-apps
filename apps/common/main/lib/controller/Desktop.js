@@ -219,6 +219,11 @@ define([
                     if ( ctrl_print )
                         ctrl_print.setPrintersInfo(currentPrinter, printers);
                 } else
+                if (/^file:openlimits$/.test(cmd)) {
+                    // x2t cut the file while opening it (94 rows, 96 cell text); the editor tells the user
+                    var main = webapp.getController('Main');
+                    main && main.onDesktopOpenLimits && main.onDesktopOpenLimits(param);
+                } else
                 if (/file:saveas/.test(cmd)) {
                     webapp.getController('Main').api.asc_DownloadAs();
                 } else

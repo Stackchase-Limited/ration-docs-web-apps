@@ -1007,6 +1007,11 @@ define([
                 me.hidePreloader();
                 me.onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
 
+                if (me._state.openLimits) { // the desktop said so while the document was loading
+                    me.onDesktopOpenLimits(me._state.openLimits);
+                    me._state.openLimits = undefined;
+                }
+
                 if (me.appOptions.isEdit && me.appOptions.spreadsheet.fileType.toLowerCase()==='csv')
                     Common.UI.TooltipManager.showTip({ step: 'openCsv', text: me.warnOpenCsv, target: '#toolbar', maxwidth: 350, automove: true, noHighlight: true, noArrow: true, showButton: false});
                 if (me.appOptions.isEdit && !me.appOptions.canModifyFilter)
@@ -2650,6 +2655,7 @@ define([
                                         // settings.data is the preview parsed with the chosen options.
                                         var rowsCount = settings.data ? settings.data.length : 0;
                                         if (rowsCount > me.maxSheetRows) {
+                                            me._state.csvRowLimitWarned = true;
                                             Common.UI.warning({
                                                 width: 500,
                                                 title: me.notcriticalErrorTitle,
@@ -3906,8 +3912,28 @@ define([
 
             maxSheetRows: 1048576, // rows in a sheet (AscCommon.gc_nMaxRow)
 
+            // The desktop opened the file with x2t, which had to cut it: 94 - rows past maxSheetRows
+            // (ROWLIMITS), 96 - cell text past 32767 characters (CELLLIMITS). Shown once the sheet is
+            // on screen; the rows warning only if the csv dialog's own one (warnCsvRowLimit) did not show.
+            onDesktopOpenLimits: function(code) {
+                code = parseInt(code);
+                if (code !== 94 && code !== 96) return;
+                if (!this._isDocReady) {
+                    this._state.openLimits = code;
+                    return;
+                }
+                if (code === 94 && this._state.csvRowLimitWarned) return;
+                Common.UI.warning({
+                    width: 500,
+                    title: this.notcriticalErrorTitle,
+                    msg: code === 94 ? this.warnOpenRowLimit.replace(/%1/g, this.maxSheetRows) : this.warnOpenCellLimit
+                });
+            },
+
             errorLang: 'The interface language is not loaded.<br>Please contact your Document Server administrator.',
-            warnCsvRowLimit: 'This file has %1 rows, but a sheet holds at most %2.<br>Only the first %2 rows are opened. If you save over the original file, the remaining rows will be lost.'
+            warnCsvRowLimit: 'This file has %1 rows, but a sheet holds at most %2.<br>Only the first %2 rows are opened. If you save over the original file, the remaining rows will be lost.',
+            warnOpenRowLimit: 'This file has more rows than a sheet holds (%1).<br>Only the first %1 rows were opened. If you save over the original file, the remaining rows will be lost.',
+            warnOpenCellLimit: 'Some cells in this file hold more than 32767 characters, the most a cell can hold.<br>Their text was cut to 32767 characters. If you save over the original file, the rest of that text will be lost.'
         }
     })(), SSE.Controllers.Main || {}))
 });
