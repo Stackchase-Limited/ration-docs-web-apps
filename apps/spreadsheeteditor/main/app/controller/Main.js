@@ -629,6 +629,7 @@ define([
                 this.api.asc_registerCallback('asc_onLicenseChanged',       _.bind(this.onLicenseChanged, this));
                 this.api.asc_registerCallback('asc_onMacrosPermissionRequest', _.bind(this.onMacrosPermissionRequest, this));
                 this.api.asc_registerCallback('asc_onRunAutostartMacroses', _.bind(this.onRunAutostartMacroses, this));
+                this.api.asc_registerCallback('asc_onMacrosRunRequest', _.bind(this.onMacrosRunRequest, this));
                 this.api.asc_setDocInfo(docInfo);
                 this.api.asc_getEditorPermissions();
             },
@@ -3507,6 +3508,40 @@ define([
                         });
                     }
                 }
+            },
+
+            // A click on a shape or button the document assigned a macro to. The shape can look like a
+            // link, so the click alone is not consent: same rules and warning as for autostart macros.
+            onMacrosRunRequest: function(callback) {
+                if (!callback) return;
+                var enable = !this.editorConfig.customization || (this.editorConfig.customization.macros!==false);
+                if (!enable) {
+                    callback(false);
+                    return;
+                }
+                var value = Common.Utils.InternalSettings.get("sse-macros-mode");
+                if (value==1 && Common.Controllers.Desktop.isLocalFileFromUntrustedPlace())
+                    value = 0;
+                if (value==1)
+                    callback(true);
+                else if (value === 0) {
+                    Common.UI.warning({
+                        maxwidth: 500,
+                        msg: this.textMacroOnClick + '<br>' + this.textMacrosTrust + '<br>',
+                        buttons: ['no', 'yes'],
+                        primary: 'no',
+                        dontshow: true,
+                        textDontShow: this.textRemember,
+                        callback: function(btn, dontshow){
+                            if (dontshow) {
+                                Common.Utils.InternalSettings.set("sse-macros-mode", (btn == 'yes') ? 1 : 2);
+                                Common.localStorage.setItem("sse-macros-mode", (btn == 'yes') ? 1 : 2);
+                            }
+                            callback(btn == 'yes');
+                        }
+                    });
+                } else
+                    callback(false);
             },
 
             onMacrosPermissionRequest: function(url, callback) {
