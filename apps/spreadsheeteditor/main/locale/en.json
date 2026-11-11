@@ -2049,6 +2049,7 @@
   "SSE.Controllers.Main.waitText": "Please, wait...",
   "SSE.Controllers.Main.warnBrowserIE9": "The application has low capabilities on IE9. Use IE10 or higher",
   "SSE.Controllers.Main.warnBrowserZoom": "Your browser current zoom setting is not fully supported. Please reset to the default zoom by pressing Ctrl+0.",
+  "SSE.Controllers.Main.warnCsvRowLimit": "This file has %1 rows, but a sheet holds at most %2.<br>Only the first %2 rows are opened. If you save over the original file, the remaining rows will be lost.",
   "SSE.Controllers.Main.warnExternalChartProtected": "This chart is based on data from an external file. In this window, you can only select data to display in the chart. To edit the spreadsheet, open it in the spreadsheet editor.",
   "SSE.Controllers.Main.warnLicenseAnonymous": "Access denied for anonymous users.<br>This document will be opened for viewing only.",
   "SSE.Controllers.Main.warnLicenseBefore": "License not active.<br>Please contact your administrator.",

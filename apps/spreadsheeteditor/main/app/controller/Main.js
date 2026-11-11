@@ -2644,8 +2644,20 @@ define([
                                     if (mode==2) {
                                         formatOptions && formatOptions.asc_setAdvancedOptions(settings.textOptions);
                                         me.api.asc_DownloadAs(formatOptions);
-                                    } else
+                                    } else {
+                                        // #482: the converter keeps only the first 1048576 rows of a csv and
+                                        // the rest was dropped without a word (saving over the file loses it).
+                                        // settings.data is the preview parsed with the chosen options.
+                                        var rowsCount = settings.data ? settings.data.length : 0;
+                                        if (rowsCount > me.maxSheetRows) {
+                                            Common.UI.warning({
+                                                width: 500,
+                                                title: me.notcriticalErrorTitle,
+                                                msg: me.warnCsvRowLimit.replace('%1', rowsCount).replace(/%2/g, me.maxSheetRows)
+                                            });
+                                        }
                                         me.api.asc_setAdvancedOptions(type, settings.textOptions);
+                                    }
                                     me.loadMask && me.loadMask.show();
                                 }
                             }
@@ -3892,7 +3904,10 @@ define([
                 data && this.api.asc_openDocumentFromBytes(new Uint8Array(data));
             },
 
-            errorLang: 'The interface language is not loaded.<br>Please contact your Document Server administrator.'
+            maxSheetRows: 1048576, // rows in a sheet (AscCommon.gc_nMaxRow)
+
+            errorLang: 'The interface language is not loaded.<br>Please contact your Document Server administrator.',
+            warnCsvRowLimit: 'This file has %1 rows, but a sheet holds at most %2.<br>Only the first %2 rows are opened. If you save over the original file, the remaining rows will be lost.'
         }
     })(), SSE.Controllers.Main || {}))
 });
