@@ -1494,6 +1494,12 @@ define([
                     Common.Utils.InternalSettings.set("de-settings-smart-selection", value);
                     me.api.asc_putSmartParagraphSelection(value);
 
+                    // default text direction of a new blank desktop document (#2090); the blank template already
+                    // follows the interface language, so by default this is a no-op
+                    value = Common.localStorage.getBool("de-settings-def-text-rtl", !!Common.Locale.isCurrentLanguageRtl());
+                    Common.Utils.InternalSettings.set("de-settings-def-text-rtl", value);
+                    me.editorConfig.newBlank && me.api.asc_setDefaultRtlTextDirection(value);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion)

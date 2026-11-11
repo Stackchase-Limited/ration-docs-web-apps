@@ -430,6 +430,18 @@ define([], function () {
                     '<label class="comment-text"><%= scope.txtQuickPrintTip %></label></span></div>',
                     '</td>',
                 '</tr>',*/
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtTextDir %></label></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" style="padding-top:0;padding-bottom:0;"><label class="comment-text"><%= scope.txtTextDirDesc %></label></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" role="radiogroup" aria-owns="fms-rb-text-rtl"><div id="fms-rb-text-ltr"></div></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2"><div id="fms-rb-text-rtl"></div></td>',
+                '</tr>',
                 '<tr class="edit quick-access">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-customize-quick-access" style="width:auto;display:inline-block;padding-right:10px;padding-left:10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtCustomizeQuickAccess %></button></div></td>',
                 '</tr>',
@@ -823,6 +835,24 @@ define([], function () {
             });
             this.btnCustomizeQuickAccess.on('click', _.bind(this.customizeQuickAccess, this));
 
+            this.rbTextLtr = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-text-ltr'),
+                name        : 'text-dir',
+                labelText   : this.txtTextLtr,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            this.rbTextRtl = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-text-rtl'),
+                name        : 'text-dir',
+                labelText   : this.txtTextRtl,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -971,6 +1001,7 @@ define([], function () {
             /** coauthoring end **/
 
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
+            $('tr.text-dir', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.macros', this.el)[(mode.customization && mode.customization.macros===false) ? 'hide' : 'show']();
             if ( !Common.UI.Themes.available() ) {
                 $('tr.themes, tr.themes + tr.divider', this.el).hide();
@@ -993,6 +1024,9 @@ define([], function () {
 
         updateSettings: function() {
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("de-settings-show-alt-hints"));
+            var rtl = !!Common.Utils.InternalSettings.get("de-settings-def-text-rtl");
+            this.rbTextLtr.setValue(!rtl);
+            this.rbTextRtl.setValue(rtl);
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
@@ -1137,6 +1171,10 @@ define([], function () {
 
             Common.localStorage.setItem("de-settings-paste-button", this.chPaste.isChecked() ? 1 : 0);
             Common.localStorage.setItem("de-settings-smart-selection", this.chSmartSelection.isChecked() ? 1 : 0);
+            if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
+                Common.localStorage.setBool("de-settings-def-text-rtl", this.rbTextRtl.getValue());
+                Common.Utils.InternalSettings.set("de-settings-def-text-rtl", this.rbTextRtl.getValue());
+            }
             //Common.localStorage.setBool("de-settings-quick-print-button", this.chQuickPrint.isChecked());
 
             if (!Common.Utils.isIE && Common.UI.FeaturesManager.canChange('tabBackground', true)) {
@@ -1289,6 +1327,10 @@ define([], function () {
         textSmartSelection: 'Use smart paragraph selection',
         txtScreenReader: 'Turn on screen reader support',
         txtCustomizeQuickAccess: 'Customize quick access',
+        txtTextDir: 'Default text direction',
+        txtTextDirDesc: 'This setting will affect only new blank documents',
+        txtTextLtr: 'Left-to-right',
+        txtTextRtl: 'Right-to-left',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',
         textFill: 'Fill',
