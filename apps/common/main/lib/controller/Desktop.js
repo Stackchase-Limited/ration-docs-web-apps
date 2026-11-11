@@ -224,6 +224,17 @@ define([
                 } else
                 if (/file:save/.test(cmd)) {
                     webapp.getController('Main').api.asc_Save();
+                } else
+                if (/^edit:(undo|redo)$/.test(cmd)) {
+                    // Edit > Undo/Redo of the macOS menu. A text field, a plugin's frame and the like
+                    // keep the browser's own undo; anything else is the document, undone like the header button
+                    var action = cmd.substring(5),
+                        el = document.activeElement;
+                    if ( el && (/^(input|textarea|select|iframe)$/i.test(el.tagName) || el.isContentEditable) && el.id != 'area_id' )
+                        native.execCommand('edit:native', action);
+                    else
+                    if ( !Common.Utils.ModalWindow.isVisible() && !!titlebuttons && !!titlebuttons[action] )
+                        titlebuttons[action].btn.click();
                 }
             };
 
