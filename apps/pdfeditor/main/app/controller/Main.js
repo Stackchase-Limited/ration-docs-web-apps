@@ -2025,7 +2025,8 @@ define([
                         title: this.notcriticalErrorTitle,
                         iconCls: 'warn',
                         buttons: ['ok', 'cancel'],
-                        msg: Common.Utils.String.format(this.txtSecurityWarningLinkOk, sURI || ''),
+                        // Ration Docs #1664: the link is text from the PDF: never markup in the dialog
+                        msg: Common.Utils.String.format(this.txtSecurityWarningLinkOk, Common.Utils.String.htmlEncode(sURI || '')),
                         maxwidth: 600,
                         callback: _.bind(function(btn){
                             if (btn == 'ok') {

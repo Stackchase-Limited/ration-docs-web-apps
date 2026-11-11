@@ -2031,8 +2031,11 @@ define([], function () {
                 });
                 return;
             }
+            // Ration Docs #1664: in the desktop app the shell asks before it hands anything but
+            // http/https/mailto to the system (and never opens a program), naming the target
+            // itself - asking here as well only made the user answer twice
             var type = this.api.asc_getUrlType(url);
-            if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email)
+            if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email || Common.Controllers.Desktop.isActive())
                 window.open(url, '_blank');
             else
                 Common.UI.warning({

@@ -394,15 +394,19 @@ define([
 
         onHyperlinkClick: function(url) {
             if (url) {
+                // Ration Docs #1664: in the desktop app the shell asks before it hands anything but
+                // http/https/mailto to the system (and never opens a program), naming the target
+                // itself - asking here as well only made the user answer twice
                 var type = this.api.asc_getUrlType(url);
-                if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email)
+                if (type===AscCommon.c_oAscUrlType.Http || type===AscCommon.c_oAscUrlType.Email || Common.Controllers.Desktop.isActive())
                     window.open(url);
                 else {
                     var me = this;
                     setTimeout(function() {
                         Common.UI.warning({
                             maxwidth: 500,
-                            msg: Common.Utils.String.format(this.txtWarnUrl, url),
+                            // the link is text from the document: never markup in the dialog
+                            msg: Common.Utils.String.format(me.txtWarnUrl, Common.Utils.String.htmlEncode(url)),
                             buttons: ['no', 'yes'],
                             primary: 'no',
                             callback: function(btn) {
