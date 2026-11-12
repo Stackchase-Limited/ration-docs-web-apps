@@ -506,6 +506,9 @@ define([
         },
 
         applySettings: function(menu) {
+            // #517 (set in Advanced settings, desktop only)
+            this.api.asc_setNewFileSaveFormat && this.api.asc_setNewFileSaveFormat(Common.Utils.InternalSettings.get("app-settings-new-file-odf") ? Asc.c_oAscFileType.ODS : 0);
+
             var value = Common.localStorage.getBool("sse-settings-cachemode", true);
             Common.Utils.InternalSettings.set("sse-settings-cachemode", value);
             this.api.asc_setDefaultBlitMode(value);

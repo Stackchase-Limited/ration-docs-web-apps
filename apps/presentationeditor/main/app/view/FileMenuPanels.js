@@ -348,6 +348,18 @@ define([], function () {
                         '<label class="comment-text"><%= scope.txtQuickPrintTip %></label></span></div>',
                     '</td>',
                 '</tr>',*/
+                '<tr class="edit new-format">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtNewFormat %></label></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2" style="padding-top:0;padding-bottom:0;"><label class="comment-text"><%= scope.txtNewFormatDesc %></label></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2" role="radiogroup" aria-owns="fms-rb-new-format-odf"><div id="fms-rb-new-format-ooxml"></div></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2"><div id="fms-rb-new-format-odf"></div></td>',
+                '</tr>',
                 '<tr class="edit quick-access">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-customize-quick-access" style="width:auto;display:inline-block;padding-right:10px;padding-left:10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtCustomizeQuickAccess %></button></div></td>',
                 '</tr>',
@@ -647,6 +659,25 @@ define([], function () {
             });
             this.btnCustomizeQuickAccess.on('click', _.bind(this.customizeQuickAccess, this));
 
+            // #517: format the desktop save dialog offers first for a new document
+            this.rbNewFormatOoxml = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-new-format-ooxml'),
+                name        : 'new-format',
+                labelText   : this.txtNewFormatOoxml,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            this.rbNewFormatOdf = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-new-format-odf'),
+                name        : 'new-format',
+                labelText   : this.txtNewFormatOdf,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -771,6 +802,7 @@ define([], function () {
             $('tr.macros', this.el)[(mode.customization && mode.customization.macros===false) ? 'hide' : 'show']();
             $('tr.spellcheck', this.el)[mode.isEdit && Common.UI.FeaturesManager.canChange('spellcheck') ? 'show' : 'hide']();
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
+            $('tr.new-format', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.tab-background', this.el)[!Common.Utils.isIE && Common.UI.FeaturesManager.canChange('tabBackground', true) ? 'show' : 'hide']();
             $('tr.tab-style', this.el)[!Common.Utils.isIE && !Common.Controllers.Desktop.isWinXp() && Common.UI.FeaturesManager.canChange('tabStyle', true) ? 'show' : 'hide']();
             if ( !Common.UI.Themes.available() ) {
@@ -788,6 +820,9 @@ define([], function () {
         },
 
         updateSettings: function() {
+            var odf = !!Common.Utils.InternalSettings.get("app-settings-new-file-odf");
+            this.rbNewFormatOoxml.setValue(!odf);
+            this.rbNewFormatOdf.setValue(odf);
             if (Common.UI.FeaturesManager.canChange('spellcheck')) {
                 this.chSpell.setValue(Common.Utils.InternalSettings.get("pe-settings-spellcheck"));
                 this.chIgnoreUppercase.setValue(Common.Utils.InternalSettings.get("pe-spellcheck-ignore-uppercase-words"));
@@ -861,6 +896,10 @@ define([], function () {
         },
 
         applySettings: function() {
+            if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
+                Common.localStorage.setBool("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
+                Common.Utils.InternalSettings.set("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
+            }
             Common.UI.Themes.setTheme(this.cmbTheme.getValue());
             if (Common.UI.FeaturesManager.canChange('spellcheck') && this.mode.isEdit) {
                 Common.localStorage.setItem("pe-settings-spellcheck", this.chSpell.isChecked() ? 1 : 0);
@@ -1022,6 +1061,10 @@ define([], function () {
         txtLastUsed: 'Last used',
         txtScreenReader: 'Turn on screen reader support',
         txtCustomizeQuickAccess: 'Customize quick access',
+        txtNewFormat: 'Format for new documents',
+        txtNewFormatDesc: 'Offered first when a new document is saved for the first time',
+        txtNewFormatOoxml: 'Office Open XML (PPTX)',
+        txtNewFormatOdf: 'OpenDocument (ODP)',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',
         textFill: 'Fill',

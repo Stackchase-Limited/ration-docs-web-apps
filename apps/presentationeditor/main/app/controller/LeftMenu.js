@@ -385,6 +385,9 @@ define([
         },
 
         applySettings: function(menu) {
+            // #517 (set in Advanced settings, desktop only)
+            this.api.asc_setNewFileSaveFormat && this.api.asc_setNewFileSaveFormat(Common.Utils.InternalSettings.get("app-settings-new-file-odf") ? Asc.c_oAscFileType.ODP : 0);
+
             var fast_coauth = Common.Utils.InternalSettings.get("pe-settings-coauthmode");
             /** coauthoring begin **/
             if (this.mode.isEdit && !this.mode.isOffline && this.mode.canCoAuthoring) {

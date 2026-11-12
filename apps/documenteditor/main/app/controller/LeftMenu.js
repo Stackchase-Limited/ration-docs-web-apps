@@ -487,6 +487,9 @@ define([
         },
 
         applySettings: function(menu) {
+            // #517 (set in Advanced settings, desktop only)
+            this.api.asc_setNewFileSaveFormat && this.api.asc_setNewFileSaveFormat(Common.Utils.InternalSettings.get("app-settings-new-file-odf") ? Asc.c_oAscFileType.ODT : 0);
+
             var value;
 
             var fast_coauth = Common.Utils.InternalSettings.get("de-settings-coauthmode");

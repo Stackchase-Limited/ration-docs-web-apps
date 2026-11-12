@@ -448,6 +448,18 @@ define([], function () {
                 '<tr class="edit text-dir">',
                     '<td colspan="2"><span id="fms-cmb-doc-lang"></span></td>',
                 '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtNewFormat %></label></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2" style="padding-top:0;padding-bottom:0;"><label class="comment-text"><%= scope.txtNewFormatDesc %></label></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2" role="radiogroup" aria-owns="fms-rb-new-format-odf"><div id="fms-rb-new-format-ooxml"></div></td>',
+                '</tr>',
+                '<tr class="edit new-format">',
+                    '<td colspan="2"><div id="fms-rb-new-format-odf"></div></td>',
+                '</tr>',
                 '<tr class="edit quick-access">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-customize-quick-access" style="width:auto;display:inline-block;padding-right:10px;padding-left:10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtCustomizeQuickAccess %></button></div></td>',
                 '</tr>',
@@ -841,6 +853,25 @@ define([], function () {
             });
             this.btnCustomizeQuickAccess.on('click', _.bind(this.customizeQuickAccess, this));
 
+            // #517: format the desktop save dialog offers first for a new document
+            this.rbNewFormatOoxml = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-new-format-ooxml'),
+                name        : 'new-format',
+                labelText   : this.txtNewFormatOoxml,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            this.rbNewFormatOdf = new Common.UI.RadioBox({
+                el          : $markup.findById('#fms-rb-new-format-odf'),
+                name        : 'new-format',
+                labelText   : this.txtNewFormatOdf,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
             this.rbTextLtr = new Common.UI.RadioBox({
                 el          : $markup.findById('#fms-rb-text-ltr'),
                 name        : 'text-dir',
@@ -1045,6 +1076,7 @@ define([], function () {
             /** coauthoring end **/
 
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
+            $('tr.new-format', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.text-dir', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.macros', this.el)[(mode.customization && mode.customization.macros===false) ? 'hide' : 'show']();
             if ( !Common.UI.Themes.available() ) {
@@ -1067,6 +1099,9 @@ define([], function () {
         },
 
         updateSettings: function() {
+            var odf = !!Common.Utils.InternalSettings.get("app-settings-new-file-odf");
+            this.rbNewFormatOoxml.setValue(!odf);
+            this.rbNewFormatOdf.setValue(odf);
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("de-settings-show-alt-hints"));
             var rtl = !!Common.Utils.InternalSettings.get("de-settings-def-text-rtl");
             this.rbTextLtr.setValue(!rtl);
@@ -1167,6 +1202,10 @@ define([], function () {
         },
 
         applySettings: function() {
+            if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
+                Common.localStorage.setBool("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
+                Common.Utils.InternalSettings.set("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
+            }
             Common.UI.Themes.setTheme(this.cmbTheme.getValue());
             if (!this.chDarkMode.isDisabled() && (this.chDarkMode.isChecked() !== Common.UI.Themes.isContentThemeDark()))
                 Common.UI.Themes.toggleContentTheme();
@@ -1375,6 +1414,10 @@ define([], function () {
         textSmartSelection: 'Use smart paragraph selection',
         txtScreenReader: 'Turn on screen reader support',
         txtCustomizeQuickAccess: 'Customize quick access',
+        txtNewFormat: 'Format for new documents',
+        txtNewFormatDesc: 'Offered first when a new document is saved for the first time',
+        txtNewFormatOoxml: 'Office Open XML (DOCX)',
+        txtNewFormatOdf: 'OpenDocument (ODT)',
         txtTextDir: 'Default text direction',
         txtTextDirDesc: 'This setting will affect only new blank documents',
         txtTextLtr: 'Left-to-right',

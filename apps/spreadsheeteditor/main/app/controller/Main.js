@@ -1055,6 +1055,11 @@ define([
                 Common.Utils.InternalSettings.set("sse-settings-smooth-scroll", value);
                 this.api.asc_SetSmoothScrolling(value);
 
+                // #517: the format the desktop save dialog offers first for a new document (unset - the editor's own)
+                value = Common.localStorage.getBool("app-settings-new-file-odf");
+                Common.Utils.InternalSettings.set("app-settings-new-file-odf", value);
+                me.api.asc_setNewFileSaveFormat && me.api.asc_setNewFileSaveFormat(value ? Asc.c_oAscFileType.ODS : 0);
+
                 value = Common.localStorage.getBool("sse-settings-def-sheet-rtl");
                 Common.Utils.InternalSettings.set("sse-settings-def-sheet-rtl", value);
                 this.api.asc_setDefaultDirection(value);

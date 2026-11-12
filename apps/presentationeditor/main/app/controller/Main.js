@@ -1019,6 +1019,11 @@ define([
                 Common.Utils.InternalSettings.set("pe-settings-textbox-autofit", value);
                 me.api.asc_setDefaultTextBoxAutoFit && me.api.asc_setDefaultTextBoxAutoFit(value);
 
+                // #517: the format the desktop save dialog offers first for a new document (unset - the editor's own)
+                value = Common.localStorage.getBool("app-settings-new-file-odf");
+                Common.Utils.InternalSettings.set("app-settings-new-file-odf", value);
+                me.api.asc_setNewFileSaveFormat && me.api.asc_setNewFileSaveFormat(value ? Asc.c_oAscFileType.ODP : 0);
+
                 value = Common.localStorage.getBool("pe-settings-showguides");
                 Common.Utils.InternalSettings.set("pe-settings-showguides", value);
                 me.api.asc_setShowGuides(value);

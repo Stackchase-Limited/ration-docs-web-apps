@@ -1494,6 +1494,11 @@ define([
                     Common.Utils.InternalSettings.set("de-settings-smart-selection", value);
                     me.api.asc_putSmartParagraphSelection(value);
 
+                    // #517: the format the desktop save dialog offers first for a new document (unset - the editor's own)
+                    value = Common.localStorage.getBool("app-settings-new-file-odf");
+                    Common.Utils.InternalSettings.set("app-settings-new-file-odf", value);
+                    me.api.asc_setNewFileSaveFormat && me.api.asc_setNewFileSaveFormat(value ? Asc.c_oAscFileType.ODT : 0);
+
                     // default text direction of a new blank desktop document (#2090); the blank template already
                     // follows the interface language, so by default this is a no-op
                     value = Common.localStorage.getBool("de-settings-def-text-rtl", !!Common.Locale.isCurrentLanguageRtl());
