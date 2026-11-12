@@ -2807,6 +2807,8 @@
   "PE.Views.FileMenuPanels.Settings.txtCollaboration": "Collaboration",
   "PE.Views.FileMenuPanels.Settings.txtCustomize": "Customize",
   "PE.Views.FileMenuPanels.Settings.txtCustomizeQuickAccess": "Customize quick access",
+  "PE.Views.FileMenuPanels.Settings.txtDocLang": "Default presentation language",
+  "PE.Views.FileMenuPanels.Settings.txtDocLangInterface": "Same as the interface",
   "PE.Views.FileMenuPanels.Settings.txtNewFormat": "Format for new documents",
   "PE.Views.FileMenuPanels.Settings.txtNewFormatDesc": "Offered first when a new document is saved for the first time",
   "PE.Views.FileMenuPanels.Settings.txtNewFormatOoxml": "Office Open XML (PPTX)",

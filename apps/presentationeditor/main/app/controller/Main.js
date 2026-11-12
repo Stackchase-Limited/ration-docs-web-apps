@@ -1104,6 +1104,14 @@ define([
                         (Math.abs(value.width - me.api.get_PresentationWidth()) > 0.5 || Math.abs(value.height - me.api.get_PresentationHeight()) > 0.5))
                         me.api.changeSlideSize(value.width, value.height, value.type);
 
+                    // #527: the language of a new blank desktop presentation (as the document editor's #143);
+                    // 0 (unset) keeps the blank template's, which follows the interface language
+                    value = parseInt(Common.localStorage.getItem("pe-settings-def-doc-lang")) || 0;
+                    Common.Utils.InternalSettings.set("pe-settings-def-doc-lang", value);
+                    if (value && me.editorConfig.newBlank && me.appOptions.isDesktopApp && me.appOptions.isOffline &&
+                        value !== me.api.asc_getDefaultLanguage())
+                        me.api.asc_setDefaultLanguage(value);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion)

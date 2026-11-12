@@ -366,6 +366,12 @@ define([], function () {
                 '<tr class="edit new-format">',
                     '<td colspan="2"><div id="fms-rb-new-format-odf"></div></td>',
                 '</tr>',
+                '<tr class="edit doc-lang">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtDocLang %></label></td>',
+                '</tr>',
+                '<tr class="edit doc-lang">',
+                    '<td colspan="2"><span id="fms-cmb-doc-lang"></span></td>',
+                '</tr>',
                 '<tr class="edit quick-access">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-customize-quick-access" style="width:auto;display:inline-block;padding-right:10px;padding-left:10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtCustomizeQuickAccess %></button></div></td>',
                 '</tr>',
@@ -699,6 +705,44 @@ define([], function () {
                 dataHintOffset: 'small'
             });
 
+            // language of new blank presentations (#527, as the document editor's #143); 0 keeps the
+            // blank template's, i.e. the interface language's
+            var docLangs = [];
+            _.each(Common.util.LanguageInfo.getLanguages(), function(info, code) {
+                if (info[2]) {
+                    var displayName = Common.util.LanguageInfo.getLocalLanguageDisplayName(code);
+                    docLangs.push({value: parseInt(code), displayValue: displayName.native, displayValueEn: displayName.english});
+                }
+            });
+            docLangs.sort(function(a, b){
+                return a.displayValue.localeCompare(b.displayValue);
+            });
+            docLangs.unshift({value: 0, displayValue: this.txtDocLangInterface, displayValueEn: ''});
+            this.cmbDocLang = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-doc-lang'),
+                style       : 'width: 200px;',
+                menuStyle   : 'min-width:100%; max-height: 185px;',
+                restoreMenuHeightAndTop: 110,
+                editable    : false,
+                cls         : 'input-group-nr',
+                data        : docLangs,
+                itemsTemplate: _.template([
+                    '<% _.each(items, function(item) { %>',
+                        '<li id="<%= item.id %>" data-value="<%= item.value %>">',
+                            '<a tabindex="-1" type="menuitem" role="menuitemcheckbox" aria-checked="false">',
+                                '<div><%= item.displayValue %></div>',
+                                '<label style="opacity: 0.6"><%= item.displayValueEn %></label>',
+                            '</a>',
+                        '</li>',
+                    '<% }); %>'
+                ].join('')),
+                search: true,
+                searchFields: ['displayValue', 'displayValueEn'],
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -801,6 +845,7 @@ define([], function () {
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTextBoxAutoFit.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTabStyle.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbDocLang.options.menuAlignEl = scrolled ? this.pnlSettings : null;
             }
         },
 
@@ -825,6 +870,7 @@ define([], function () {
             $('tr.user-dict', this.el)[mode.isEdit && mode.isDesktopApp && Common.UI.FeaturesManager.canChange('spellcheck') ? 'show' : 'hide']();
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
             $('tr.new-format', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
+            $('tr.doc-lang', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.tab-background', this.el)[!Common.Utils.isIE && Common.UI.FeaturesManager.canChange('tabBackground', true) ? 'show' : 'hide']();
             $('tr.tab-style', this.el)[!Common.Utils.isIE && !Common.Controllers.Desktop.isWinXp() && Common.UI.FeaturesManager.canChange('tabStyle', true) ? 'show' : 'hide']();
             if ( !Common.UI.Themes.available() ) {
@@ -845,6 +891,8 @@ define([], function () {
             var odf = !!Common.Utils.InternalSettings.get("app-settings-new-file-odf");
             this.rbNewFormatOoxml.setValue(!odf);
             this.rbNewFormatOdf.setValue(odf);
+            var docLang = this.cmbDocLang.store.findWhere({value: Common.Utils.InternalSettings.get("pe-settings-def-doc-lang") || 0});
+            this.cmbDocLang.setValue(docLang ? docLang.get('value') : 0);
             if (Common.UI.FeaturesManager.canChange('spellcheck')) {
                 this.chSpell.setValue(Common.Utils.InternalSettings.get("pe-settings-spellcheck"));
                 this.chIgnoreUppercase.setValue(Common.Utils.InternalSettings.get("pe-spellcheck-ignore-uppercase-words"));
@@ -922,6 +970,8 @@ define([], function () {
             if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
                 Common.localStorage.setBool("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
                 Common.Utils.InternalSettings.set("app-settings-new-file-odf", this.rbNewFormatOdf.getValue());
+                Common.localStorage.setItem("pe-settings-def-doc-lang", this.cmbDocLang.getValue());
+                Common.Utils.InternalSettings.set("pe-settings-def-doc-lang", this.cmbDocLang.getValue());
             }
             Common.UI.Themes.setTheme(this.cmbTheme.getValue());
             if (Common.UI.FeaturesManager.canChange('spellcheck') && this.mode.isEdit) {
@@ -1098,6 +1148,8 @@ define([], function () {
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
         txtNewFormatDesc: 'Offered first when a new document is saved for the first time',
+        txtDocLang: 'Default presentation language',
+        txtDocLangInterface: 'Same as the interface',
         txtNewFormatOoxml: 'Office Open XML (PPTX)',
         txtNewFormatOdf: 'OpenDocument (ODP)',
         txtTabBack: 'Use toolbar color as tabs background',
