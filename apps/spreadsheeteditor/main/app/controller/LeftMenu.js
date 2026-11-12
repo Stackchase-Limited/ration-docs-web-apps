@@ -532,6 +532,10 @@ define([
             Common.Utils.InternalSettings.set("sse-settings-r1c1", value);
             this.api.asc_setR1C1Mode(value);
 
+            value = parseInt(Common.localStorage.getItem("sse-settings-highlight-rowcol")) || 0;
+            Common.Utils.InternalSettings.set("sse-settings-highlight-rowcol", value);
+            this.api.asc_setActiveCellHighlight && this.api.asc_setActiveCellHighlight(value);
+
             value = Common.localStorage.getBool("sse-settings-smooth-scroll");
             Common.Utils.InternalSettings.set("sse-settings-smooth-scroll", value);
             this.api.asc_SetSmoothScrolling(value);

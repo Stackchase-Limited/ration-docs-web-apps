@@ -330,6 +330,10 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-smooth-scroll"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td><label><%= scope.strHighlightRowCol %></label></td>',
+                    '<td><span id="fms-cmb-highlight-rowcol"></span></td>',
+                '</tr>',
                 '<tr class="edit">',
                     '<td colspan="2"><div id="fms-chb-show-hscroll"></div></td>',
                 '</tr>',
@@ -527,6 +531,25 @@ define([], function () {
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
+            });
+
+            // tint the active cell's row and/or column (#1521); off by default
+            this.cmbHighlightRowCol = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-highlight-rowcol'),
+                style       : 'width: 160px;',
+                editable    : false,
+                restoreMenuHeightAndTop: true,
+                menuStyle   : 'min-width:100%;',
+                cls         : 'input-group-nr',
+                data        : [
+                    { value: Asc.c_oAscActiveCellHighlight.None, displayValue: this.txtHighlightNone },
+                    { value: Asc.c_oAscActiveCellHighlight.RowAndColumn, displayValue: this.txtHighlightRowCol },
+                    { value: Asc.c_oAscActiveCellHighlight.Row, displayValue: this.txtHighlightRow },
+                    { value: Asc.c_oAscActiveCellHighlight.Column, displayValue: this.txtHighlightCol }
+                ],
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
             });
 
             this.chHScroll = new Common.UI.CheckBox({
@@ -1084,6 +1107,7 @@ define([], function () {
                 this.pnlSettings.toggleClass('bordered', this.scroller.isVisible());
                 this.cmbZoom.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbUnit.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbHighlightRowCol.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbFontRender.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTheme.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
@@ -1146,6 +1170,9 @@ define([], function () {
             this.chResolvedComment.setValue(Common.Utils.InternalSettings.get("sse-settings-resolvedcomment"));
             this.chR1C1Style.setValue(Common.Utils.InternalSettings.get("sse-settings-r1c1"));
             this.chSmoothScroll.setValue(!Common.Utils.InternalSettings.get("sse-settings-smooth-scroll"));
+            value = Common.Utils.InternalSettings.get("sse-settings-highlight-rowcol");
+            item = this.cmbHighlightRowCol.store.findWhere({value: value});
+            this.cmbHighlightRowCol.setValue(item ? item.get('value') : Asc.c_oAscActiveCellHighlight.None);
 
             var fast_coauth = Common.Utils.InternalSettings.get("sse-settings-coauthmode");
             this.rbCoAuthModeFast.setValue(fast_coauth);
@@ -1329,6 +1356,7 @@ define([], function () {
             /** coauthoring end **/
             Common.localStorage.setItem("sse-settings-r1c1", this.chR1C1Style.isChecked() ? 1 : 0);
             Common.localStorage.setItem("sse-settings-smooth-scroll", this.chSmoothScroll.isChecked() ? 0 : 1);
+            Common.localStorage.setItem("sse-settings-highlight-rowcol", this.cmbHighlightRowCol.getValue());
             Common.localStorage.setItem("sse-settings-fontrender", this.cmbFontRender.getValue());
             var item = this.cmbFontRender.store.findWhere({value: 'custom'});
             Common.localStorage.setItem("sse-settings-cachemode", item && !item.get('checked') ? 0 : 1);
@@ -1599,6 +1627,11 @@ define([], function () {
         strShowResolvedComments: 'Show resolved comments',
         txtWorkspace: 'Workspace',
         strReferenceStyle: 'R1C1 reference style',
+        strHighlightRowCol: 'Highlight active row/column',
+        txtHighlightNone: 'None',
+        txtHighlightRowCol: 'Row and column',
+        txtHighlightRow: 'Row only',
+        txtHighlightCol: 'Column only',
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtRegion: 'Region',

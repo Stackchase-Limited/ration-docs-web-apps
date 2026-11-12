@@ -535,6 +535,11 @@ define([
                 Common.Utils.InternalSettings.set("sse-settings-r1c1", value);
                 this.api.asc_setR1C1Mode(value);
 
+                // tint of the active cell's row/column (#1521), off unless chosen in Advanced settings
+                value = parseInt(Common.localStorage.getItem("sse-settings-highlight-rowcol")) || 0;
+                Common.Utils.InternalSettings.set("sse-settings-highlight-rowcol", value);
+                this.api.asc_setActiveCellHighlight && this.api.asc_setActiveCellHighlight(value);
+
                 this.loadDefaultMetricSettings();
 
                 if (!( this.editorConfig.customization && ( this.editorConfig.customization.toolbarNoTabs ||
