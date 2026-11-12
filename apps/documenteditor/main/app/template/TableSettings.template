@@ -132,6 +132,14 @@
     </tr>
     <tr>
         <td class="padding-small" colspan=2>
+            <label style="margin-top: 3px;"><%= scope.textCellVAlign %></label>
+            <div id="table-btn-valign-bottom" class="float-right margin-left-4"></div>
+            <div id="table-btn-valign-middle" class="float-right margin-left-4"></div>
+            <div id="table-btn-valign-top" class="float-right"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small" colspan=2>
             <div class="separator horizontal"></div>
         </td>
     </tr>

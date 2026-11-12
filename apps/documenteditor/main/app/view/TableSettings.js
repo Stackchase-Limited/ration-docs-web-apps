@@ -83,6 +83,7 @@ define([
                 DisabledControls: false,
                 Width: null,
                 Height: null,
+                CellsVAlign: undefined,
                 beginPreviewStyles: true,
                 previewStylesCount: -1,
                 currentStyleFound: false
@@ -492,6 +493,32 @@ define([
                 this.api.asc_DistributeTableCells(true);
             }, this));
 
+            // #947: vertical alignment of the selected cells (the same setting as the
+            // context menu's Cell Vertical Alignment; applies to every selected cell)
+            this._btnsCellVAlign = [];
+            [
+                ['top',    'btn-align-top',    Asc.c_oAscVertAlignJc.Top,    this.textAlignTop],
+                ['middle', 'btn-align-middle', Asc.c_oAscVertAlignJc.Center, this.textAlignMiddle],
+                ['bottom', 'btn-align-bottom', Asc.c_oAscVertAlignJc.Bottom, this.textAlignBottom]
+            ].forEach(function(item) {
+                var btn = new Common.UI.Button({
+                    parentEl: $('#table-btn-valign-' + item[0], me.$el),
+                    cls: 'btn-toolbar',
+                    iconCls: 'toolbar__icon ' + item[1],
+                    enableToggle: true,
+                    allowDepress: false,
+                    toggleGroup: 'table-cells-valign',
+                    hint: item[3],
+                    valign: item[2],
+                    dataHint: '1',
+                    dataHintDirection: 'bottom',
+                    dataHintOffset: 'small'
+                });
+                btn.on('click', _.bind(me.onCellsVAlignClick, me));
+                me._btnsCellVAlign.push(btn);
+                me.lockedControls.push(btn);
+            });
+
             this.btnAddFormula = new Common.UI.Button({
                 parentEl: $('#table-btn-add-formula'),
                 cls: 'btn-toolbar align-left',
@@ -636,6 +663,8 @@ define([
                     Common.Utils.ThemeColor.selectPickerColorByEffect(this.CellColor.Color, this.colorsBack);
                     this._state.BackColor = this.CellColor.Color;
                 }
+
+                this.updateCellsVAlign(props.get_CellsVAlign());
 
                 value = props.get_RowsInHeader();
                 if ( this._state.RepeatRow!==value ) {
@@ -958,6 +987,24 @@ define([
                     }
                 }
             }
+        },
+
+        onCellsVAlignClick: function(btn) {
+            if (this.api && !this._locked) {
+                var properties = new Asc.CTableProp();
+                properties.put_CellsVAlign(btn.options.valign);
+                this.api.tblApply(properties);
+            }
+            this.fireEvent('editcomplete', this);
+        },
+
+        updateCellsVAlign: function(value) {
+            if (this._state.CellsVAlign === value) return;
+            this._state.CellsVAlign = value;
+            // null: the selected cells are aligned differently - no button is pressed
+            _.each(this._btnsCellVAlign, function(btn) {
+                btn.toggle(value !== null && value !== undefined && btn.options.valign === value, true);
+            });
         },
 
         onAddFormula: function(e) {
