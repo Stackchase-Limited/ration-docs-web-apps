@@ -398,6 +398,30 @@ define([
 
         onShowMainSettingsPrint: function() {
             var me = this;
+            // #1864: the preview of a large workbook (tens of thousands of rows) is laid out in one
+            // synchronous call that can take many seconds with nothing on screen. For those, put up
+            // a wait message first and build the preview once it has been painted.
+            if (this._previewTimer) return;
+            if (this.api && this.api.asc_getPrintPreviewCellsCount &&
+                this.api.asc_getPrintPreviewCellsCount() >= this.LARGE_PREVIEW_CELLS) {
+                !this._previewMask && (this._previewMask = new Common.UI.LoadMask({owner: this.printSettings.$el}));
+                this._previewMask.setTitle(this.txtPreparingPreview);
+                this._previewMask.show(true);
+                this._previewTimer = setTimeout(function() {
+                    me._previewTimer = null;
+                    try {
+                        me.printSettings.isVisible() && me._showMainSettingsPrint();
+                    } finally {
+                        me._previewMask.hide();
+                    }
+                }, 50);
+                return;
+            }
+            this._showMainSettingsPrint();
+        },
+
+        _showMainSettingsPrint: function() {
+            var me = this;
             this._changedProps = [];
             this.printSettings.$previewBox.removeClass('hidden');
 
@@ -864,6 +888,11 @@ define([
         },
 
         onHidePrintMenu: function () {
+            if (this._previewTimer) {
+                clearTimeout(this._previewTimer);
+                this._previewTimer = null;
+                this._previewMask && this._previewMask.hide();
+            }
             if (this._isPreviewVisible) {
                 this.api.asc_closePrintPreview(this._isPrint);
                 this._isPreviewVisible = false;
@@ -1080,5 +1109,9 @@ define([
         textFirstRow: 'First row',
         textFirstCol: 'First column',
         txtZoomToPage: 'Zoom to page',
+        txtPreparingPreview: 'Creating the print preview, please wait...',
+        // #1864: above this many used cells (rows x columns over the visible sheets) the preview
+        // is announced before it is built; 35,000 x 50 took long enough to look like a hang
+        LARGE_PREVIEW_CELLS: 500000
     }, SSE.Controllers.Print || {}));
 });
