@@ -491,7 +491,50 @@ define([
                         this._search.index = $items.index($items.filter(':focus'));
                     }
                     this.selectCandidate();
+                } else if (this.onMnemonicKey(e)) {
+                    e.stopPropagation();
+                    return false;
                 }
+            },
+
+            // Ration Docs #1292: in a context menu (the editors mark it with "menu-mnemonics") a letter or
+            // digit picks the item whose caption starts with it, as menus without underlined letters do on
+            // Windows and Linux: the only such item is chosen (a submenu opens), several are focused in turn.
+            // Only the menu holding the focus answers; true if the key was used.
+            onMnemonicKey: function(e) {
+                if (e.ctrlKey || e.altKey || e.metaKey || !this.menuRoot || !this.menuRoot.closest('.menu-mnemonics').length)
+                    return false;
+                if ($(document.activeElement).closest('[role=menu]')[0] !== this.menuRoot[0])
+                    return false;
+
+                var ch = (typeof e.typedKey === 'string' && e.typedKey.length === 1) ? e.typedKey :
+                         ((e.keyCode >= 48 && e.keyCode <= 57 || e.keyCode >= 65 && e.keyCode <= 90) ? String.fromCharCode(e.keyCode) : '');
+                if (!ch || !ch.trim()) return false;
+                ch = ch.toLocaleLowerCase();
+
+                var $items = this.menuRoot.find('> li:not(.divider):not(.disabled):visible > a'),
+                    candidates = $items.filter(function() {
+                        return $(this).text().trim().toLocaleLowerCase().indexOf(ch) === 0;
+                    });
+                if (!candidates.length) return false;
+
+                if (candidates.length > 1) {
+                    var index = candidates.index(candidates.filter(':focus'));
+                    candidates.eq((index + 1) % candidates.length).focus();
+                    return true;
+                }
+
+                var $a = candidates.eq(0),
+                    li = $a.closest('li');
+                $a.focus();
+                if (li.hasClass('dropdown-submenu')) {
+                    // as the Right key does: open the submenu and focus its first item
+                    this.menuRoot.trigger($.Event('keydown', {keyCode: Common.UI.Keys.RIGHT, which: Common.UI.Keys.RIGHT}));
+                } else {
+                    li.click();
+                    Common.UI.Menu.Manager.hideAll();
+                }
+                return true;
             },
 
             onBeforeKeydownMenu: function(e) {

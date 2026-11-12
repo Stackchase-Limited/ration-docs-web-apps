@@ -253,6 +253,7 @@ define([
 
                     menu.render(menuContainer);
                     menu.cmpEl.attr({tabindex: "-1"});
+                    menu.cmpEl.addClass('menu-mnemonics'); // #1292: a letter key picks an item (Common.UI.Menu)
                 }
 
                 menuContainer.css({

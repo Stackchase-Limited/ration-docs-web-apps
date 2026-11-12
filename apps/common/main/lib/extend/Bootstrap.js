@@ -43,7 +43,9 @@ function onDropDownKeyDown(e) {
     var $this       = $(this),
         $parent     = $this.parent(),
         beforeEvent = jQuery.Event('keydown.before.bs.dropdown', {keyCode: e.keyCode}),
-        afterEvent  = jQuery.Event('keydown.after.bs.dropdown', {keyCode: e.keyCode});
+        // Ration Docs #1292: the modifiers and the typed character, for letter keys in context menus
+        afterEvent  = jQuery.Event('keydown.after.bs.dropdown', {keyCode: e.keyCode, ctrlKey: e.ctrlKey, altKey: e.altKey,
+                                                                 metaKey: e.metaKey, typedKey: e.key});
 
     $parent.trigger(beforeEvent);
 
