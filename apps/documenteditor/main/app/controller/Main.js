@@ -1334,6 +1334,9 @@ define([
                 // #1925: mouse-wheel notches scroll smoothly (Advanced settings, off by default)
                 Common.Utils.InternalSettings.set("de-settings-smooth-wheel", Common.localStorage.getBool("de-settings-smooth-wheel"));
                 this.api.asc_setSmoothWheelScroll && this.api.asc_setSmoothWheelScroll(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
+                // #371: Thai/Lao/Khmer/Myanmar lines break between words (Advanced settings, off by default)
+                Common.Utils.InternalSettings.set("de-settings-complex-line-break", Common.localStorage.getBool("de-settings-complex-line-break"));
+                this.api.asc_setComplexScriptLineBreak && this.api.asc_setComplexScriptLineBreak(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
 
                 value = Common.localStorage.getItem("de-settings-zoom");
                 Common.Utils.InternalSettings.set("de-settings-zoom", value);

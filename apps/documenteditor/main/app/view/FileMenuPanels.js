@@ -427,6 +427,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-smooth-wheel"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-complex-line-break"></div></td>',
+                '</tr>',
                 '<tr class="edit">',
                     '<td colspan="2"><span id="fms-chb-align-guides"></span></td>',
                 '</tr>',
@@ -574,6 +577,14 @@ define([], function () {
             this.chSmoothWheel = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-smooth-wheel'),
                 labelText: this.txtSmoothWheel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            // #371: Thai, Lao, Khmer and Myanmar lines break between words (changes the layout of existing documents)
+            this.chComplexLineBreak = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-complex-line-break'),
+                labelText: this.txtComplexLineBreak,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1258,6 +1269,7 @@ define([], function () {
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
             this.chSmoothWheel.setValue(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
+            this.chComplexLineBreak.setValue(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
             value = (value!==null) ? parseInt(value) : (this.mode.customization && this.mode.customization.zoom ? parseInt(this.mode.customization.zoom) : 100);
@@ -1368,6 +1380,8 @@ define([], function () {
             Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
             Common.localStorage.setBool("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
             Common.Utils.InternalSettings.set("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
+            Common.localStorage.setBool("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
+            Common.Utils.InternalSettings.set("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
 
             /** coauthoring begin **/
             Common.localStorage.setItem("de-settings-livecomment", this.chLiveComment.isChecked() ? 1 : 0);
@@ -1587,6 +1601,7 @@ define([], function () {
         txtScreenReader: 'Turn on screen reader support',
         txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
         txtSmoothWheel: 'Smooth scrolling with the mouse wheel',
+        txtComplexLineBreak: 'Break Thai, Lao, Khmer and Myanmar lines between words',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
         txtNewFormatDesc: 'Offered first when a new document is saved for the first time',
