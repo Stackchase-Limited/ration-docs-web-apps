@@ -2363,6 +2363,7 @@ define([], function () {
                                 '<tr class="desktop-settings"><td class="padding-large"><div id="print-combo-color-printing" style="width: 248px;"></div></td></tr>',
                                 '<tr><td><label class="font-weight-bold"><%= scope.txtPrintRange %></label></td></tr>',
                                 '<tr><td class="padding-large"><div id="print-combo-range" style="width: 248px;"></div></td></tr>',
+                                '<tr><td class="padding-large"><div id="print-combo-parity" style="width: 248px;"></div></td></tr>',
                                 '<tr><td>',
                                     '<table style="width: 100%;"><tbody>',
                                         '<tr><td class="padding-large"><%= scope.txtPages %>:</td><td class="padding-large" style="width: 100%;"><div id="print-txt-pages" class="padding-left-5" style="width: 100%;"></div></td></tr>',
@@ -2515,6 +2516,25 @@ define([], function () {
                 dataHintOffset: 'big'
             });
             this.cmbRange.setValue('all');
+
+            // #2299: print only the odd or only the even pages of the range
+            this.cmbPagesParity = new Common.UI.ComboBox({
+                el: $markup.findById('#print-combo-parity'),
+                menuStyle: 'min-width: 248px;max-height: 280px;',
+                editable: false,
+                takeFocusOnClose: true,
+                restoreMenuHeightAndTop: true,
+                cls: 'input-group-nr',
+                data: [
+                    { value: 'all', displayValue: this.txtAllPagesInRange },
+                    { value: 'odd', displayValue: this.txtOddPages },
+                    { value: 'even', displayValue: this.txtEvenPages }
+                ],
+                dataHint: '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+            this.cmbPagesParity.setValue('all');
 
             this.inputPages = new Common.UI.InputField({
                 el: $markup.findById('#print-txt-pages'),
@@ -3031,6 +3051,9 @@ define([], function () {
         txtAllPages: 'All pages',
         txtSelection: 'Selection',
         txtCustomPages: 'Custom print',
+        txtAllPagesInRange: 'All pages in range',
+        txtOddPages: 'Only odd pages',
+        txtEvenPages: 'Only even pages',
         txtPageSize: 'Page size',
         txtPageOrientation: 'Page orientation',
         txtPortrait: 'Portrait',

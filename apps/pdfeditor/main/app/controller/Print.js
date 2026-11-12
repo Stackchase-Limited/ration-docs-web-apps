@@ -586,6 +586,19 @@ define([
                     this._state.firstPrintPage = this._navigationPreview.currentPage;
                 }
 
+                // #2299: only the odd or only the even pages of that range, sent as an explicit list.
+                // The system dialog has its own page choice and is left alone.
+                var parity = this.printSettings.cmbPagesParity ? this.printSettings.cmbPagesParity.getValue() : 'all';
+                if (!useSystemDialog && (parity === 'odd' || parity === 'even')) {
+                    var parityPages = Common.Utils.getPrintPagesByParity(pages, this._navigationPreview.pageCount, parity);
+                    if (parityPages.length < 1) {
+                        Common.UI.warning({msg: this.txtNoPagesOfParity});
+                        return;
+                    }
+                    pages = parityPages.join(',');
+                    this._state.firstPrintPage = parityPages[0] - 1;
+                }
+
                 var size = this.api.asc_getPageSize(this._state.firstPrintPage),
                     printerOption = (this.printSettings.cmbPrinter ? this.printSettings.cmbPrinter.getSelectedRecord() : null),
                     colorPrintingValue = this.printSettings.cmbColorPrinting
@@ -652,6 +665,7 @@ define([
 
         txtCustom: 'Custom',
         txtPrintRangeInvalid: 'Invalid print range',
+        txtNoPagesOfParity: 'The print range has no pages of the chosen kind (odd or even).',
         textMarginsLast: 'Last Custom'
     }, PDFE.Controllers.Print || {}));
 });

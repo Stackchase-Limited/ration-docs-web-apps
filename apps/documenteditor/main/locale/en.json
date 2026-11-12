@@ -4507,5 +4507,9 @@
   "DE.Views.WatermarkSettingsDialog.textTransparency": "Semitransparent",
   "DE.Views.WatermarkSettingsDialog.textUnderline": "Underline",
   "DE.Views.WatermarkSettingsDialog.tipFontName": "Font name",
-  "DE.Views.WatermarkSettingsDialog.tipFontSize": "Font size"
+  "DE.Views.WatermarkSettingsDialog.tipFontSize": "Font size",
+  "DE.Controllers.Print.txtNoPagesOfParity": "The print range has no pages of the chosen kind (odd or even).",
+  "DE.Views.PrintWithPreview.txtAllPagesInRange": "All pages in range",
+  "DE.Views.PrintWithPreview.txtOddPages": "Only odd pages",
+  "DE.Views.PrintWithPreview.txtEvenPages": "Only even pages"
 }

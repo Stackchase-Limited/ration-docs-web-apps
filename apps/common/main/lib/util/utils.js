@@ -1414,6 +1414,38 @@ define([], function () {
         return typeof cmp === 'function';
     }
 
+    // #2299: the 1-based page numbers of a print range ('all' or "1,3,5-9", read the way the
+    // print panels validate it) that are odd or even, in the order given and without repeats.
+    // The result is written back as an explicit list ("1,3,5"), which every consumer of the
+    // range - the Windows/Linux print job, sdkjs and x2t for PDF - already reads.
+    Common.Utils.getPrintPagesByParity = function (range, pageCount, parity) {
+        var res = [], seen = {},
+            add = function (page) {
+                if (page >= 1 && page <= pageCount && !seen[page] && (page % 2 === (parity === 'odd' ? 1 : 0))) {
+                    seen[page] = true;
+                    res.push(page);
+                }
+            };
+        if (range === 'all') range = '1-' + pageCount;
+        _.each((range || '').split(','), function (item) {
+            var bounds = item.split('-');
+            if (bounds.length === 1) {
+                add(parseInt(bounds[0]));
+            } else if (bounds.length === 2) {
+                var start = bounds[0] ? parseInt(bounds[0]) : 1,
+                    end = bounds[1] ? parseInt(bounds[1]) : pageCount;
+                if (start > end) {
+                    var num = start;
+                    start = end;
+                    end = num;
+                }
+                for (var page = Math.max(start, 1); page <= Math.min(end, pageCount); page++)
+                    add(page);
+            }
+        });
+        return res;
+    };
+
     !Common.UI && (Common.UI = {});
     Common.UI.isRTL = function () {
         if (window.isrtl === undefined) {
