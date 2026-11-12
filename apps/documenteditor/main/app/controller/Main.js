@@ -1511,6 +1511,14 @@ define([
                     Common.Utils.InternalSettings.set("de-settings-def-doc-lang", value);
                     me.editorConfig.newBlank && value && value !== me.api.asc_getDefaultLanguage() && me.api.asc_setDefaultLanguage(value);
 
+                    // default font and size of a new blank desktop document (#746); unset keeps the blank
+                    // template's (Arial 11)
+                    var defFont = Common.localStorage.getItem("de-settings-def-font-name") || '',
+                        defSize = parseFloat(Common.localStorage.getItem("de-settings-def-font-size")) || 0;
+                    Common.Utils.InternalSettings.set("de-settings-def-font-name", defFont);
+                    Common.Utils.InternalSettings.set("de-settings-def-font-size", defSize);
+                    me.editorConfig.newBlank && (defFont || defSize) && me.api.asc_setDefaultTextFont && me.api.asc_setDefaultTextFont(defFont, defSize);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion)

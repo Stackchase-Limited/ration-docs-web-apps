@@ -451,6 +451,12 @@ define([], function () {
                 '<tr class="edit text-dir">',
                     '<td colspan="2"><span id="fms-cmb-doc-lang"></span></td>',
                 '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtDefFont %></label></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2"><div style="display: flex; gap: 8px;"><span id="fms-cmb-def-font"></span><span id="fms-cmb-def-font-size"></span></div></td>',
+                '</tr>',
                 '<tr class="edit new-format">',
                     '<td colspan="2" class="subgroup-name"><label><%= scope.txtNewFormat %></label></td>',
                 '</tr>',
@@ -936,6 +942,38 @@ define([], function () {
                 dataHintOffset: 'big'
             });
 
+            // font and size of new blank documents (#746); '' keeps the blank template's (Arial 11)
+            this.cmbDefFont = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-def-font'),
+                style       : 'width: 200px;',
+                menuStyle   : 'min-width:100%; max-height: 185px;',
+                restoreMenuHeightAndTop: 110,
+                editable    : false,
+                cls         : 'input-group-nr',
+                data        : [{value: '', displayValue: this.txtDefFontTemplate}],
+                search      : true,
+                searchFields: ['displayValue'],
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+            var defSizes = [{value: 0, displayValue: this.txtDefFontTemplate}];
+            [8, 9, 10, 10.5, 11, 12, 13, 14, 16, 18, 20, 22, 24].forEach(function(size) {
+                defSizes.push({value: size, displayValue: '' + size});
+            });
+            this.cmbDefFontSize = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-def-font-size'),
+                style       : 'width: 160px;',
+                menuStyle   : 'min-width:100%; max-height: 185px;',
+                restoreMenuHeightAndTop: 110,
+                editable    : false,
+                cls         : 'input-group-nr',
+                data        : defSizes,
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -1054,6 +1092,8 @@ define([], function () {
                 this.cmbZoom.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbUnit.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbDocLang.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbDefFont.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbDefFontSize.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbFontRender.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTheme.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
@@ -1109,6 +1149,25 @@ define([], function () {
             return this;
         },
 
+        // #746: the fonts the editor knows, as the toolbar's font list has them
+        fillDefFonts: function() {
+            if (this._defFontsFilled) return;
+            var toolbar = DE.getController('Toolbar'),
+                store = toolbar && toolbar.toolbar && toolbar.toolbar.cmbFontName ? toolbar.toolbar.cmbFontName.store : null;
+            if (!store || !store.length) return;
+
+            var names = {}, data = [{value: '', displayValue: this.txtDefFontTemplate}];
+            store.each(function(font) {
+                var name = font.get('name');
+                if (name && !font.get('cloneid') && !names[name]) {
+                    names[name] = true;
+                    data.push({value: name, displayValue: name});
+                }
+            });
+            this.cmbDefFont.setData(data);
+            this._defFontsFilled = true;
+        },
+
         updateSettings: function() {
             var odf = !!Common.Utils.InternalSettings.get("app-settings-new-file-odf");
             this.rbNewFormatOoxml.setValue(!odf);
@@ -1119,6 +1178,12 @@ define([], function () {
             this.rbTextRtl.setValue(rtl);
             var docLang = this.cmbDocLang.store.findWhere({value: Common.Utils.InternalSettings.get("de-settings-def-doc-lang") || 0});
             this.cmbDocLang.setValue(docLang ? docLang.get('value') : 0);
+            this.fillDefFonts();
+            var defFont = Common.Utils.InternalSettings.get("de-settings-def-font-name") || '';
+            this.cmbDefFont.store.findWhere({value: defFont}) || this.cmbDefFont.store.add({value: defFont, displayValue: defFont});
+            this.cmbDefFont.setValue(defFont);
+            var defSize = this.cmbDefFontSize.store.findWhere({value: Common.Utils.InternalSettings.get("de-settings-def-font-size") || 0});
+            this.cmbDefFontSize.setValue(defSize ? defSize.get('value') : 0);
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
@@ -1272,6 +1337,13 @@ define([], function () {
                 Common.Utils.InternalSettings.set("de-settings-def-text-rtl", this.rbTextRtl.getValue());
                 Common.localStorage.setItem("de-settings-def-doc-lang", this.cmbDocLang.getValue());
                 Common.Utils.InternalSettings.set("de-settings-def-doc-lang", this.cmbDocLang.getValue());
+            }
+            if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
+                // #746
+                Common.localStorage.setItem("de-settings-def-font-name", this.cmbDefFont.getValue() || '');
+                Common.Utils.InternalSettings.set("de-settings-def-font-name", this.cmbDefFont.getValue() || '');
+                Common.localStorage.setItem("de-settings-def-font-size", this.cmbDefFontSize.getValue() || 0);
+                Common.Utils.InternalSettings.set("de-settings-def-font-size", this.cmbDefFontSize.getValue() || 0);
             }
             //Common.localStorage.setBool("de-settings-quick-print-button", this.chQuickPrint.isChecked());
 
@@ -1444,6 +1516,8 @@ define([], function () {
         txtTextRtl: 'Right-to-left',
         txtDocLang: 'Default document language',
         txtDocLangInterface: 'Same as the interface',
+        txtDefFont: 'Default font',
+        txtDefFontTemplate: 'Same as the template',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',
         textFill: 'Fill',
