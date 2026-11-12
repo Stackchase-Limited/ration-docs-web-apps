@@ -314,6 +314,9 @@ define([], function () {
                 '<tr class="edit">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-auto-correct" style="width:auto; display: inline-block;padding-right: 10px;padding-left: 10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtAutoCorrect %></button></div></td>',
                 '</tr>',
+                '<tr class="edit user-dict">',
+                    '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-user-dict" style="width:auto; display: inline-block;padding-right: 10px;padding-left: 10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtUserDictionary %></button></div></td>',
+                '</tr>',
                 '<tr class ="edit divider-group"></tr>',
                 '<tr class="appearance">',
                     '<td colspan="2" class="group-name"><label><%= scope.txtAppearance %></label></td>',
@@ -654,6 +657,12 @@ define([], function () {
             });
             this.btnAutoCorrect.on('click', _.bind(this.autoCorrect, this));
 
+            // #630: words added to the desktop spelling dictionary, to remove one added by mistake
+            this.btnUserDictionary = new Common.UI.Button({
+                el: $markup.findById('#fms-btn-user-dict')
+            });
+            this.btnUserDictionary.on('click', _.bind(this.userDictionary, this));
+
             this.btnCustomizeQuickAccess = new Common.UI.Button({
                 el: $markup.findById('#fms-btn-customize-quick-access')
             });
@@ -801,6 +810,7 @@ define([], function () {
             $('tr.live-viewer', this.el)[mode.canLiveView && !mode.isOffline && mode.canChangeCoAuthoring ? 'show' : 'hide']();
             $('tr.macros', this.el)[(mode.customization && mode.customization.macros===false) ? 'hide' : 'show']();
             $('tr.spellcheck', this.el)[mode.isEdit && Common.UI.FeaturesManager.canChange('spellcheck') ? 'show' : 'hide']();
+            $('tr.user-dict', this.el)[mode.isEdit && mode.isDesktopApp && Common.UI.FeaturesManager.canChange('spellcheck') ? 'show' : 'hide']();
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
             $('tr.new-format', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.tab-background', this.el)[!Common.Utils.isIE && Common.UI.FeaturesManager.canChange('tabBackground', true) ? 'show' : 'hide']();
@@ -967,6 +977,14 @@ define([], function () {
             this._fontRender = combo.getValue();
         },
 
+        userDictionary: function() {
+            if (this.dlgUserDictionary && this.dlgUserDictionary.isVisible()) return;
+            this.dlgUserDictionary = new Common.Views.UserDictionaryDialog({
+                api: this.api
+            });
+            this.dlgUserDictionary.show();
+        },
+
         autoCorrect: function() {
             if (this.dlgAutoCorrect && this.dlgAutoCorrect.isVisible()) return;
             this.dlgAutoCorrect = new Common.Views.AutoCorrectDialog({
@@ -1044,6 +1062,7 @@ define([], function () {
         txtThemeLight: 'Light',
         txtThemeDark: 'Dark',
         txtAutoCorrect: 'AutoCorrect options...',
+        txtUserDictionary: 'Dictionary...',
         txtEditingSaving: 'Editing and saving',
         txtCollaboration: 'Collaboration',
         txtWorkspace: 'Workspace',

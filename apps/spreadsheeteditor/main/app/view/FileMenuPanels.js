@@ -437,6 +437,9 @@ define([], function () {
                 '<tr  class="edit">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-auto-correct" style="width:auto; display: inline-block;padding-right: 10px;padding-left: 10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="big"><%= scope.txtAutoCorrect %></button></div></td>',
                 '</tr>',
+                '<tr class="edit user-dict">',
+                    '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-user-dict" style="width:auto; display: inline-block;padding-right: 10px;padding-left: 10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="big"><%= scope.txtUserDictionary %></button></div></td>',
+                '</tr>',
                 '<tr class ="edit divider-group"></tr>',
                 '<tr class="edit">',
                     '<td colspan="2" class="group-name"><label><%= scope.txtCalculating %></label></td>',
@@ -950,6 +953,12 @@ define([], function () {
             });
             this.btnAutoCorrect.on('click', _.bind(this.autoCorrect, this));
 
+            // #630: words added to the desktop spelling dictionary, to remove one added by mistake
+            this.btnUserDictionary = new Common.UI.Button({
+                el: $markup.findById('#fms-btn-user-dict')
+            });
+            this.btnUserDictionary.on('click', _.bind(this.userDictionary, this));
+
             this.chTabBack = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-tab-background'),
                 labelText: this.txtTabBack,
@@ -1111,6 +1120,7 @@ define([], function () {
             }
             $('tr.appearance', this.el)[!Common.Utils.isIE ? 'show' : 'hide']();
             $('tr.spellcheck', this.el)[Common.UI.FeaturesManager.canChange('spellcheck') && mode.isEdit ? 'show' : 'hide']();
+            $('tr.user-dict', this.el)[mode.isEdit && mode.isDesktopApp && Common.UI.FeaturesManager.canChange('spellcheck') ? 'show' : 'hide']();
             if (mode.compactHeader) {
                 $('tr.quick-access', this.el).hide();
             }
@@ -1442,6 +1452,14 @@ define([], function () {
             this._fontRender = combo.getValue();
         },
 
+        userDictionary: function() {
+            if (this.dlgUserDictionary && this.dlgUserDictionary.isVisible()) return;
+            this.dlgUserDictionary = new Common.Views.UserDictionaryDialog({
+                api: this.api
+            });
+            this.dlgUserDictionary.show();
+        },
+
         autoCorrect: function() {
             if (this.dlgAutoCorrect && this.dlgAutoCorrect.isVisible()) return;
             this.dlgAutoCorrect = new Common.Views.AutoCorrectDialog({
@@ -1589,6 +1607,7 @@ define([], function () {
         strIgnoreWordsInUPPERCASE: 'Ignore words in UPPERCASE',
         strIgnoreWordsWithNumbers: 'Ignore words with numbers',
         txtAutoCorrect: 'AutoCorrect options...',
+        txtUserDictionary: 'Dictionary...',
         txtFastTip: 'Real-time co-editing. All changes are saved automatically',
         txtStrictTip: 'Use the \'Save\' button to sync the changes you and others make',
         strShowOthersChanges: 'Show changes from other users',
