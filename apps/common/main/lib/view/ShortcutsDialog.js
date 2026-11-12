@@ -179,8 +179,12 @@ define([
             const me = this;
             const actionsData = _.values(this._getActionsMap());
             if(me._state.searchValue) {
+                // Ration Docs #179: action names are written as one word ("InsertPageBreak"), so "page break"
+                // found nothing; spaces are ignored in the name, and the description is searched as well
+                const compactValue = me._state.searchValue.replace(/\s+/g, '');
                 filteredData = actionsData.filter(function(item) {
-                    return (item.action.name || '').toLowerCase().includes(me._state.searchValue);
+                    return (item.action.name || '').toLowerCase().replace(/\s+/g, '').includes(compactValue) ||
+                        (item.action.description || '').toLowerCase().includes(me._state.searchValue);
                 });
             } else {
                 filteredData = actionsData;
