@@ -3202,7 +3202,7 @@ define([], function () {
                     { value: 'one', displayValue: this.txtOneSide, descValue: this.txtOneSideDesc },
                     { value: 'both-long', displayValue: this.txtBothSides, descValue: this.txtBothSidesLongDesc },
                     { value: 'both-short', displayValue: this.txtBothSides, descValue: this.txtBothSidesShortDesc }
-                ],
+                ].concat(this.getManualDuplexItems()),
                 itemsTemplate: _.template([
                     '<% _.each(items, function(item) { %>',
                     '<li id="<%= item.id %>" data-value="<%- item.value %>"><a tabindex="-1" type="menuitem" style ="display: flex; flex-direction: column;">',
@@ -3460,6 +3460,13 @@ define([], function () {
             this.cmbColorPrinting.setDisabled(disabled);
         },
 
+        // #2422: manual duplex is offered by the Windows/Linux app, whatever the printer can do.
+        // The macOS app prints through the macOS print panel, which ignores the in-app range.
+        getManualDuplexItems: function() {
+            var desktop = Common.Controllers.Desktop && Common.Controllers.Desktop.isActive();
+            return (desktop && !Common.Utils.isMac) ? [{ value: 'manual', displayValue: this.txtManualDuplex, descValue: this.txtManualDuplexDesc }] : [];
+        },
+
         setCmbSidesOptions: function(isDuplexSupported) {
             var cmbValue = this.cmbSides.getValue();
             var list = [{ value: 'one', displayValue: this.txtOneSide, descValue: this.txtOneSideDesc }];
@@ -3468,9 +3475,10 @@ define([], function () {
                     { value: 'both-long', displayValue: this.txtBothSides, descValue: this.txtBothSidesLongDesc },
                     { value: 'both-short', displayValue: this.txtBothSides, descValue: this.txtBothSidesShortDesc }
                 );
-            } else if(cmbValue != 'one') {
+            } else if(cmbValue != 'one' && cmbValue != 'manual') {
                 cmbValue = 'one';
             }
+            list = list.concat(this.getManualDuplexItems());
             this.cmbSides.setData(list);
             this.cmbSides.setValue(cmbValue);
         },
@@ -3676,7 +3684,9 @@ define([], function () {
         txtOneSideDesc: 'Only print on one side of the page',
         txtBothSides: 'Print on both sides',
         txtBothSidesLongDesc: 'Flip pages on long edge',
-        txtBothSidesShortDesc: 'Flip pages on short edge'
+        txtBothSidesShortDesc: 'Flip pages on short edge',
+        txtManualDuplex: 'Print on both sides manually',
+        txtManualDuplexDesc: 'Odd pages first, then turn the stack over for the even pages'
 
     }, DE.Views.PrintWithPreview || {}));
 });

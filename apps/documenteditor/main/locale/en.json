@@ -4511,5 +4511,8 @@
   "DE.Controllers.Print.txtNoPagesOfParity": "The print range has no pages of the chosen kind (odd or even).",
   "DE.Views.PrintWithPreview.txtAllPagesInRange": "All pages in range",
   "DE.Views.PrintWithPreview.txtOddPages": "Only odd pages",
-  "DE.Views.PrintWithPreview.txtEvenPages": "Only even pages"
+  "DE.Views.PrintWithPreview.txtEvenPages": "Only even pages",
+  "DE.Controllers.Print.txtManualDuplexTurnOver": "The odd pages are being printed. When they are done, turn the printed stack over and put it back in the paper tray, then click OK to print the even pages.",
+  "DE.Views.PrintWithPreview.txtManualDuplex": "Print on both sides manually",
+  "DE.Views.PrintWithPreview.txtManualDuplexDesc": "Odd pages first, then turn the stack over for the even pages"
 }

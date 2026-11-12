@@ -593,6 +593,22 @@ define([
                 this._state.firstPrintPage = parityPages[0] - 1;
             }
 
+            // #2422: manual duplex - the odd pages as a one-sided job, then, once the user has turned
+            // the printed stack over and put it back, the even pages in the same order. Only for the
+            // in-app Print button; elsewhere it is plain one-sided printing.
+            var sides = this.printSettings.cmbSides ? this.printSettings.cmbSides.getValue() : 'one',
+                manualDuplexEven = null;
+            if (sides === 'manual') {
+                sides = 'one';
+                var oddPages = Common.Utils.getPrintPagesByParity(pages, this._navigationPreview.pageCount, 'odd'),
+                    evenPages = Common.Utils.getPrintPagesByParity(pages, this._navigationPreview.pageCount, 'even');
+                if (print && !useSystemDialog && oddPages.length > 0 && evenPages.length > 0) {
+                    pages = oddPages.join(',');
+                    this._state.firstPrintPage = oddPages[0] - 1;
+                    manualDuplexEven = evenPages.join(',');
+                }
+            }
+
             var size = this.api.asc_getPageSize(this._state.firstPrintPage);
             var printerOption = this.printSettings.cmbPrinter.getSelectedRecord();
             const orientationOption = this.printSettings.cmbPaperOrientation.getSelectedRecord();
@@ -602,7 +618,7 @@ define([
             } else if(size) {
                 paperOrientation = size['H'] > size['W'] ? 'portrait' : 'landscape';
             }
-            this.adjPrintParams.asc_setNativeOptions({
+            var nativeOptions = {
                 usesystemdialog: useSystemDialog,
                 printer: printerOption ? printerOption.value : null,
                 colorMode: this.printSettings.cmbColorPrinting.getValue() === 'color',
@@ -614,14 +630,30 @@ define([
                 },
                 paperOrientation: paperOrientation,
                 copies: this.printSettings.spnCopies.getNumberValue() || 1,
-                sides: this.printSettings.cmbSides.getValue()
-            });
+                sides: sides
+            };
+            this.adjPrintParams.asc_setNativeOptions(nativeOptions);
 
             this.printSettings.menu.hide();
             if ( print ) {
                 var opts = new Asc.asc_CDownloadOptions(null, Common.Utils.isChrome || Common.Utils.isOpera || Common.Utils.isGecko && Common.Utils.firefoxVersion>86);
                 opts.asc_setAdvancedOptions(this.adjPrintParams);
                 this.api.asc_Print(opts);
+                if (manualDuplexEven) {
+                    var me = this;
+                    Common.UI.warning({
+                        msg: this.txtManualDuplexTurnOver,
+                        buttons: ['ok', 'cancel'],
+                        primary: 'ok',
+                        callback: function(btn) {
+                            if (btn !== 'ok') return;
+                            me.adjPrintParams.asc_setNativeOptions(_.extend({}, nativeOptions, {pages: manualDuplexEven}));
+                            var opts = new Asc.asc_CDownloadOptions(null, Common.Utils.isChrome || Common.Utils.isOpera || Common.Utils.isGecko && Common.Utils.firefoxVersion>86);
+                            opts.asc_setAdvancedOptions(me.adjPrintParams);
+                            me.api.asc_Print(opts);
+                        }
+                    });
+                }
             } else {
                 var opts = new Asc.asc_CDownloadOptions(Asc.c_oAscFileType.PDF);
                 opts.asc_setAdvancedOptions(this.adjPrintParams);
@@ -660,6 +692,7 @@ define([
 
         txtCustom: 'Custom',
         txtPrintRangeInvalid: 'Invalid print range',
+        txtManualDuplexTurnOver: 'The odd pages are being printed. When they are done, turn the printed stack over and put it back in the paper tray, then click OK to print the even pages.',
         txtNoPagesOfParity: 'The print range has no pages of the chosen kind (odd or even).',
         textMarginsLast: 'Last Custom'
     }, DE.Controllers.Print || {}));
