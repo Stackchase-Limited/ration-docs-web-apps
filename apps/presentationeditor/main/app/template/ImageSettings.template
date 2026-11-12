@@ -84,6 +84,18 @@
     </tr>
     <tr>
         <td class="padding-small">
+            <label style="display: inline-block; vertical-align: middle; width: 120px;"><%= scope.textTrimStart %></label>
+            <div id="image-spin-trim-start" style="display: inline-block; vertical-align: middle;"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small">
+            <label style="display: inline-block; vertical-align: middle; width: 120px;"><%= scope.textTrimEnd %></label>
+            <div id="image-spin-trim-end" style="display: inline-block; vertical-align: middle;"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small">
             <div class="separator horizontal"></div>
         </td>
     </tr>

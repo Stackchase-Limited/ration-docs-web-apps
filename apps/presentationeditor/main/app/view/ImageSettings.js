@@ -351,6 +351,39 @@ define([
             });
             this.chRewind.on('change', _.bind(this.onMediaSettingChange, this, 'Rewind'));
             this.lockedControls.push(this.chRewind);
+            // Trim: seconds cut from the start / from the end of the media (p14:trim, sent in ms)
+            this.numTrimStart = new Common.UI.MetricSpinner({
+                el: $('#image-spin-trim-start'),
+                step: 0.5,
+                width: 75,
+                value: '0 ' + this.txtSec,
+                defaultUnit: this.txtSec,
+                maxValue: 36000,
+                minValue: 0,
+                dataHint: '1',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big',
+                ariaLabel: this.textTrimStart
+            });
+            this.numTrimStart.on('change', _.bind(this.onMediaTrimChange, this, 'TrimStart'));
+            this.numTrimStart.on('inputleave', _.bind(function(){ this.fireEvent('editcomplete', this);}, this));
+            this.lockedControls.push(this.numTrimStart);
+            this.numTrimEnd = new Common.UI.MetricSpinner({
+                el: $('#image-spin-trim-end'),
+                step: 0.5,
+                width: 75,
+                value: '0 ' + this.txtSec,
+                defaultUnit: this.txtSec,
+                maxValue: 36000,
+                minValue: 0,
+                dataHint: '1',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big',
+                ariaLabel: this.textTrimEnd
+            });
+            this.numTrimEnd.on('change', _.bind(this.onMediaTrimChange, this, 'TrimEnd'));
+            this.numTrimEnd.on('inputleave', _.bind(function(){ this.fireEvent('editcomplete', this);}, this));
+            this.lockedControls.push(this.numTrimEnd);
 
             this.linkAdvanced = $('#image-advanced-link');
             $(this.el).on('click', '#image-advanced-link', _.bind(this.openAdvancedSettings, this));
@@ -459,6 +492,8 @@ define([
                     this.chHideStopped.setValue(!!media['HideWhileNotPlaying'], true);
                     this.chLoop.setValue(!!media['Loop'], true);
                     this.chRewind.setValue(!!media['Rewind'], true);
+                    this.numTrimStart.setValue((media['TrimStart'] || 0) / 1000, true);
+                    this.numTrimEnd.setValue((media['TrimEnd'] || 0) / 1000, true);
                 }
 
                 var transparency = props.asc_getTransparent();
@@ -681,6 +716,14 @@ define([
             this.fireEvent('editcomplete', this);
         },
 
+        onMediaTrimChange: function(name, field) {
+            if (this.api) {
+                var settings = {};
+                settings[name] = Math.round(Math.max(0, field.getNumberValue() || 0) * 1000);
+                this.api.asc_setMediaSettings(settings);
+            }
+        },
+
         setLocked: function (locked) {
             this._locked = locked;
         },
@@ -726,6 +769,9 @@ define([
         textMute: 'Mute',
         textHideWhileNotPlaying: 'Hide while not playing',
         textLoopUntilStopped: 'Loop until stopped',
-        textRewindAfterPlaying: 'Rewind after playing'
+        textRewindAfterPlaying: 'Rewind after playing',
+        textTrimStart: 'Trim start',
+        textTrimEnd: 'Trim end',
+        txtSec: 's'
     }, PE.Views.ImageSettings || {}));
 });
