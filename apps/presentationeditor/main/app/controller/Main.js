@@ -2815,7 +2815,7 @@ define([
                 me.api.asc_SetAutoCorrectFrenchPunctuation(value);
 
                 // #222: TWo INitial CApitals, on by default as in Word and LibreOffice
-                value = Common.localStorage.getBool("pe-settings-autocorrect-two-caps", true);
+                value = Common.localStorage.getBool("pe-settings-autocorrect-two-caps", false);
                 Common.Utils.InternalSettings.set("pe-settings-autocorrect-two-caps", value);
                 me.api.asc_SetAutoCorrectTwoInitialCapitals && me.api.asc_SetAutoCorrectTwoInitialCapitals(value);
             },
