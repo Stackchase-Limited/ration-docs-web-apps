@@ -2900,6 +2900,7 @@
   "PE.Views.ImageSettings.textFromUrl": "From URL",
   "PE.Views.ImageSettings.textHeight": "Height",
   "PE.Views.ImageSettings.textHideWhileNotPlaying": "Hide while not playing",
+  "PE.Views.ImageSettings.textLoopUntilStopped": "Loop until stopped",
   "PE.Views.ImageSettings.textHint270": "Rotate 90° Counterclockwise",
   "PE.Views.ImageSettings.textHint90": "Rotate 90° Clockwise",
   "PE.Views.ImageSettings.textHintFlipH": "Flip horizontally",

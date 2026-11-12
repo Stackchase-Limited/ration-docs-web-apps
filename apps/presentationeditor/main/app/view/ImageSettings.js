@@ -333,6 +333,15 @@ define([
             });
             this.chHideStopped.on('change', _.bind(this.onMediaSettingChange, this, 'HideWhileNotPlaying'));
             this.lockedControls.push(this.chHideStopped);
+            this.chLoop = new Common.UI.CheckBox({
+                el: $('#image-checkbox-loop'),
+                labelText: this.textLoopUntilStopped,
+                dataHint: '1',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            this.chLoop.on('change', _.bind(this.onMediaSettingChange, this, 'Loop'));
+            this.lockedControls.push(this.chLoop);
 
             this.linkAdvanced = $('#image-advanced-link');
             $(this.el).on('click', '#image-advanced-link', _.bind(this.openAdvancedSettings, this));
@@ -439,6 +448,7 @@ define([
                 if (media) {
                     this.chMute.setValue(!!media['Mute'], true);
                     this.chHideStopped.setValue(!!media['HideWhileNotPlaying'], true);
+                    this.chLoop.setValue(!!media['Loop'], true);
                 }
 
                 var transparency = props.asc_getTransparent();
@@ -704,6 +714,7 @@ define([
         textRecentlyUsed: 'Recently Used',
         textPlayback: 'Playback',
         textMute: 'Mute',
-        textHideWhileNotPlaying: 'Hide while not playing'
+        textHideWhileNotPlaying: 'Hide while not playing',
+        textLoopUntilStopped: 'Loop until stopped'
     }, PE.Views.ImageSettings || {}));
 });
