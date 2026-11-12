@@ -1331,6 +1331,9 @@ define([
                 // #852: Shift+mouse wheel scrolls sideways (Advanced settings, off by default)
                 Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", Common.localStorage.getBool("app-settings-shift-wheel-hor"));
                 this.api.asc_setShiftWheelHorizontal && this.api.asc_setShiftWheelHorizontal(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+                // #1925: mouse-wheel notches scroll smoothly (Advanced settings, off by default)
+                Common.Utils.InternalSettings.set("de-settings-smooth-wheel", Common.localStorage.getBool("de-settings-smooth-wheel"));
+                this.api.asc_setSmoothWheelScroll && this.api.asc_setSmoothWheelScroll(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
 
                 value = Common.localStorage.getItem("de-settings-zoom");
                 Common.Utils.InternalSettings.set("de-settings-zoom", value);

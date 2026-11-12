@@ -424,6 +424,9 @@ define([], function () {
                 '<tr class="shift-wheel">',
                     '<td colspan="2"><div id="fms-chb-shift-wheel"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-smooth-wheel"></div></td>',
+                '</tr>',
                 '<tr class="edit">',
                     '<td colspan="2"><span id="fms-chb-align-guides"></span></td>',
                 '</tr>',
@@ -567,6 +570,14 @@ define([], function () {
                 dataHintOffset: 'small'
             });
             Common.Utils.isMac && $markup.find('tr.shift-wheel').hide();
+            // #1925: animate mouse-wheel notches instead of jumping by them
+            this.chSmoothWheel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-smooth-wheel'),
+                labelText: this.txtSmoothWheel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
 
             /** coauthoring begin **/
             this.chLiveComment = new Common.UI.CheckBox({
@@ -1246,6 +1257,7 @@ define([], function () {
             this.cmbDefMargins.setValue(defMargins);
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+            this.chSmoothWheel.setValue(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
             value = (value!==null) ? parseInt(value) : (this.mode.customization && this.mode.customization.zoom ? parseInt(this.mode.customization.zoom) : 100);
@@ -1354,6 +1366,8 @@ define([], function () {
             Common.localStorage.setItem("app-settings-screen-reader", this.chScreenReader.isChecked() ? 1 : 0);
             Common.localStorage.setBool("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
             Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
+            Common.localStorage.setBool("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
+            Common.Utils.InternalSettings.set("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
 
             /** coauthoring begin **/
             Common.localStorage.setItem("de-settings-livecomment", this.chLiveComment.isChecked() ? 1 : 0);
@@ -1572,6 +1586,7 @@ define([], function () {
         textSmartSelection: 'Use smart paragraph selection',
         txtScreenReader: 'Turn on screen reader support',
         txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
+        txtSmoothWheel: 'Smooth scrolling with the mouse wheel',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
         txtNewFormatDesc: 'Offered first when a new document is saved for the first time',
