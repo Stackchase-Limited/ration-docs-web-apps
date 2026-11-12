@@ -69,7 +69,8 @@
         }
 
         .theme-type-dark.content-theme-dark .loadmask {
-            --sk-canvas-content-background: #3a3a3a;
+            /* the page colour of document dark mode; a theme may set it (#2112) */
+            --sk-canvas-content-background: var(--canvas-dark-content-background, #3a3a3a);
             --sk-canvas-page-border: #616161;
             --sk-canvas-line: rgba(255,255,255,.05);
         }
