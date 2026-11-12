@@ -1,0 +1,26 @@
+{
+    "name": "Black",
+    "id" : "theme-id-black",
+    "type" : "dark",
+    "colors" : {
+        "toolbar-header-document": "#000000",
+        "toolbar-header-spreadsheet": "#000000",
+        "toolbar-header-presentation": "#000000",
+        "toolbar-header-pdf": "#000000",
+        "toolbar-header-visio": "#000000",
+
+        "text-toolbar-header-on-background-document": "#000000",
+        "text-toolbar-header-on-background-spreadsheet": "#000000",
+        "text-toolbar-header-on-background-presentation": "#000000",
+        "text-toolbar-header-on-background-pdf": "#000000",
+        "text-toolbar-header-on-background-visio": "#000000",
+
+        "background-normal": "#0a0a0a",
+        "background-toolbar": "#141414",
+        "background-toolbar-additional": "#1e1e1e",
+
+        "canvas-background": "#000000",
+        "canvas-page-border": "#3a3a3a",
+        "canvas-dark-content-background": "#000000"
+    }
+}

@@ -750,6 +750,7 @@ define([
         "canvas-background",
         "canvas-content-background",
         "canvas-page-border",
+        "canvas-dark-content-background",
 
         "canvas-ruler-background",
         "canvas-ruler-border",
