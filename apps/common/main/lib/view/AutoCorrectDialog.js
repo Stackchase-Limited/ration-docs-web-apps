@@ -327,6 +327,16 @@ define([
                     Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-double-space", checked);
                     me.api.asc_SetAutoCorrectDoubleSpaceWithPeriod(checked);
                 });
+                this.chFrenchPunctuation = new Common.UI.CheckBox({
+                    el: panelAutoFormat.find('#id-autocorrect-dialog-chk-french-punctuation'),
+                    labelText: this.textFrenchPunctuation,
+                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autoformat-french-punctuation")
+                }).on('change', function(field, newValue, oldValue, eOpts){
+                    var checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(me.appPrefix + "settings-autoformat-french-punctuation", checked);
+                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autoformat-french-punctuation", checked);
+                    me.api.asc_SetAutoCorrectFrenchPunctuation(checked);
+                });
 
                 // AutoCorrect
                 if (this.api)
@@ -502,7 +512,7 @@ define([
                     this.chReplaceType, this.inputReplace, this.inputBy, this.mathList, this.btnReset, this.btnEdit, this.btnDelete, // 0 tab
                     this.inputRecFind, this.mathRecList, this.btnResetRec, this.btnAddRec, this.btnDeleteRec, // 1 tab
                 ]);
-            arr = arr.concat(this.chNewRows ? [this.chHyperlink, this.chNewRows] : [this.chQuotes, this.chHyphens, this.chHyperlink, this.chDoubleSpaces, this.chBulleted, this.chNumbered]);
+            arr = arr.concat(this.chNewRows ? [this.chHyperlink, this.chNewRows] : [this.chQuotes, this.chHyphens, this.chHyperlink, this.chDoubleSpaces, this.chFrenchPunctuation, this.chBulleted, this.chNumbered]);
             arr = arr.concat(this.chkSentenceExceptions ? [this.chkSentenceExceptions, this.chkSentenceCells, this.exceptionsLangCmb, this.exceptionsFindInput, this.exceptionsList, this.btnResetExceptions, this.btnAddExceptions, this.btnDeleteExceptions] : []);
             arr = arr.concat(this.getFooterButtons());
             return arr;
@@ -1176,7 +1186,8 @@ define([
         textHyperlink: 'Internet and network paths with hyperlinks',
         textFLCells: 'Capitalize first letter of table cells',
         textFLDont: 'Don`t capitalize after',
-        textDoubleSpaces: 'Add period with double-space'
+        textDoubleSpaces: 'Add period with double-space',
+        textFrenchPunctuation: 'Non-breaking spaces with French punctuation (: ; ? ! « »)'
 
     }, Common.Views.AutoCorrectDialog || {}))
 });

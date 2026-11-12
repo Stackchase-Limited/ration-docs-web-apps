@@ -71,6 +71,7 @@
             <div class="padding-small" id="id-autocorrect-dialog-chk-hyphens"></div>
             <div class="padding-small"  id="id-autocorrect-dialog-chk-hyperlink"></div>
             <div class="padding-small" id="id-autocorrect-dialog-chk-double-space"></div>
+            <div class="padding-small" id="id-autocorrect-dialog-chk-french-punctuation"></div>
         </div>
         <div class="padding-small">
             <label class="header"><%= scope.textApplyText %></label>

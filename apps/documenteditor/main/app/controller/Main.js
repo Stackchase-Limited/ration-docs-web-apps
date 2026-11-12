@@ -3402,6 +3402,10 @@ define([
                 value = Common.localStorage.getBool("de-settings-autoformat-double-space", Common.Utils.isMac); // add period with double-space in MacOs by default
                 Common.Utils.InternalSettings.set("de-settings-autoformat-double-space", value);
                 me.api.asc_SetAutoCorrectDoubleSpaceWithPeriod(value);
+
+                value = Common.localStorage.getBool("de-settings-autoformat-french-punctuation", true);
+                Common.Utils.InternalSettings.set("de-settings-autoformat-french-punctuation", value);
+                me.api.asc_SetAutoCorrectFrenchPunctuation(value);
             },
 
             showRenameUserDialog: function() {

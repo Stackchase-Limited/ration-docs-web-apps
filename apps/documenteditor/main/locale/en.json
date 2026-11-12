@@ -767,6 +767,7 @@
   "Common.Views.AutoCorrectDialog.textBy": "By",
   "Common.Views.AutoCorrectDialog.textDelete": "Delete",
   "Common.Views.AutoCorrectDialog.textDoubleSpaces": "Add period with double-space",
+  "Common.Views.AutoCorrectDialog.textFrenchPunctuation": "Non-breaking spaces with French punctuation (: ; ? ! « »)",
   "Common.Views.AutoCorrectDialog.textFLCells": "Capitalize first letter of table cells",
   "Common.Views.AutoCorrectDialog.textFLDont": "Don`t capitalize after",
   "Common.Views.AutoCorrectDialog.textFLSentence": "Capitalize first letter of sentences",
