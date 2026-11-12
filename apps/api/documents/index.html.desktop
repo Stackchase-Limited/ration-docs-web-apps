@@ -113,6 +113,9 @@
                     },
                     mode            : urlParams["mode"] || 'edit',
                     lang            : urlParams["lang"] || 'en',
+                    // #432: country of the OS regional settings (the Windows, Linux and macOS apps send it);
+                    // the editors take their default unit (inch for US/CA) and margin presets from it
+                    location        : /^[a-z]{2}$/i.test(urlParams["location"] || '') ? urlParams["location"] : undefined,
                     createUrl       : 'desktop://create.new',
                     newBlank        : urlParams["blank"] === 'true',
                     user: {
