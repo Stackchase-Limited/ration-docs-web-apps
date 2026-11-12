@@ -855,6 +855,7 @@
   "Common.Views.AutoCorrectDialog.textDoubleSpaces": "Add period with double-space",
   "Common.Views.AutoCorrectDialog.textFrenchPunctuation": "Non-breaking spaces with French punctuation (: ; ? ! « »)",
   "Common.Views.AutoCorrectDialog.textFLCells": "Capitalize first letter of table cells",
+  "Common.Views.AutoCorrectDialog.textTwoInitialCaps": "Correct TWo INitial CApitals",
   "Common.Views.AutoCorrectDialog.textFLDont": "Don`t capitalize after",
   "Common.Views.AutoCorrectDialog.textFLSentence": "Capitalize first letter of sentences",
   "Common.Views.AutoCorrectDialog.textForLangFL": "Exceptions for the language:",

@@ -466,6 +466,18 @@ define([
                     me.api.asc_SetAutoCorrectFirstLetterOfCells && me.api.asc_SetAutoCorrectFirstLetterOfCells(checked);
                 });
 
+                // #222: "HEllo" -> "Hello"
+                this.chkTwoInitialCaps = new Common.UI.CheckBox({
+                    el: $window.find('#auto-correct-exceptions-chk-two-caps'),
+                    labelText: this.textTwoInitialCaps,
+                    value: Common.Utils.InternalSettings.get(this.appPrefix + "settings-autocorrect-two-caps")
+                }).on('change', function(field, newValue, oldValue, eOpts){
+                    var checked = (field.getValue()==='checked');
+                    Common.localStorage.setBool(me.appPrefix + "settings-autocorrect-two-caps", checked);
+                    Common.Utils.InternalSettings.set(me.appPrefix + "settings-autocorrect-two-caps", checked);
+                    me.api.asc_SetAutoCorrectTwoInitialCapitals && me.api.asc_SetAutoCorrectTwoInitialCapitals(checked);
+                });
+
                 this.btnsCategory[3].on('click', _.bind(this.onAutocorrectCategoryClick, this, false));
             } else if (this.appPrefix=='sse-') {
                 this.chNewRows = new Common.UI.CheckBox({
@@ -513,7 +525,7 @@ define([
                     this.inputRecFind, this.mathRecList, this.btnResetRec, this.btnAddRec, this.btnDeleteRec, // 1 tab
                 ]);
             arr = arr.concat(this.chNewRows ? [this.chHyperlink, this.chNewRows] : [this.chQuotes, this.chHyphens, this.chHyperlink, this.chDoubleSpaces, this.chFrenchPunctuation, this.chBulleted, this.chNumbered]);
-            arr = arr.concat(this.chkSentenceExceptions ? [this.chkSentenceExceptions, this.chkSentenceCells, this.exceptionsLangCmb, this.exceptionsFindInput, this.exceptionsList, this.btnResetExceptions, this.btnAddExceptions, this.btnDeleteExceptions] : []);
+            arr = arr.concat(this.chkSentenceExceptions ? [this.chkSentenceExceptions, this.chkSentenceCells, this.chkTwoInitialCaps, this.exceptionsLangCmb, this.exceptionsFindInput, this.exceptionsList, this.btnResetExceptions, this.btnAddExceptions, this.btnDeleteExceptions] : []);
             arr = arr.concat(this.getFooterButtons());
             return arr;
         },
@@ -1187,7 +1199,8 @@ define([
         textFLCells: 'Capitalize first letter of table cells',
         textFLDont: 'Don`t capitalize after',
         textDoubleSpaces: 'Add period with double-space',
-        textFrenchPunctuation: 'Non-breaking spaces with French punctuation (: ; ? ! « »)'
+        textFrenchPunctuation: 'Non-breaking spaces with French punctuation (: ; ? ! « »)',
+        textTwoInitialCaps: 'Correct TWo INitial CApitals'
 
     }, Common.Views.AutoCorrectDialog || {}))
 });

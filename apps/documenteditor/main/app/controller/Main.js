@@ -3417,6 +3417,11 @@ define([
                 value = Common.localStorage.getBool("de-settings-autoformat-french-punctuation", true);
                 Common.Utils.InternalSettings.set("de-settings-autoformat-french-punctuation", value);
                 me.api.asc_SetAutoCorrectFrenchPunctuation(value);
+
+                // #222: TWo INitial CApitals, on by default as in Word and LibreOffice
+                value = Common.localStorage.getBool("de-settings-autocorrect-two-caps", true);
+                Common.Utils.InternalSettings.set("de-settings-autocorrect-two-caps", value);
+                me.api.asc_SetAutoCorrectTwoInitialCapitals && me.api.asc_SetAutoCorrectTwoInitialCapitals(value);
             },
 
             showRenameUserDialog: function() {
