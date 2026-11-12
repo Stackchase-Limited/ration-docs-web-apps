@@ -69,6 +69,11 @@
     </tr>
     <tr>
         <td class="padding-small">
+            <div id="image-checkbox-hide-stopped"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small">
             <div class="separator horizontal"></div>
         </td>
     </tr>
