@@ -460,6 +460,12 @@ define([], function () {
                 '<tr class="edit text-dir">',
                     '<td colspan="2"><div style="display: flex; gap: 8px;"><span id="fms-cmb-def-font"></span><span id="fms-cmb-def-font-size"></span></div></td>',
                 '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtDefMargins %></label></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2"><span id="fms-cmb-def-margins"></span></td>',
+                '</tr>',
                 '<tr class="edit new-format">',
                     '<td colspan="2" class="subgroup-name"><label><%= scope.txtNewFormat %></label></td>',
                 '</tr>',
@@ -986,6 +992,20 @@ define([], function () {
                 dataHintOffset: 'big'
             });
 
+            // page margins of new blank documents (#1166); '' keeps the blank template's
+            this.cmbDefMargins = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-def-margins'),
+                style       : 'width: 368px;',
+                menuStyle   : 'min-width:100%; max-height: 185px;',
+                restoreMenuHeightAndTop: 110,
+                editable    : false,
+                cls         : 'input-group-nr',
+                data        : [{value: '', displayValue: this.txtDefFontTemplate}],
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -1106,6 +1126,7 @@ define([], function () {
                 this.cmbDocLang.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbDefFont.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbDefFontSize.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbDefMargins.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbFontRender.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTheme.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
@@ -1180,6 +1201,30 @@ define([], function () {
             this._defFontsFilled = true;
         },
 
+        // #1166: the toolbar's Margins presets ("top,left,bottom,right" in mm), plus the stored value
+        // when it is none of them (e.g. a "Last custom" that has changed since)
+        fillDefMargins: function(stored) {
+            var me = this,
+                metric = Common.Utils.Metric,
+                describe = function(caption, mm) {
+                    var dims = _.map(mm, function(v) {
+                        return parseFloat(metric.fnRecalcFromMM(v).toFixed(2)) + ' ' + metric.getCurrentMetricName();
+                    });
+                    return (caption ? caption + ': ' : '') + dims.join(', ');
+                },
+                data = [{value: '', displayValue: this.txtDefFontTemplate}],
+                toolbar = DE.getController('Toolbar'),
+                menu = toolbar && toolbar.toolbar && toolbar.toolbar.btnPageMargins ? toolbar.toolbar.btnPageMargins.menu : null;
+            menu && _.each(menu.items, function(item) {
+                var mm = item.value;
+                if (_.isArray(mm) && mm.length === 4 && item.isVisible() && !_.findWhere(data, {value: mm.join(',')}))
+                    data.push({value: mm.join(','), displayValue: describe(item.caption, mm)});
+            });
+            if (stored && !_.findWhere(data, {value: stored}))
+                data.push({value: stored, displayValue: describe('', stored.split(','))});
+            this.cmbDefMargins.setData(data);
+        },
+
         updateSettings: function() {
             var odf = !!Common.Utils.InternalSettings.get("app-settings-new-file-odf");
             this.rbNewFormatOoxml.setValue(!odf);
@@ -1196,6 +1241,9 @@ define([], function () {
             this.cmbDefFont.setValue(defFont);
             var defSize = this.cmbDefFontSize.store.findWhere({value: Common.Utils.InternalSettings.get("de-settings-def-font-size") || 0});
             this.cmbDefFontSize.setValue(defSize ? defSize.get('value') : 0);
+            var defMargins = Common.Utils.InternalSettings.get("de-settings-def-margins") || '';
+            this.fillDefMargins(defMargins);
+            this.cmbDefMargins.setValue(defMargins);
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
 
@@ -1359,6 +1407,9 @@ define([], function () {
                 Common.Utils.InternalSettings.set("de-settings-def-font-name", this.cmbDefFont.getValue() || '');
                 Common.localStorage.setItem("de-settings-def-font-size", this.cmbDefFontSize.getValue() || 0);
                 Common.Utils.InternalSettings.set("de-settings-def-font-size", this.cmbDefFontSize.getValue() || 0);
+                // #1166
+                Common.localStorage.setItem("de-settings-def-margins", this.cmbDefMargins.getValue() || '');
+                Common.Utils.InternalSettings.set("de-settings-def-margins", this.cmbDefMargins.getValue() || '');
             }
             //Common.localStorage.setBool("de-settings-quick-print-button", this.chQuickPrint.isChecked());
 
@@ -1534,6 +1585,7 @@ define([], function () {
         txtDocLangInterface: 'Same as the interface',
         txtDefFont: 'Default font',
         txtDefFontTemplate: 'Same as the template',
+        txtDefMargins: 'Default page margins',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',
         textFill: 'Fill',

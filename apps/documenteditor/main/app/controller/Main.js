@@ -1523,6 +1523,25 @@ define([
                     Common.Utils.InternalSettings.set("de-settings-def-font-size", defSize);
                     me.editorConfig.newBlank && (defFont || defSize) && me.api.asc_setDefaultTextFont && me.api.asc_setDefaultTextFont(defFont, defSize);
 
+                    // page margins of a new blank desktop document (#1166): "top,left,bottom,right" in mm, as the
+                    // toolbar's Margins presets; unset keeps the blank template's
+                    value = Common.localStorage.getItem("de-settings-def-margins") || '';
+                    Common.Utils.InternalSettings.set("de-settings-def-margins", value);
+                    var defMargins = value ? _.map(value.split(','), parseFloat) : [];
+                    if (me.editorConfig.newBlank && defMargins.length === 4 && _.every(defMargins, function(v) { return v >= 0 && v < 1000; })) {
+                        var sectPr = me.api.asc_GetSectionProps(),
+                            pageW = sectPr.get_W(), pageH = sectPr.get_H();
+                        // the same room for text the Margins menu asks for (Toolbar.checkPageSize)
+                        if (defMargins[1] + defMargins[3] < pageW - 12.7 && defMargins[0] + defMargins[2] < pageH - 2.6) {
+                            var marginsPr = new Asc.CDocumentSectionProps();
+                            marginsPr.put_TopMargin(defMargins[0]);
+                            marginsPr.put_LeftMargin(defMargins[1]);
+                            marginsPr.put_BottomMargin(defMargins[2]);
+                            marginsPr.put_RightMargin(defMargins[3]);
+                            me.api.asc_SetSectionProps(marginsPr);
+                        }
+                    }
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion)
