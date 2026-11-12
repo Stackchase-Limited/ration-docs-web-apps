@@ -2817,6 +2817,23 @@ define([
                             }, this)
                         });
                         break;
+                    case Asc.c_oAscConfirm.ConfirmSaveCsvSheets:
+                        // #1490: Save of a csv/tsv file with several sheets keeps only the active one.
+                        // Save - keep the format; Cancel - Save As, to pick a format that keeps them all.
+                        var leftMenu = this.getApplication().getController('LeftMenu');
+                        Common.UI.warning({
+                            title: this.notcriticalErrorTitle,
+                            msg: leftMenu.warnDownloadCsvSheets,
+                            buttons: [{value: 'ok', caption: leftMenu.textSave}, 'cancel'],
+                            primary: 'cancel',
+                            maxwidth: 600,
+                            callback: _.bind(function(btn) {
+                                if (apiCallback)  {
+                                    apiCallback(btn === 'ok');
+                                }
+                            }, this)
+                        });
+                        break;
                 }
             },
 
