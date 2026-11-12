@@ -565,6 +565,11 @@ define([
                 Common.Utils.InternalSettings.set("sse-settings-paste-button", value);
                 this.api.asc_setVisiblePasteButton(!!value);
 
+                // #2258
+                value = Common.localStorage.getBool("sse-settings-fill-shortcuts");
+                Common.Utils.InternalSettings.set("sse-settings-fill-shortcuts", value);
+                this.api.asc_setFillShortcuts && this.api.asc_setFillShortcuts(value);
+
                 value = Common.localStorage.getBool("sse-settings-def-sheet-rtl");
                 Common.Utils.InternalSettings.set("sse-settings-def-sheet-rtl", value);
                 this.api.asc_setDefaultDirection(value);

@@ -3419,6 +3419,8 @@
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strFuncLocale": "Formula language",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strFuncLocaleEx": "Example: SUM; MIN; MAX; COUNT",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strFunctionTooltip": "Show function tooltip",
+  "SSE.Views.FileMenuPanels.MainSettingsGeneral.strFillShortcuts": "Ctrl+D and Ctrl+R fill down and right in the cell grid",
+  "SSE.Views.FileMenuPanels.MainSettingsGeneral.strFillShortcutsMac": "⌘D and ⌘R fill down and right in the cell grid",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strHScroll": "Show horizontal scroll bar",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strIgnoreWordsInUPPERCASE": "Ignore words in UPPERCASE",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.strIgnoreWordsWithNumbers": "Ignore words with numbers",

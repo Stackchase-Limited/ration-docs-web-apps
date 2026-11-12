@@ -1138,6 +1138,11 @@ define([
                     if (value===null) value = '1';
                     Common.Utils.InternalSettings.set("sse-settings-function-tooltip", parseInt(value));
 
+                    // #2258: Ctrl+D / Ctrl+R fill down / right - off unless turned on
+                    value = Common.localStorage.getBool("sse-settings-fill-shortcuts");
+                    Common.Utils.InternalSettings.set("sse-settings-fill-shortcuts", value);
+                    me.api.asc_setFillShortcuts && me.api.asc_setFillShortcuts(value);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion) {

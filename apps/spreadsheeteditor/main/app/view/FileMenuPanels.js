@@ -266,6 +266,9 @@ define([], function () {
                 '<tr class="edit">',
                     '<td colspan = "2"><div id="fms-chb-function-tooltip"></div></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td colspan = "2"><div id="fms-chb-fill-shortcuts"></div></td>',
+                '</tr>',
                 '<tr class ="editsave divider-group"></tr>',
                 '<tr class="collaboration" >',
                     '<td class="group-name" colspan="2"><label><%= scope.txtCollaboration %></label></td>',
@@ -862,6 +865,15 @@ define([], function () {
                 dataHintOffset: 'small'
             });
 
+            // #2258: Excel's Ctrl+D / Ctrl+R in the cell grid; off by default
+            this.chFillShortcuts = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-fill-shortcuts'),
+                labelText: Common.Utils.isMac ? this.strFillShortcutsMac : this.strFillShortcuts,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
             this.btnCustomizeQuickAccess = new Common.UI.Button({
                 el: $markup.findById('#fms-btn-customize-quick-access')
             });
@@ -1247,6 +1259,7 @@ define([], function () {
 
             this.chPaste.setValue(Common.Utils.InternalSettings.get("sse-settings-paste-button"));
             this.chTooltip.setValue(Common.Utils.InternalSettings.get("sse-settings-function-tooltip"));
+            this.chFillShortcuts.setValue(Common.Utils.InternalSettings.get("sse-settings-fill-shortcuts"));
             //this.chQuickPrint.setValue(Common.Utils.InternalSettings.get("sse-settings-quick-print-button"));
 
             value = this.api.asc_GetCalcSettings();
@@ -1393,6 +1406,8 @@ define([], function () {
 
             Common.localStorage.setItem("sse-settings-function-tooltip", this.chTooltip.isChecked() ? 1 : 0);
             Common.Utils.InternalSettings.set("sse-settings-function-tooltip", this.chTooltip.isChecked() ? 1 : 0);
+
+            Common.localStorage.setItem("sse-settings-fill-shortcuts", this.chFillShortcuts.isChecked() ? 1 : 0);
 
             this.mode.isEdit && Common.localStorage.setBool("sse-settings-def-sheet-rtl", this.rbSheetRtl.getValue());
 
@@ -1584,6 +1599,8 @@ define([], function () {
         txtThemeLight: 'Light',
         txtThemeDark: 'Dark',
         strPasteButton: 'Show Paste Options button when content is pasted',
+        strFillShortcuts: 'Ctrl+D and Ctrl+R fill down and right in the cell grid',
+        strFillShortcutsMac: '⌘D and ⌘R fill down and right in the cell grid',
         txtBe: 'Belarusian',
         txtBg: 'Bulgarian',
         txtCa: 'Catalan',
