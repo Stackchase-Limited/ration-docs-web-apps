@@ -343,7 +343,8 @@ define([
                     textCancel: me.textCancel,
                     textEnterCommentHint: me.textEnterCommentHint,
                     maxCommLength: Asc.c_oAscMaxCellOrCommentLength,
-                    textComments: me.textComments
+                    textComments: me.textComments,
+                    textSearch: me.textSearch
                 }));
 
                 this.buttonAddCommentToDoc = new Common.UI.Button({
@@ -492,6 +493,20 @@ define([
                 this.menuFilterComments.menu.on('item:toggle', _.bind(this.onFilterCommentsClick, this));
                 this.mnuAddCommentToDoc.on('click', _.bind(this.onClickShowBoxDocumentComment, this));
                 this.buttonAddNew.on('click', _.bind(this.onClickAddNewComment, this));
+
+                // Ration Docs #322: the list shows only the comments whose text, replies, quoted text or
+                // author contain what is typed here
+                this.inputSearch = $('#comments-search input', this.$el);
+                this.inputSearch.on('input', _.debounce(function() {
+                    me.fireEvent('comment:filtertext', [me.inputSearch.val()]);
+                }, 250));
+                this.inputSearch.on('keydown', function(event) {
+                    if (event.keyCode === Common.UI.Keys.ESC && me.inputSearch.val()) {
+                        me.inputSearch.val('');
+                        me.fireEvent('comment:filtertext', ['']);
+                        event.stopPropagation();
+                    }
+                });
 
                 this.txtComment = $('#comment-msg-new', this.el);
                 this.scrollerNewCommet = new Common.UI.Scroller({el: $('.new-comment-ct') });
@@ -1002,7 +1017,8 @@ define([
         txtEmpty: 'There are no comments in the document.',
         textSortFilter: 'Sort and filter comments',
         textSortMore: 'Sort and more',
-        textSortFilterMore: 'Sort, filter and more'
+        textSortFilterMore: 'Sort, filter and more',
+        textSearch: 'Search comments'
 
     }, Common.Views.Comments || {}))
 });

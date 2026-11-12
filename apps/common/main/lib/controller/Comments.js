@@ -110,7 +110,8 @@ define([
                     'comment:closeEditing':     _.bind(this.closeEditing, this),
                     'comment:sort':             _.bind(this.setComparator, this),
                     'comment:filtergroups':     _.bind(this.setFilterGroups, this),
-                    'comment:filtercomments':     _.bind(this.setFilterComments, this)
+                    'comment:filtercomments':     _.bind(this.setFilterComments, this),
+                    'comment:filtertext':       _.bind(this.setFilterText, this)
                 },
 
                 'Common.Views.ReviewPopover': {
@@ -843,6 +844,7 @@ define([
                 }
 
                 comment.set('replys', replies);
+                (!comment.get('hide') && t.isFilteredByText(comment)) && comment.set('filtered', true);
 
                 if (!this.popoverComments.findWhere({hide: false})) {
                     this.getPopover() && this.getPopover().hideComments();
@@ -1383,6 +1385,7 @@ define([
                 if (replies.length) {
                     comment.set('replys', replies);
                 }
+                (!comment.get('hide') && this.isFilteredByText(comment)) && comment.set('filtered', true);
             }
 
             return comment;
@@ -1805,7 +1808,7 @@ define([
 
                 var groupFiltered = !!this.currentGroupFilter && this.currentGroupFilter !== -1 && (!usergroups || usergroups.length < 1 || usergroups.indexOf(this.currentGroupFilter) < 0);
                 var typeFiltered = (this.currentTypeFilter === 'open' && item.get('resolved')) || (this.currentTypeFilter === 'resolved' && !item.get('resolved'));
-                var shouldFilter = groupFiltered || typeFiltered;
+                var shouldFilter = groupFiltered || typeFiltered || this.isFilteredByText(item);
 
                 item.set('filtered', shouldFilter, { silent: true });
 
@@ -1829,6 +1832,29 @@ define([
         setFilterComments: function (type) {
             this.currentTypeFilter = type;
             this.applyCombinedFilter();
+        },
+
+        // Ration Docs #322: search in the Comments panel. A comment stays in the list when the typed
+        // text is in its text, the text it is attached to, its author or any reply (text or author).
+        setFilterText: function (text) {
+            text = (text || '').trim().toLowerCase();
+            if (text === (this.currentTextFilter || '')) return;
+            this.currentTextFilter = text;
+            this.applyCombinedFilter();
+        },
+
+        isFilteredByText: function (comment) {
+            var text = this.currentTextFilter;
+            if (!text) return false;
+            var contains = function(value) {
+                return typeof value === 'string' && value.toLowerCase().indexOf(text) > -1;
+            };
+            if (contains(comment.get('comment')) || contains(comment.get('quote')) ||
+                contains(comment.get('parsedName')) || contains(comment.get('username')))
+                return false;
+            return !_.some(comment.get('replys') || [], function(reply) {
+                return contains(reply.get('reply')) || contains(reply.get('parsedName')) || contains(reply.get('username'));
+            });
         },
 
         onAppReady: function (config) {

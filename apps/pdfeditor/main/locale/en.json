@@ -777,6 +777,7 @@
   "Common.Views.Comments.textReply": "Reply",
   "Common.Views.Comments.textResolve": "Resolve",
   "Common.Views.Comments.textResolved": "Resolved",
+  "Common.Views.Comments.textSearch": "Search comments",
   "Common.Views.Comments.textSort": "Sort comments",
   "Common.Views.Comments.textSortFilter": "Sort and filter comments",
   "Common.Views.Comments.textSortFilterMore": "Sort, filter and more",
