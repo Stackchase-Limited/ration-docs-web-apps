@@ -281,6 +281,16 @@ define([
             case 'back': break;
             case 'save': this.api.asc_Save(); break;
             case 'save-desktop': this.api.asc_DownloadAs(); break;
+            case 'save-copy':
+                if ( isopts ) close_menu = false;
+                else if (this.mode.isDesktopApp && this.mode.isOffline) {
+                    // #982: write a copy in any format; the open document keeps its name and format
+                    var copyOptions = new Asc.asc_CDownloadOptions();
+                    copyOptions.asc_setIsSaveCopy(true);
+                    this.api.asc_DownloadAs(copyOptions);
+                }
+                else close_menu = false;
+                break;
             case 'export-pdf':
                 Common.NotificationCenter.trigger('export:to', this.leftMenu, Asc.c_oAscFileType.PDF);
                 break;

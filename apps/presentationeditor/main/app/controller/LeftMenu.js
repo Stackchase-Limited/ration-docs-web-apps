@@ -229,6 +229,16 @@ define([
             case 'back': break;
             case 'save': this.api.asc_Save(); break;
             case 'save-desktop': this.api.asc_DownloadAs(); break;
+            case 'save-copy':
+                if ( isopts ) close_menu = false;
+                else if (this.mode.isDesktopApp && this.mode.isOffline) {
+                    // #982: write a copy in any format; the open document keeps its name and format
+                    var copyOptions = new Asc.asc_CDownloadOptions();
+                    copyOptions.asc_setIsSaveCopy(true);
+                    this.api.asc_DownloadAs(copyOptions);
+                }
+                else close_menu = false;
+                break;
             case 'print': this.api.asc_Print(new Asc.asc_CDownloadOptions(null, Common.Utils.isChrome || Common.Utils.isOpera || Common.Utils.isGecko && Common.Utils.firefoxVersion>86)); break;
             case 'exit': Common.NotificationCenter.trigger('goback'); break;
             case 'duplicate': Common.Gateway.requestDuplicate(); break;

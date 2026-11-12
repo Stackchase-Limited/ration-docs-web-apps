@@ -251,6 +251,12 @@ define([
                 break;
             case 'save-copy':
                 if ( isopts ) close_menu = false;
+                else if (this.mode.isDesktopApp && this.mode.isOffline) {
+                    // #982: write a copy in any format; the open document keeps its name and format
+                    var copyOptions = new Asc.asc_CDownloadOptions();
+                    copyOptions.asc_setIsSaveCopy(true);
+                    this.api.asc_DownloadAs(copyOptions);
+                }
                 else this.clickSaveAsFormat(undefined, undefined, true);
                 break;
             case 'print': this.api.asc_Print(new Asc.asc_CDownloadOptions(null, Common.Utils.isChrome || Common.Utils.isOpera || Common.Utils.isGecko && Common.Utils.firefoxVersion>86)); break;
