@@ -152,6 +152,8 @@ define([
                 /** coauthoring begin **/
                 'command+shift+h,ctrl+shift+h': _.bind(this.onShortcut, this, 'comments'),
                 /** coauthoring end **/
+                // #167: Word's shortcut for word count; Ctrl+Shift+C (Google Docs) is Copy Style here
+                'command+shift+g,ctrl+shift+g': _.bind(this.onShortcut, this, 'docinfo'),
                 'f1': _.bind(this.onShortcut, this, 'help')
             };
             keymap[Common.Utils.isMac ? 'ctrl+alt+f' : 'alt+f'] = _.bind(this.onShortcut, this, 'file');
@@ -899,6 +901,11 @@ define([
                 case 'file':
                     Common.UI.Menu.Manager.hideAll();
                     this.leftMenu.showMenu('file');
+                    return false;
+                case 'docinfo':
+                    // File > Document Info: pages, paragraphs, words, characters
+                    Common.UI.Menu.Manager.hideAll();
+                    this.leftMenu.showMenu('file:info');
                     return false;
                 case 'escape':
 //                        if (!this.leftMenu.isOpened()) return true;
