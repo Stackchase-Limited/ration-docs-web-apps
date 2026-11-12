@@ -786,6 +786,16 @@ define([
                 })).show();
             } else if (item.value==2) {
                 Common.NotificationCenter.trigger('storage:image-load', 'fill');
+            } else if (item.value==3) {
+                // #1969: the picture on the clipboard
+                var me = this;
+                Common.Utils.readClipboardImage(function(url) {
+                    if (url)
+                        me.api && me.setImageUrl(url);
+                    else
+                        Common.UI.warning({msg: me.textNoClipboardImage});
+                    me.fireEvent('editcomplete', me);
+                });
             } else {
                 if (this.api) this.api.ChangeShapeImageFromFile(this.BlipFillType);
                 this.fireEvent('editcomplete', this);
@@ -1274,7 +1284,8 @@ define([
                     items: [
                         {caption: this.textFromFile, value: 0},
                         {caption: this.textFromUrl, value: 1},
-                        {caption: this.textFromStorage, value: 2}
+                        {caption: this.textFromStorage, value: 2},
+                        {caption: this.textFromClipboard, value: 3, visible: Common.Utils.canReadClipboardImage()}
                     ]
                 }),
                 dataHint: '1',

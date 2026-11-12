@@ -1077,6 +1077,41 @@ define([], function () {
         });
     };
 
+    // #1969: the first picture on the system clipboard as a data: url, for "From clipboard" picture
+    // fills; callback(url), or callback(null) when the clipboard has no picture or cannot be read
+    Common.Utils.canReadClipboardImage = function () {
+        return !!(window.navigator && navigator.clipboard && navigator.clipboard.read && window.FileReader);
+    };
+
+    Common.Utils.readClipboardImage = function (callback) {
+        if (!Common.Utils.canReadClipboardImage()) {
+            callback(null);
+            return;
+        }
+
+        navigator.clipboard.read().then(function (items) {
+            for (var i = 0; i < items.length; i++) {
+                var types = items[i].types || [];
+                for (var j = 0; j < types.length; j++) {
+                    if (/^image\//.test(types[j]))
+                        return items[i].getType(types[j]);
+                }
+            }
+            return null;
+        }).then(function (blob) {
+            if (!blob) {
+                callback(null);
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function () { callback(typeof reader.result === 'string' ? reader.result : null); };
+            reader.onerror = function () { callback(null); };
+            reader.readAsDataURL(blob);
+        }).catch(function () {
+            callback(null);
+        });
+    };
+
     Common.Utils.asyncCall = function (callback, scope, args) {
         (new Promise(function (resolve, reject) {
             resolve();
