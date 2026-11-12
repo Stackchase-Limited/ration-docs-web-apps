@@ -2942,6 +2942,7 @@
   "DE.Views.FileMenuPanels.Settings.txtRunMacros": "Enable all",
   "DE.Views.FileMenuPanels.Settings.txtRunMacrosDesc": "Enable all macros without a notification",
   "DE.Views.FileMenuPanels.Settings.txtScreenReader": "Turn on screen reader support",
+  "DE.Views.FileMenuPanels.Settings.txtShiftWheel": "Shift + mouse wheel scrolls horizontally",
   "DE.Views.FileMenuPanels.Settings.txtShowTrackChanges": "Show track changes",
   "DE.Views.FileMenuPanels.Settings.txtSpellCheck": "Spell checking",
   "DE.Views.FileMenuPanels.Settings.txtStopMacros": "Disable All",

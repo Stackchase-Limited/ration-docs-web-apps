@@ -339,6 +339,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-scrn-reader"></div></td>',
                 '</tr>',
+                '<tr class="shift-wheel">',
+                    '<td colspan="2"><div id="fms-chb-shift-wheel"></div></td>',
+                '</tr>',
                 '<tr class="edit">',
                     '<td colspan="2"><span id="fms-chb-align-guides"></span></td>',
                 '</tr>',
@@ -460,6 +463,15 @@ define([], function () {
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
             });
+            // #852: Shift+mouse wheel scrolls sideways; macOS does that by itself
+            this.chShiftWheel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-shift-wheel'),
+                labelText: this.txtShiftWheel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            Common.Utils.isMac && $markup.find('tr.shift-wheel').hide();
 
             this.cmbZoom = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-zoom'),
@@ -841,6 +853,7 @@ define([], function () {
 
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("pe-settings-show-alt-hints"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
+            this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
 
             var value = Common.Utils.InternalSettings.get("pe-settings-zoom");
             value = (value!==null) ? parseInt(value) : (this.mode.customization && this.mode.customization.zoom ? parseInt(this.mode.customization.zoom) : -1);
@@ -922,6 +935,8 @@ define([], function () {
             Common.localStorage.setItem("pe-settings-zoom", this.cmbZoom.getValue());
 
             Common.localStorage.setItem("app-settings-screen-reader", this.chScreenReader.isChecked() ? 1 : 0);
+            Common.localStorage.setBool("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
+            Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
             /** coauthoring begin **/
             if (this.mode.isEdit && !this.mode.isOffline && this.mode.canCoAuthoring && this.mode.canChangeCoAuthoring) {
                 Common.localStorage.setItem("pe-settings-coauthmode", this.rbCoAuthModeFast.getValue() ? 1 : 0);
@@ -1079,6 +1094,7 @@ define([], function () {
         txtQuickPrintTip: 'The document will be printed on the last selected or default printer',
         txtLastUsed: 'Last used',
         txtScreenReader: 'Turn on screen reader support',
+        txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
         txtNewFormatDesc: 'Offered first when a new document is saved for the first time',

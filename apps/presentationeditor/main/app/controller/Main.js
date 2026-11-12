@@ -924,6 +924,10 @@ define([
 
                 Common.Utils.InternalSettings.set("pe-settings-datetime-default", Common.localStorage.getItem("pe-settings-datetime-default"));
 
+                // #852: Shift+mouse wheel scrolls sideways (Advanced settings, off by default)
+                Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", Common.localStorage.getBool("app-settings-shift-wheel-hor"));
+                this.api.asc_setShiftWheelHorizontal && this.api.asc_setShiftWheelHorizontal(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+
                 value = Common.localStorage.getItem("pe-settings-zoom");
                 Common.Utils.InternalSettings.set("pe-settings-zoom", value);
                 var zf = (value!==null) ? parseInt(value) : (this.appOptions.customization && this.appOptions.customization.zoom ? parseInt(this.appOptions.customization.zoom) : -1);

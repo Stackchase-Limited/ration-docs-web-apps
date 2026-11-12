@@ -364,6 +364,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-scrn-reader"></div></td>',
                 '</tr>',
+                '<tr class="shift-wheel">',
+                    '<td colspan="2"><div id="fms-chb-shift-wheel"></div></td>',
+                '</tr>',
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-use-alt-key"></div></td>',
                 '</tr>',
@@ -447,6 +450,15 @@ define([], function () {
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
             });
+            // #852: Shift+mouse wheel scrolls sideways; macOS does that by itself
+            this.chShiftWheel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-shift-wheel'),
+                labelText: this.txtShiftWheel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            Common.Utils.isMac && $markup.find('tr.shift-wheel').hide();
 
             /** coauthoring begin **/
             this.chLiveComment = new Common.UI.CheckBox({
@@ -793,6 +805,7 @@ define([], function () {
         updateSettings: function() {
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("pdfe-settings-show-alt-hints"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
+            this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
             this.chUseAnnotateBar.setValue(Common.Utils.InternalSettings.get("pdfe-settings-annot-bar"));
 
             var value = Common.Utils.InternalSettings.get("pdfe-settings-zoom");
@@ -870,6 +883,8 @@ define([], function () {
             Common.localStorage.setItem("pdfe-settings-zoom", this.cmbZoom.getValue());
 
             Common.localStorage.setItem("app-settings-screen-reader", this.chScreenReader.isChecked() ? 1 : 0);
+            Common.localStorage.setBool("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
+            Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
             Common.localStorage.setItem("pdfe-settings-annot-bar", this.chUseAnnotateBar.isChecked() ? 1 : 0);
             Common.Utils.InternalSettings.set("pdfe-settings-annot-bar", Common.localStorage.getBool("pdfe-settings-annot-bar"));
 
@@ -1000,6 +1015,7 @@ define([], function () {
         txtQuickPrintTip: 'The document will be printed on the last selected or default printer',
         txtLastUsed: 'Last used',
         txtScreenReader: 'Turn on screen reader support',
+        txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
         strUnit: 'Unit of Measurement',
         txtInch: 'Inch',
         txtCm: 'Centimeter',

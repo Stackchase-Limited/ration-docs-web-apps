@@ -483,6 +483,9 @@ define([
         },
 
         applySettings: function(menu) {
+            // #852 (Advanced settings)
+            this.api.asc_setShiftWheelHorizontal && this.api.asc_setShiftWheelHorizontal(!!Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+
             var value;
 
             var fast_coauth = Common.Utils.InternalSettings.get("pdfe-settings-coauthmode"),

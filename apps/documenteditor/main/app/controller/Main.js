@@ -1328,6 +1328,10 @@ define([
                 this.isLiveCommenting ? this.api.asc_showComments(value) : this.api.asc_hideComments();
                 /** coauthoring end **/
 
+                // #852: Shift+mouse wheel scrolls sideways (Advanced settings, off by default)
+                Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", Common.localStorage.getBool("app-settings-shift-wheel-hor"));
+                this.api.asc_setShiftWheelHorizontal && this.api.asc_setShiftWheelHorizontal(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+
                 value = Common.localStorage.getItem("de-settings-zoom");
                 Common.Utils.InternalSettings.set("de-settings-zoom", value);
                 var zf = (value!==null) ? parseInt(value) : (this.appOptions.customization && this.appOptions.customization.zoom ? parseInt(this.appOptions.customization.zoom) : 100);

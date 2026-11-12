@@ -2828,6 +2828,7 @@
   "PE.Views.FileMenuPanels.Settings.txtRunMacros": "Enable All",
   "PE.Views.FileMenuPanels.Settings.txtRunMacrosDesc": "Enable all macros without a notification",
   "PE.Views.FileMenuPanels.Settings.txtScreenReader": "Turn on screen reader support",
+  "PE.Views.FileMenuPanels.Settings.txtShiftWheel": "Shift + mouse wheel scrolls horizontally",
   "PE.Views.FileMenuPanels.Settings.txtSpellCheck": "Spell Checking",
   "PE.Views.FileMenuPanels.Settings.txtStopMacros": "Disable All",
   "PE.Views.FileMenuPanels.Settings.txtStopMacrosDesc": "Disable all macros without a notification",
