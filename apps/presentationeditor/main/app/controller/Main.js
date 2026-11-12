@@ -901,6 +901,19 @@ define([
                 }
             },
 
+            // #2137: {type, width, height} (EMU) stored by the Slide Size dialog, or null
+            getDefaultSlideSize: function() {
+                var value = null;
+                try {
+                    value = JSON.parse(Common.localStorage.getItem("pe-settings-def-slide-size"));
+                } catch (e) {
+                    value = null;
+                }
+                // the dialog's limits are 2.54..142.24 cm
+                var isSize = function(v) { return typeof v === 'number' && v >= 914400 && v <= 51206400; };
+                return (value && isSize(value.width) && isSize(value.height)) ? {type: value.type, width: value.width, height: value.height} : null;
+            },
+
             onDocumentContentReady: function() {
                 if (this._isDocReady)
                     return;
@@ -1083,6 +1096,13 @@ define([
                     if (value===null) value = '1';
                     Common.Utils.InternalSettings.set("pe-settings-paste-button", parseInt(value));
                     me.api.asc_setVisiblePasteButton(!!parseInt(value));
+
+                    // #2137: the slide size a new blank desktop presentation gets, set with "Use this size for new
+                    // presentations" in the Slide Size dialog; unset - the blank template's (the old behaviour)
+                    value = me.getDefaultSlideSize();
+                    if (value && me.editorConfig.newBlank && me.appOptions.isDesktopApp && me.appOptions.isOffline &&
+                        (Math.abs(value.width - me.api.get_PresentationWidth()) > 0.5 || Math.abs(value.height - me.api.get_PresentationHeight()) > 0.5))
+                        me.api.changeSlideSize(value.width, value.height, value.type);
 
                     me.loadAutoCorrectSettings();
 

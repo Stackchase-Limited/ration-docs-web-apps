@@ -85,6 +85,8 @@ define([
                         '<label class="text font-weight-bold">' + this.txtSlideNum + '</label>',
                     '</div>',
                     '<div id="slide-size-spin-slidenum" class="" style="margin-bottom: 5px;"></div>',
+                    // #2137: desktop only - the size new blank presentations get
+                    this.options.canSetDefault ? '<div id="slide-size-chb-default" style="margin-top: 10px;"></div>' : '',
                 '</div>'
             ].join('');
 
@@ -214,6 +216,14 @@ define([
                 maskExp: /[0-9]/
             });
 
+            if (this.options.canSetDefault) {
+                this.chDefault = new Common.UI.CheckBox({
+                    el: $('#slide-size-chb-default'),
+                    labelText: this.txtUseForNew,
+                    value: !!this.options.isDefault
+                });
+            }
+
             var $window = this.getChild();
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
 
@@ -221,7 +231,7 @@ define([
         },
 
         getFocusedComponents: function() {
-            return [this.cmbSlideSize, this.spnWidth, this.spnHeight, this.cmbSlideOrientation, this.spnSlideNum].concat(this.getFooterButtons());
+            return [this.cmbSlideSize, this.spnWidth, this.spnHeight, this.cmbSlideOrientation, this.spnSlideNum].concat(this.chDefault ? [this.chDefault] : []).concat(this.getFooterButtons());
         },
 
         getDefaultFocusableComponent: function () {
@@ -282,7 +292,8 @@ define([
                 height = record.size[orient ? 1 : 0];
             }
 
-            return [type,  width, height, this.spnSlideNum.getNumberValue()];
+            // 5th: "use for new presentations" (undefined when the dialog does not offer it)
+            return [type,  width, height, this.spnSlideNum.getNumberValue(), this.chDefault ? this.chDefault.getValue()==='checked' : undefined];
         },
 
         updateMetricUnit: function() {
@@ -316,6 +327,7 @@ define([
         strPortrait:        'Portrait',
         strLandscape:       'Landscape',
         txtWidescreen:     'Widescreen',
-        txtSlideNum:        'Number slides from'
+        txtSlideNum:        'Number slides from',
+        txtUseForNew:       'Use this size for new presentations'
     }, PE.Views.SlideSizeSettings || {}))
 });

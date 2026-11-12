@@ -2185,13 +2185,22 @@ define([
                         me.toolbar.btnSlideSize.menu.items[1].setChecked(idx == 1);
                         if (me.api)
                             me.api.changeSlideSize(props[1], props[2], props[0], props[3]);
+                        // #2137: remember (or forget) this size for new blank presentations, see Main.js
+                        if (props[4] === true)
+                            Common.localStorage.setItem("pe-settings-def-slide-size", JSON.stringify({type: props[0], width: props[1], height: props[2]}));
+                        else if (props[4] === false)
+                            Common.localStorage.removeItem("pe-settings-def-slide-size");
                     }
 
                     Common.NotificationCenter.trigger('edit:complete', me.toolbar);
                 };
 
+                // #2137: in the desktop app the dialog can also set the size of new blank presentations
+                var canSetDefault = !!(me.mode && me.mode.isDesktopApp && me.mode.isOffline);
                 win = new PE.Views.SlideSizeSettings({
-                    handler: handlerDlg
+                    handler: handlerDlg,
+                    canSetDefault: canSetDefault,
+                    isDefault: canSetDefault && !!Common.localStorage.getItem("pe-settings-def-slide-size")
                 });
                 win.show();
                 win.setSettings(me.currentPageSize.type, me.currentPageSize.width, me.currentPageSize.height, me.currentPageSize.firstNum);
