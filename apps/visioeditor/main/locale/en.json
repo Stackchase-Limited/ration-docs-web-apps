@@ -426,6 +426,7 @@
   "VE.Views.LeftMenu.tipPlugins": "Plugins",
   "VE.Views.LeftMenu.tipSearch": "Find",
   "VE.Views.LeftMenu.tipSupport": "Feedback & Support",
+  "VE.Views.LeftMenu.tipOpensInBrowser": "opens in your web browser",
   "VE.Views.LeftMenu.txtDeveloper": "DEVELOPER MODE",
   "VE.Views.LeftMenu.txtEditor": "Diagram Viewer",
   "VE.Views.LeftMenu.txtLimit": "Limit Access",

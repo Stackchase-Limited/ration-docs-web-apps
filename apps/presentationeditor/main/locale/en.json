@@ -2941,6 +2941,7 @@
   "PE.Views.LeftMenu.tipSearch": "Find",
   "PE.Views.LeftMenu.tipSlides": "Slides",
   "PE.Views.LeftMenu.tipSupport": "Feedback & Support",
+  "PE.Views.LeftMenu.tipOpensInBrowser": "opens in your web browser",
   "PE.Views.LeftMenu.tipTitles": "Titles",
   "PE.Views.LeftMenu.txtDeveloper": "DEVELOPER MODE",
   "PE.Views.LeftMenu.txtEditor": "Presentation Editor",

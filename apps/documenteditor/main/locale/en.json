@@ -3364,6 +3364,7 @@
   "DE.Views.LeftMenu.tipPlugins": "Plugins",
   "DE.Views.LeftMenu.tipSearch": "Find",
   "DE.Views.LeftMenu.tipSupport": "Feedback & Support",
+  "DE.Views.LeftMenu.tipOpensInBrowser": "opens in your web browser",
   "DE.Views.LeftMenu.tipTitles": "Titles",
   "DE.Views.LeftMenu.txtDeveloper": "DEVELOPER MODE",
   "DE.Views.LeftMenu.txtEditor": "Document Editor",

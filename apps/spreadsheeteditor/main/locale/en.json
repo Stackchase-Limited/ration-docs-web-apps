@@ -3894,6 +3894,7 @@
   "SSE.Views.LeftMenu.tipSearch": "Find",
   "SSE.Views.LeftMenu.tipSpellcheck": "Spell checking",
   "SSE.Views.LeftMenu.tipSupport": "Feedback & Support",
+  "SSE.Views.LeftMenu.tipOpensInBrowser": "opens in your web browser",
   "SSE.Views.LeftMenu.txtDeveloper": "DEVELOPER MODE",
   "SSE.Views.LeftMenu.txtEditor": "Spreadsheet Editor",
   "SSE.Views.LeftMenu.txtLimit": "Limit access",

@@ -108,7 +108,8 @@ define([
             this.btnSupport = new Common.UI.Button({
                 action: 'support',
                 el: $markup.elementById('#left-btn-support'),
-                hint: this.tipSupport,
+                // #1363: the button opens a web page in the system browser; say so
+                hint: this.tipSupport + ' (' + this.tipOpensInBrowser + ')',
                 iconCls: 'btn-menu-support',
                 disabled: true
             });
@@ -524,6 +525,7 @@ define([
         /** coauthoring end **/
         tipAbout    : 'About',
         tipSupport  : 'Feedback & Support',
+        tipOpensInBrowser: 'opens in your web browser',
         tipSearch   : 'Search',
         tipPlugins  : 'Plugins',
         tipPageThumbnails: 'Page Thumbnails',

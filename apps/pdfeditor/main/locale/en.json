@@ -2585,6 +2585,7 @@
   "PDFE.Views.LeftMenu.tipPlugins": "Plugins",
   "PDFE.Views.LeftMenu.tipSearch": "Find",
   "PDFE.Views.LeftMenu.tipSupport": "Feedback & Support",
+  "PDFE.Views.LeftMenu.tipOpensInBrowser": "opens in your web browser",
   "PDFE.Views.LeftMenu.tipTitles": "Titles",
   "PDFE.Views.LeftMenu.txtDeveloper": "DEVELOPER MODE",
   "PDFE.Views.LeftMenu.txtEditor": "PDF Editor",
