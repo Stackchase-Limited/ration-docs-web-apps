@@ -313,6 +313,18 @@ define([
             this.btnFlipH.on('click', _.bind(this.onBtnFlipClick, this));
             this.lockedControls.push(this.btnFlipH);
 
+            // playback settings of a video or audio (stored in the slide, as PowerPoint does)
+            this.PlaybackTable = $(this.el).find('#image-table-playback');
+            this.chMute = new Common.UI.CheckBox({
+                el: $('#image-checkbox-mute'),
+                labelText: this.textMute,
+                dataHint: '1',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            this.chMute.on('change', _.bind(this.onMediaSettingChange, this, 'Mute'));
+            this.lockedControls.push(this.chMute);
+
             this.linkAdvanced = $('#image-advanced-link');
             $(this.el).on('click', '#image-advanced-link', _.bind(this.openAdvancedSettings, this));
         },
@@ -411,6 +423,12 @@ define([
                     this.btnEditObject.setDisabled(!this.api.asc_canEditTableOleObject() && (plugin===null || plugin ===undefined) || this._locked);
                 } else {
                     this.btnSelectImage.setDisabled(pluginGuid===null || this._locked);
+                }
+
+                var media = this.api.asc_getMediaSettings ? this.api.asc_getMediaSettings() : null;
+                this.PlaybackTable.toggleClass('hidden', !media);
+                if (media) {
+                    this.chMute.setValue(!!media['Mute'], true);
                 }
 
                 var transparency = props.asc_getTransparent();
@@ -624,6 +642,15 @@ define([
             }
         },
 
+        onMediaSettingChange: function(name, field) {
+            if (this.api) {
+                var settings = {};
+                settings[name] = (field.getValue() == 'checked');
+                this.api.asc_setMediaSettings(settings);
+            }
+            this.fireEvent('editcomplete', this);
+        },
+
         setLocked: function (locked) {
             this._locked = locked;
         },
@@ -664,6 +691,8 @@ define([
         textFitSlide: 'Fit to Slide',
         textCropToShape: 'Crop to shape',
         textFromStorage: 'From Storage',
-        textRecentlyUsed: 'Recently Used'
+        textRecentlyUsed: 'Recently Used',
+        textPlayback: 'Playback',
+        textMute: 'Mute'
     }, PE.Views.ImageSettings || {}));
 });

@@ -56,6 +56,23 @@
         </td>
     </tr>
 </table>
+<table cols="1" role="presentation" id="image-table-playback" class="hidden">
+    <tr>
+        <td class="padding-small">
+            <label class="header"><%= scope.textPlayback %></label>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small">
+            <div id="image-checkbox-mute"></div>
+        </td>
+    </tr>
+    <tr>
+        <td class="padding-small">
+            <div class="separator horizontal"></div>
+        </td>
+    </tr>
+</table>
 <table cols="2" role="presentation">
     <tr>
         <td colspan=2 class="padding-small">
