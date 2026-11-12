@@ -442,6 +442,12 @@ define([], function () {
                 '<tr class="edit text-dir">',
                     '<td colspan="2"><div id="fms-rb-text-rtl"></div></td>',
                 '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2" class="subgroup-name"><label><%= scope.txtDocLang %></label></td>',
+                '</tr>',
+                '<tr class="edit text-dir">',
+                    '<td colspan="2"><span id="fms-cmb-doc-lang"></span></td>',
+                '</tr>',
                 '<tr class="edit quick-access">',
                     '<td colspan="2"><button type="button" class="btn btn-text-default" id="fms-btn-customize-quick-access" style="width:auto;display:inline-block;padding-right:10px;padding-left:10px;" data-hint="2" data-hint-direction="bottom" data-hint-offset="medium"><%= scope.txtCustomizeQuickAccess %></button></div></td>',
                 '</tr>',
@@ -853,6 +859,43 @@ define([], function () {
                 dataHintOffset: 'small'
             });
 
+            // language of new blank documents (#143); 0 keeps the blank template's, i.e. the interface language's
+            var docLangs = [];
+            _.each(Common.util.LanguageInfo.getLanguages(), function(info, code) {
+                if (info[2]) {
+                    var displayName = Common.util.LanguageInfo.getLocalLanguageDisplayName(code);
+                    docLangs.push({value: parseInt(code), displayValue: displayName.native, displayValueEn: displayName.english});
+                }
+            });
+            docLangs.sort(function(a, b){
+                return a.displayValue.localeCompare(b.displayValue);
+            });
+            docLangs.unshift({value: 0, displayValue: this.txtDocLangInterface, displayValueEn: ''});
+            this.cmbDocLang = new Common.UI.ComboBox({
+                el          : $markup.findById('#fms-cmb-doc-lang'),
+                style       : 'width: 200px;',
+                menuStyle   : 'min-width:100%; max-height: 185px;',
+                restoreMenuHeightAndTop: 110,
+                editable    : false,
+                cls         : 'input-group-nr',
+                data        : docLangs,
+                itemsTemplate: _.template([
+                    '<% _.each(items, function(item) { %>',
+                        '<li id="<%= item.id %>" data-value="<%= item.value %>">',
+                            '<a tabindex="-1" type="menuitem" role="menuitemcheckbox" aria-checked="false">',
+                                '<div><%= item.displayValue %></div>',
+                                '<label style="opacity: 0.6"><%= item.displayValueEn %></label>',
+                            '</a>',
+                        '</li>',
+                    '<% }); %>'
+                ].join('')),
+                search: true,
+                searchFields: ['displayValue', 'displayValueEn'],
+                dataHint    : '2',
+                dataHintDirection: 'bottom',
+                dataHintOffset: 'big'
+            });
+
             this.cmbTheme = new Common.UI.ComboBox({
                 el          : $markup.findById('#fms-cmb-theme'),
                 style       : 'width: 160px;',
@@ -969,6 +1012,7 @@ define([], function () {
                 this.pnlSettings.toggleClass('bordered', this.scroller.isVisible());
                 this.cmbZoom.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbUnit.options.menuAlignEl = scrolled ? this.pnlSettings : null;
+                this.cmbDocLang.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbFontRender.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbTheme.options.menuAlignEl = scrolled ? this.pnlSettings : null;
                 this.cmbMacros.options.menuAlignEl = scrolled ? this.pnlSettings : null;
@@ -1027,6 +1071,8 @@ define([], function () {
             var rtl = !!Common.Utils.InternalSettings.get("de-settings-def-text-rtl");
             this.rbTextLtr.setValue(!rtl);
             this.rbTextRtl.setValue(rtl);
+            var docLang = this.cmbDocLang.store.findWhere({value: Common.Utils.InternalSettings.get("de-settings-def-doc-lang") || 0});
+            this.cmbDocLang.setValue(docLang ? docLang.get('value') : 0);
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
@@ -1174,6 +1220,8 @@ define([], function () {
             if (this.mode.isEdit && this.mode.isDesktopApp && this.mode.isOffline) {
                 Common.localStorage.setBool("de-settings-def-text-rtl", this.rbTextRtl.getValue());
                 Common.Utils.InternalSettings.set("de-settings-def-text-rtl", this.rbTextRtl.getValue());
+                Common.localStorage.setItem("de-settings-def-doc-lang", this.cmbDocLang.getValue());
+                Common.Utils.InternalSettings.set("de-settings-def-doc-lang", this.cmbDocLang.getValue());
             }
             //Common.localStorage.setBool("de-settings-quick-print-button", this.chQuickPrint.isChecked());
 
@@ -1331,6 +1379,8 @@ define([], function () {
         txtTextDirDesc: 'This setting will affect only new blank documents',
         txtTextLtr: 'Left-to-right',
         txtTextRtl: 'Right-to-left',
+        txtDocLang: 'Default document language',
+        txtDocLangInterface: 'Same as the interface',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',
         textFill: 'Fill',

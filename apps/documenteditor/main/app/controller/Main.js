@@ -1500,6 +1500,12 @@ define([
                     Common.Utils.InternalSettings.set("de-settings-def-text-rtl", value);
                     me.editorConfig.newBlank && me.api.asc_setDefaultRtlTextDirection(value);
 
+                    // default language of a new blank desktop document (#143); 0 (unset) keeps the blank
+                    // template's, which follows the interface language
+                    value = parseInt(Common.localStorage.getItem("de-settings-def-doc-lang")) || 0;
+                    Common.Utils.InternalSettings.set("de-settings-def-doc-lang", value);
+                    me.editorConfig.newBlank && value && value !== me.api.asc_getDefaultLanguage() && me.api.asc_setDefaultLanguage(value);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion)

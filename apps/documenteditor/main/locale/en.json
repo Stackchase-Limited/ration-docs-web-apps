@@ -2904,6 +2904,8 @@
   "DE.Views.FileMenuPanels.Settings.txtCustomize": "Customize",
   "DE.Views.FileMenuPanels.Settings.txtCustomizeQuickAccess": "Customize quick access",
   "DE.Views.FileMenuPanels.Settings.txtDarkMode": "Turn on document dark mode",
+  "DE.Views.FileMenuPanels.Settings.txtDocLang": "Default document language",
+  "DE.Views.FileMenuPanels.Settings.txtDocLangInterface": "Same as the interface",
   "DE.Views.FileMenuPanels.Settings.txtEditingSaving": "Editing and saving",
   "DE.Views.FileMenuPanels.Settings.txtFastTip": "Real-time co-editing. All changes are saved automatically",
   "DE.Views.FileMenuPanels.Settings.txtFitPage": "Fit to page",
