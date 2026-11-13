@@ -3538,6 +3538,7 @@
   "DE.Views.MailMergeSettings.textInsertField": "Insert merge field",
   "DE.Views.MailMergeSettings.textMaxRecepients": "Max 100 recipients.",
   "DE.Views.MailMergeSettings.textMerge": "Merge",
+  "DE.Views.MailMergeSettings.textNewDocument": "New document",
   "DE.Views.MailMergeSettings.textMergeFields": "Merge fields",
   "DE.Views.MailMergeSettings.textMergeTo": "Merge to",
   "DE.Views.MailMergeSettings.textPdf": "PDF",

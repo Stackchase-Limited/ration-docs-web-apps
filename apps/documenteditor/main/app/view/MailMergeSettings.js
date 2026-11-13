@@ -410,6 +410,12 @@ define([
                     this.cmbMergeTo.setData(this._arrMergeSrc);
                     this.cmbMergeTo.setValue(this._arrMergeSrc[0].value);
                 }
+                if (this.mode.isOffline) { // #733: desktop app, local file - the merge opens as a new document tab
+                    this._arrMergeSrc = [{displayValue: this.textNewDocument, value: Asc.c_oAscFileType.DOCX}];
+                    this.cmbMergeTo.setData(this._arrMergeSrc);
+                    this.cmbMergeTo.setValue(this._arrMergeSrc[0].value);
+                    this.btnDownload.setCaption(this.textMerge);
+                }
             }
 
             this._initSettings = false;
@@ -547,7 +553,9 @@ define([
                     to = Math.min(to, from + 99);
                     this.txtFieldTo.setValue(to+1);
                 }
-                if (!this.api.asc_DownloadAsMailMerge(this.cmbMergeTo.getValue(), from, to, type)) {
+                var res = this.mode.isOffline ? this.api.asc_MailMergeToNewDocument(from, to) :
+                                                this.api.asc_DownloadAsMailMerge(this.cmbMergeTo.getValue(), from, to, type);
+                if (!res) {
                     var config = {
                         closable: false,
                         title: this.notcriticalErrorTitle,
@@ -559,7 +567,7 @@ define([
                         }, this)
                     };
                     Common.UI.alert(config);
-                } else if (!type) {
+                } else if (!type && !this.mode.isOffline) {
                     var maincontroller = DE.getController('Main');
                     if (!maincontroller.loadMask)
                         maincontroller.loadMask = new Common.UI.LoadMask({owner: $('#viewport')});
@@ -891,6 +899,7 @@ define([
         textPreview:        'Preview results',
         textPdf:            'PDF',
         textDocx:           'Docx',
+        textNewDocument:    'New document',
         textEmail:          'E-mail',
         txtFirst:           'To first field',
         txtPrev:            'To previous field',

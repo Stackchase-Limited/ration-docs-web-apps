@@ -1022,6 +1022,7 @@ define([
                 if (me.view && me.view.btnMailRecepients) {
                     Common.Utils.lockControls(Common.enumLock.mmergeLock, !!me._state.mmdisable, {array: [me.view.btnMailRecepients]});
                     me.view.mnuMailRecepients.items[2].setVisible(me.appConfig.fileChoiceUrl || me.appConfig.canRequestSelectSpreadsheet || me.appConfig.canRequestMailMergeRecipients);
+                    me.appConfig.isOffline && me.view.mnuMailRecepients.items[1].setVisible(false); // #733: a URL needs the document server
                 }
 
                 me.view && me.view.onAppReady(config);
