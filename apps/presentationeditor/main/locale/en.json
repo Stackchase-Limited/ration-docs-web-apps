@@ -3729,6 +3729,8 @@
   "PE.Views.ViewTab.textShowGridlines": "Show Gridlines",
   "PE.Views.ViewTab.textShowGuides": "Show guides",
   "PE.Views.ViewTab.textSlideMaster": "Slide Master",
+  "PE.Views.ViewTab.textSlideSorter": "Slide Sorter",
+  "PE.Views.ViewTab.textSorterZoom": "Sorter zoom",
   "PE.Views.ViewTab.textSmartGuides": "Smart guides",
   "PE.Views.ViewTab.textSnapObjects": "Snap object to grid",
   "PE.Views.ViewTab.textStatusBar": "Status Bar",
@@ -3748,5 +3750,6 @@
   "PE.Views.ViewTab.tipResumeMacro": "Resume recording",
   "PE.Views.ViewTab.tipSelectTool": "Select tool",
   "PE.Views.ViewTab.tipSlideMaster": "Slide master",
+  "PE.Views.ViewTab.tipSlideSorter": "Slide sorter: all slides as thumbnails",
   "PE.Views.ViewTab.tipStopMacro": "Stop recording"
 }

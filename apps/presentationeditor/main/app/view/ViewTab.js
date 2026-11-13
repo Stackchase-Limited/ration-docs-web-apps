@@ -51,7 +51,16 @@ define([
             '<section class="panel" data-tab="view" role="tabpanel" aria-labelledby="view">' +
                 '<div class="group">' +
                     '<span class="btn-slot text x-huge" id="slot-btn-normal"></span>' +
+                    '<span class="btn-slot text x-huge" id="slot-btn-slide-sorter"></span>' +
                     '<span class="btn-slot text x-huge" id="slot-btn-slide-master"></span>' +
+                '</div>' +
+                '<div class="group small sorter-zoom">' +
+                    '<div class="elset" style="display: flex; align-items: center;">' +
+                        '<span class="btn-slot" id="slot-sldr-sorter-zoom" style="width: 100px;"></span>' +
+                    '</div>' +
+                    '<div class="elset" style="text-align: center;">' +
+                        '<span class="btn-slot text font-size-normal" id="slot-lbl-sorter-zoom" style="text-align: center;margin-top: 4px;"></span>' +
+                    '</div>' +
                 '</div>' +
                 '<div class="separator long"></div>' +
                 '<div class="group">' +
@@ -132,6 +141,14 @@ define([
                 }, me));
                 me.btnSlideMaster && me.btnSlideMaster.on('toggle', _.bind(function(btn, state) {
                     me.fireEvent('mode:master', [state]);
+                }, me));
+                me.btnSlideSorter && me.btnSlideSorter.on('toggle', _.bind(function(btn, state) {
+                    me.fireEvent('mode:sorter', [state]);
+                }, me));
+                me.sldrSorterZoom && me.sldrSorterZoom.on('change', _.bind(function(slider, value) {
+                    me.fireEvent('sorterzoom:change', [value]);
+                }, me)).on('changecomplete', _.bind(function() {
+                    me.fireEvent('editcomplete', me);
                 }, me));
                 me.btnFitToSlide && me.btnFitToSlide.on('click', function () {
                     me.fireEvent('zoom:toslide', [me.btnFitToSlide]);
@@ -258,6 +275,21 @@ define([
                         dataHintOffset: 'small'
                     });
                     this.lockedControls.push(this.btnSlideMaster);
+
+                    this.btnSlideSorter = new Common.UI.Button({
+                        cls: 'btn-toolbar x-huge icon-top',
+                        iconCls: 'toolbar__icon btn-slide-sorter',
+                        caption: this.textSlideSorter,
+                        lock: [_set.disableOnStart],
+                        enableToggle: true,
+                        allowDepress: true,
+                        pressed: false,
+                        dataHint: '1',
+                        dataHintDirection: 'bottom',
+                        dataHintOffset: 'small'
+                    });
+                    this.lockedControls.push(this.btnSlideSorter);
+
                 }
                 this.cmbZoom = new Common.UI.ComboBox({
                     cls: 'input-group-nr',
@@ -498,6 +530,20 @@ define([
 
                 this.btnNormal && this.btnNormal.render($host.find('#slot-btn-normal'));
                 this.btnSlideMaster && this.btnSlideMaster.render($host.find('#slot-btn-slide-master'));
+                this.btnSlideSorter && this.btnSlideSorter.render($host.find('#slot-btn-slide-sorter'));
+                if (this.btnSlideSorter) {
+                    // thumbnail size in the slide sorter: to the right = bigger = fewer per row (columns = 11 - value)
+                    this.sldrSorterZoom = new Common.UI.SingleSlider({
+                        el: $host.find('#slot-sldr-sorter-zoom'),
+                        width: 100,
+                        minValue: 1,
+                        maxValue: 10,
+                        value: 7
+                    });
+                    this.sldrSorterZoom.setDisabled(true);
+                    $host.find('#slot-lbl-sorter-zoom').text(this.textSorterZoom);
+                } else
+                    $host.find('.sorter-zoom').remove();
                 this.cmbZoom.render($host.find('#slot-field-zoom'));
                 $host.find('#slot-lbl-zoom').text(this.textZoom);
                 this.btnFitToSlide.render($host.find('#slot-btn-fts'));
@@ -527,6 +573,7 @@ define([
                 })).then(function () {
                     me.btnNormal && me.btnNormal.updateHint(me.tipNormal);
                     me.btnSlideMaster && me.btnSlideMaster.updateHint(me.tipSlideMaster);
+                    me.btnSlideSorter && me.btnSlideSorter.updateHint(me.tipSlideSorter);
                     me.btnFitToSlide.updateHint(me.tipFitToSlide);
                     me.btnFitToWidth.updateHint(me.tipFitToWidth);
                     me.btnInterfaceTheme.updateHint(me.tipInterfaceTheme);
@@ -737,6 +784,9 @@ define([
             textSlideMaster: 'Slide Master',
             tipNormal: 'Normal',
             tipSlideMaster: 'Slide master',
+            textSlideSorter: 'Slide Sorter',
+            tipSlideSorter: 'Slide sorter: all slides as thumbnails',
+            textSorterZoom: 'Sorter zoom',
             textTabStyle: 'Tab style',
             textFill: 'Fill',
             textLine: 'Line',

@@ -295,6 +295,11 @@ define([
         },
 
         onApiChangeViewMode: function (mode) {
+            // follow the sdk; the slide sorter is not master mode, but must not be switched back to normal
+            if (mode === Asc.c_oAscPresentationViewMode.sorter) {
+                this._state.slideMasterMode = false;
+                return;
+            }
             var isMaster = mode === Asc.c_oAscPresentationViewMode.masterSlide;
             this.changeViewMode(isMaster ? 'master' : 'normal');
         },

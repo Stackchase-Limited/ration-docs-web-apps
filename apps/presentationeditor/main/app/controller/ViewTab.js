@@ -64,7 +64,8 @@ define([
                 zoom_percent: undefined,
                 unitsChanged: true,
                 lock_viewProps: false,
-                slideMasterMode: false
+                slideMasterMode: false,
+                viewMode: 'normal'
             };
             Common.NotificationCenter.on('uitheme:changed', this.onThemeChanged.bind(this));
             Common.NotificationCenter.on('document:ready', _.bind(this.onDocumentReady, this));
@@ -103,6 +104,8 @@ define([
                 'ViewTab': {
                     'mode:normal': _.bind(this.onChangeViewMode, this, 'normal'),
                     'mode:master': _.bind(this.onChangeViewMode, this, 'master'),
+                    'mode:sorter': _.bind(this.onChangeViewMode, this, 'sorter'),
+                    'sorterzoom:change': _.bind(this.onSorterZoom, this),
                     'zoom:selected': _.bind(this.onSelectedZoomValue, this),
                     'zoom:changedbefore': _.bind(this.onZoomChanged, this),
                     'zoom:changedafter': _.bind(this.onZoomChanged, this),
@@ -453,22 +456,35 @@ define([
             this._state.unitsChanged = true;
         },
 
+        // mode: 'normal', 'master' or 'sorter' (slide sorter)
         changeViewMode: function (mode) {
             if (!this.view.btnSlideMaster || !this.view.btnNormal) return;
-            
+
             var isMaster = mode === 'master';
             this.view.btnSlideMaster.toggle(isMaster, true);
-            this.view.btnNormal.toggle(!isMaster, true);
-            if (this._state.slideMasterMode !== isMaster) {
+            this.view.btnNormal.toggle(mode === 'normal', true);
+            this.view.btnSlideSorter && this.view.btnSlideSorter.toggle(mode === 'sorter', true);
+            this.view.sldrSorterZoom && this.view.sldrSorterZoom.setDisabled(mode !== 'sorter');
+            if (this._state.viewMode !== mode) {
+                this._state.viewMode = mode;
                 this._state.slideMasterMode = isMaster;
-                this.view.fireEvent('viewmode:change', [isMaster ? 'master' : 'normal']);
-                this.api.asc_changePresentationViewMode(isMaster ? Asc.c_oAscPresentationViewMode.masterSlide : Asc.c_oAscPresentationViewMode.normal);
-            } // Asc.c_oAscPresentationViewMode.sorter;
+                this.view.fireEvent('viewmode:change', [mode]);
+                this.api.asc_changePresentationViewMode(isMaster ? Asc.c_oAscPresentationViewMode.masterSlide :
+                    (mode === 'sorter' ? Asc.c_oAscPresentationViewMode.sorter : Asc.c_oAscPresentationViewMode.normal));
+                if (mode === 'sorter') {
+                    this.view.sldrSorterZoom && this.view.sldrSorterZoom.setValue(11 - this.api.asc_GetSorterColumns());
+                    Common.NotificationCenter.trigger('edit:complete', this.view);
+                }
+            }
         },
 
         onApiChangeViewMode: function (mode) {
-            var isMaster = mode === Asc.c_oAscPresentationViewMode.masterSlide;
-            this.changeViewMode(isMaster ? 'master' : 'normal');
+            this.changeViewMode(mode === Asc.c_oAscPresentationViewMode.masterSlide ? 'master' :
+                (mode === Asc.c_oAscPresentationViewMode.sorter ? 'sorter' : 'normal'));
+        },
+
+        onSorterZoom: function (value) {
+            this.api && this.api.asc_SetSorterColumns(11 - value);
         },
 
         onChangeViewMode: function (mode) {

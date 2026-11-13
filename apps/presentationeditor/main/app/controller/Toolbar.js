@@ -3113,8 +3113,9 @@ define([
             this.mode && this.mode.isDesktopApp && Common.UI.TooltipManager.showTip('pasteOptions');
         },
 
-        onChangeViewMode: function (mode) { // master or normal
-            var isMaster = mode==='master';
+        onChangeViewMode: function (mode) { // master, normal or sorter (slide sorter)
+            var isMaster = mode==='master',
+                wasMaster = this._state.viewMode==='master';
             this.toolbar.$el.find('.master-slide-mode')[isMaster?'show':'hide']();
             this.toolbar.$el.find('.normal-mode')[!isMaster?'show':'hide']();
             this.toolbar.lockToolbar(Common.enumLock.slideMasterMode, isMaster, { array:  this.btnsComment.concat([this.toolbar.btnInsertHyperlink]) });
@@ -3125,7 +3126,7 @@ define([
                 this.toolbar.setTab('slideMaster');
             } else {
                 Common.NotificationCenter.trigger('tab:visible', 'slideMaster', false);
-                this.toolbar.setTab('home');
+                wasMaster && this.toolbar.setTab('home');
                 this.showStaticElements();
             }
 
