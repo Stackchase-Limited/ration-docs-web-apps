@@ -354,6 +354,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-command-search"></div></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td colspan="2"><div id="fms-chb-equation-panel"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                         '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -481,6 +484,15 @@ define([], function () {
             this.chCommandSearch = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-command-search'),
                 labelText: this.txtCommandSearch + (Common.UI.CommandSearch ? ' (' + Common.UI.CommandSearch.shortcutLabel() + ')' : ''),
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #99: off by default - no Equation panel in the right sidebar, as before
+            this.chEquationPanel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-equation-panel'),
+                labelText: this.txtEquationPanel,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -926,6 +938,7 @@ define([], function () {
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("pe-settings-show-alt-hints"));
             this.chUndoLabel.setValue(Common.localStorage.getBool("pe-settings-undo-label"));
             this.chCommandSearch.setValue(Common.localStorage.getBool("pe-settings-command-search"));
+            this.chEquationPanel.setValue(Common.localStorage.getBool("pe-settings-equation-panel"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
 
@@ -1010,6 +1023,10 @@ define([], function () {
             Common.localStorage.setBool("pe-settings-undo-label", this.chUndoLabel.isChecked());
             Common.NotificationCenter.trigger('undolabel:changed');
             Common.localStorage.setBool("pe-settings-command-search", this.chCommandSearch.isChecked());
+            if (Common.localStorage.getBool("pe-settings-equation-panel") !== this.chEquationPanel.isChecked()) {
+                Common.localStorage.setBool("pe-settings-equation-panel", this.chEquationPanel.isChecked());
+                Common.NotificationCenter.trigger('equationpanel:changed');
+            }
 
             Common.localStorage.setItem("pe-settings-zoom", this.cmbZoom.getValue());
 
@@ -1164,6 +1181,7 @@ define([], function () {
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
         txtCommandSearch: 'Command search',
+        txtEquationPanel: 'Show the Equation panel in the right sidebar when editing an equation',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtFastTip: 'Real-time co-editing. All changes are saved automatically',
         txtStrictTip: 'Use the \'Save\' button to sync the changes you and others make',

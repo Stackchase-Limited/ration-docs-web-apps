@@ -8,6 +8,7 @@
             <div id="id-shape-settings" class="settings-panel"></div>
             <div id="id-textart-settings" class="settings-panel"></div>
             <div id="id-signature-settings" class="settings-panel"></div>
+            <div id="id-equation-settings" class="settings-panel"></div>
         </div>
     </div>
     <div class="tool-menu-btns" role="menubar" aria-label="<%= scope.ariaRightMenu %>" aria-orientation="vertical">
@@ -19,6 +20,7 @@
         <button id="id-right-menu-table" class="btn btn-category arrow-left" content-target="id-table-settings" data-hint="0" data-hint-direction="left" data-hint-offset="big"><i class="icon toolbar__icon btn-menu-table">&nbsp;</i></button>
         <button id="id-right-menu-textart" class="btn btn-category arrow-left" content-target="id-textart-settings" data-hint="0" data-hint-direction="left" data-hint-offset="big"><i class="icon toolbar__icon btn-menu-textart">&nbsp;</i></button>
         <button id="id-right-menu-signature" class="btn btn-category arrow-left hidden" content-target="id-signature-settings" data-hint="0" data-hint-direction="left" data-hint-offset="big"><i class="icon toolbar__icon btn-menu-signature">&nbsp;</i></button>
+        <button id="id-right-menu-equation" class="btn btn-category arrow-left hidden" content-target="id-equation-settings" data-hint="0" data-hint-direction="left" data-hint-offset="big"><i class="icon toolbar__icon btn-equation">&nbsp;</i></button>
         <div id="slot-right-menu-more"></div>
     </div>
 </div>

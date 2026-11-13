@@ -60,6 +60,7 @@ define([
     'presentationeditor/main/app/view/SlideSettings',
     'presentationeditor/main/app/view/TextArtSettings',
     'presentationeditor/main/app/view/SignatureSettings',
+    'common/main/lib/view/EquationSettings',
     'common/main/lib/component/Scroller',
     'common/main/lib/component/ListView',
 ], function (menuTemplate, $, _, Backbone) {
@@ -152,6 +153,18 @@ define([
             // this._settings[Common.Utils.documentSettingsType.Chart]       = {panel: "id-chart-settings",      btn: this.btnChart};
             this._settings[Common.Utils.documentSettingsType.TextArt]     = {panel: "id-textart-settings",    btn: this.btnTextArt};
 
+            // #99: the Equation panel, opt-in (File > Advanced settings); the button stays hidden while it is off
+            this.btnEquation = new Common.UI.Button({
+                hint: this.txtEquationSettings,
+                asctype: Common.Utils.documentSettingsType.Equation,
+                enableToggle: true,
+                disabled: true,
+                iconCls: 'btn-equation',
+                toggleGroup: 'tabpanelbtnsGroup',
+                allowMouseEventsOnDisabled: true
+            });
+            this._settings[Common.Utils.documentSettingsType.Equation]    = {panel: "id-equation-settings",   btn: this.btnEquation};
+
             return this;
         },
 
@@ -189,6 +202,7 @@ define([
             // this.btnChart.setElement($('#id-right-menu-chart'), false);         this.btnChart.render();
             this.btnShape.setElement($('#id-right-menu-shape'), false);         this.btnShape.render();
             this.btnTextArt.setElement($('#id-right-menu-textart'), false);     this.btnTextArt.render();
+            this.btnEquation.setElement($('#id-right-menu-equation'), false);   this.btnEquation.render().setVisible(Common.localStorage.getBool('pe-settings-equation-panel'));
 
             this.btnText.on('click',            _.bind(this.onBtnMenuClick, this));
             this.btnTable.on('click',           _.bind(this.onBtnMenuClick, this));
@@ -197,6 +211,7 @@ define([
             // this.btnChart.on('click',           _.bind(this.onBtnMenuClick, this));
             this.btnShape.on('click',           _.bind(this.onBtnMenuClick, this));
             this.btnTextArt.on('click',         _.bind(this.onBtnMenuClick, this));
+            this.btnEquation.on('click',        _.bind(this.onBtnMenuClick, this));
 
             this.paragraphSettings = new PE.Views.ParagraphSettings();
             this.slideSettings = new PE.Views.SlideSettings();
@@ -205,6 +220,14 @@ define([
             this.tableSettings = new PE.Views.TableSettings();
             this.shapeSettings = new PE.Views.ShapeSettings();
             this.textartSettings = new PE.Views.TextArtSettings();
+            this.equationSettings = new Common.Views.EquationSettings({
+                el: $('#id-equation-settings'),
+                prefix: 'pe',
+                getEquationGroups: function() {
+                    PE.getController('Toolbar').onMathTypes();
+                    return PE.getCollection('EquationGroups');
+                }
+            });
 
             if (mode && mode.isSignatureSupport) {
                 this.btnSignature = new Common.UI.Button({
@@ -255,6 +278,7 @@ define([
             this.shapeSettings.setApi(api).on('editcomplete', _.bind( fire, this)).on('eyedropper', _.bind(_isEyedropperStart, this)).on('updatescroller', _updateScroller);
             this.textartSettings.setApi(api).on('editcomplete', _.bind( fire, this)).on('eyedropper', _.bind(_isEyedropperStart, this)).on('updatescroller', _updateScroller);
             if (this.signatureSettings) this.signatureSettings.setApi(api).on('editcomplete', _.bind( fire, this));
+            this.equationSettings.setApi(api).on('editcomplete', _.bind( fire, this));
         },
 
         setMode: function(mode) {
@@ -361,7 +385,7 @@ define([
         },
 
         setButtons: function () {
-            var allButtons = [this.btnSlide, this.btnShape, this.btnImage, this.btnText, this.btnTable, this.btnTextArt, this.btnSignature];
+            var allButtons = [this.btnSlide, this.btnShape, this.btnImage, this.btnText, this.btnTable, this.btnTextArt, this.btnEquation, this.btnSignature];
             Common.UI.SideMenu.prototype.setButtons.apply(this, [allButtons]);
         },
 
@@ -390,6 +414,7 @@ define([
         txtTableSettings:           'Table Settings',
         txtShapeSettings:           'Shape Settings',
         txtTextArtSettings:         'Text Art Settings',
+        txtEquationSettings:        'Equation Settings',
         txtSlideSettings:           'Slide Settings',
         txtChartSettings:           'Chart Settings',
         txtSignatureSettings:       'Signature Settings',

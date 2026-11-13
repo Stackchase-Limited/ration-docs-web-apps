@@ -95,6 +95,22 @@ define([
             this._settings[Common.Utils.documentSettingsType.TextArt] =   {panelId: "id-textart-settings",    panel: rightMenu.textartSettings,  btn: rightMenu.btnTextArt,     hidden: 1, locked: false};
             // this._settings[Common.Utils.documentSettingsType.Chart] = {panelId: "id-chart-settings",          panel: rightMenu.chartSettings,    btn: rightMenu.btnChart,       hidden: 1, locked: false};
             this._settings[Common.Utils.documentSettingsType.Signature] = {panelId: "id-signature-settings",  panel: rightMenu.signatureSettings, btn: rightMenu.btnSignature,  hidden: 1, props: {}, locked: false};
+            this._settings[Common.Utils.documentSettingsType.Equation] = {panelId: "id-equation-settings",  panel: rightMenu.equationSettings, btn: rightMenu.btnEquation,  hidden: 1, props: {}, locked: false};
+            Common.NotificationCenter.on('equationpanel:changed', _.bind(this.onEquationPanelChanged, this));
+        },
+
+        // #99: File > Advanced settings turned the Equation panel on or off
+        onEquationPanelChanged: function() {
+            var btn = this.rightmenu.btnEquation;
+            if (!btn) return;
+            btn.setVisible(Common.localStorage.getBool('pe-settings-equation-panel'));
+            this.rightmenu.setButtons();
+            this.rightmenu.setMoreButton();
+            this._state.inEquation = false;
+            if (this.editMode && this.api) {
+                var selectedElements = this.api.getSelectedElements();
+                selectedElements.length>0 && this.onFocusObject(selectedElements);
+            }
         },
 
         setApi: function(api) {
@@ -176,6 +192,17 @@ define([
                     }
                 }
             }
+
+            // #99: the Equation panel (when turned on) is there while the cursor is in an equation and comes up on entering one
+            var eqPanel = this._settings[Common.Utils.documentSettingsType.Equation],
+                in_equation = _.some(SelectedObjects, function(obj) { return obj.get_ObjectType() === Asc.c_oAscTypeSelectElement.Math; });
+            if (eqPanel && eqPanel.btn && in_equation && Common.localStorage.getBool('pe-settings-equation-panel')) {
+                var paraPanel = this._settings[Common.Utils.documentSettingsType.Paragraph];
+                eqPanel.hidden = 0;
+                eqPanel.locked = !!paraPanel.locked;
+                if (!this._state.inEquation) eqPanel.needShow = true;
+            }
+            this._state.inEquation = in_equation && eqPanel && !eqPanel.hidden;
 
             if ( this._settings[Common.Utils.documentSettingsType.Slide].locked ) { // all elements are locked if the slide is locked
                 for (i=0; i<this._settings.length; i++)  {
@@ -275,6 +302,7 @@ define([
                 this.rightmenu.textartSettings.disableControls(disabled);
                 this.rightmenu.tableSettings.disableControls(disabled);
                 this.rightmenu.imageSettings.disableControls(disabled);
+                this.rightmenu.equationSettings && this.rightmenu.equationSettings.disableControls(disabled);
                 // this.rightmenu.chartSettings.disableControls(disabled);
 
                 if (this.rightmenu.signatureSettings) {
@@ -289,6 +317,7 @@ define([
                     this.rightmenu.btnImage.setDisabled(disabled);
                     this.rightmenu.btnShape.setDisabled(disabled);
                     this.rightmenu.btnTextArt.setDisabled(disabled);
+                    this.rightmenu.btnEquation && this.rightmenu.btnEquation.setDisabled(disabled);
                     // this.rightmenu.btnChart.setDisabled(disabled);
                     this.rightmenu.setDisabledAllMoreMenuItems(disabled);
                 } else {
