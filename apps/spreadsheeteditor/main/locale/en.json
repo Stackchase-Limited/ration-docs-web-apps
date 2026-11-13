@@ -5288,6 +5288,7 @@
   "SSE.Views.Toolbar.txtManageRange": "Name manager",
   "SSE.Views.Toolbar.txtMergeAcross": "Merge across",
   "SSE.Views.Toolbar.txtMergeCells": "Merge cells",
+  "SSE.Views.Toolbar.txtMergeKeepContent": "Merge and keep content",
   "SSE.Views.Toolbar.txtMergeCenter": "Merge & Center",
   "SSE.Views.Toolbar.txtNamedRange": "Named ranges",
   "SSE.Views.Toolbar.txtNewRange": "Define name",

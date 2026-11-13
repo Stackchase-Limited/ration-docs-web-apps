@@ -541,6 +541,11 @@ define([
                                     iconCls     : 'menu__icon btn-merge-cells',
                                     value   : Asc.c_oAscMergeOptions.Merge
                                 },
+                                {   // #2044
+                                    caption : me.txtMergeKeepContent,
+                                    iconCls     : 'menu__icon btn-merge-cells',
+                                    value   : Asc.c_oAscMergeOptions.MergeKeepContent
+                                },
                                 {
                                     caption : me.txtUnmerge,
                                     iconCls     : 'menu__icon btn-unmerge-cells',
@@ -1235,6 +1240,11 @@ define([
                                 caption : me.txtMergeCells,
                                 iconCls     : 'menu__icon btn-merge-cells',
                                 value   : Asc.c_oAscMergeOptions.Merge
+                            },
+                            {   // #2044: merge, keeping every cell's text, one per line
+                                caption : me.txtMergeKeepContent,
+                                iconCls     : 'menu__icon btn-merge-cells',
+                                value   : Asc.c_oAscMergeOptions.MergeKeepContent
                             },
                             {
                                 caption : me.txtUnmerge,
