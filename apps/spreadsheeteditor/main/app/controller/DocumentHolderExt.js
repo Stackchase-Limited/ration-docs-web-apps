@@ -3676,6 +3676,9 @@ define([], function () {
                     break;
                 case 'standardDeviation':
                     chartProps.setDisplayErrorBars(true, 3);
+                    break;
+                case 'errorBarsMore':
+                    this.onFormatErrorBars(chartProps);
                     break;       
                case 'bShowHorMajor':
                     if (hBarChart) {
@@ -3745,6 +3748,24 @@ define([], function () {
                     break;
             }
             this.chartProps = this.getCurrentChartProps();
+        };
+
+        // "More options..." in Error Bars: custom error bars from sheet ranges (#278)
+        dh.onFormatErrorBars = function(chartProps) {
+            var me = this;
+            if (!chartProps || !chartProps.setCustomErrorBars) return;
+            var win = new SSE.Views.FormatErrorBarsDialog({
+                handler: function(dlg, result) {
+                    if (result == 'ok') {
+                        var props = dlg.getSettings();
+                        chartProps.setCustomErrorBars(props.plus, props.minus, props.barType, props.endCap);
+                        me.chartProps = me.getCurrentChartProps ? me.getCurrentChartProps() : me.chartProps;
+                    }
+                    Common.NotificationCenter.trigger('edit:complete', me);
+                }
+            });
+            win.show();
+            win.setSettings({api: me.api, chartSettings: chartProps});
         };
 
         dh.updateChartElementMenu = function(menu, chartProps) {

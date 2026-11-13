@@ -272,6 +272,7 @@ require([
                 'spreadsheeteditor/main/app/view/ChartSettingsDlg',
                 'spreadsheeteditor/main/app/view/CellRangeDialog',
                 'spreadsheeteditor/main/app/view/ChartDataRangeDialog',
+                'spreadsheeteditor/main/app/view/FormatErrorBarsDialog',
                 'spreadsheeteditor/main/app/view/ChartWizardDialog',
                 'spreadsheeteditor/main/app/view/FillSeriesDialog',
                 'spreadsheeteditor/main/app/view/NamedRangeEditDlg',

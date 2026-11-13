@@ -390,6 +390,11 @@ define([
                                             disabled: false,
                                             toggleGroup: 'errorBars',
                                             checkable: true
+                                        },
+                                        {caption: '--'},
+                                        {
+                                            caption: me.textErrorBarsMore || 'More options...',
+                                            value: 'errorBarsMore'
                                         }
                                     ]
                                 })
