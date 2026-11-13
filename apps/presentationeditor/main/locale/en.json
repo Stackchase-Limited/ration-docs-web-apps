@@ -2840,6 +2840,7 @@
   "PE.Views.FileMenuPanels.Settings.txtStopMacrosDesc": "Disable all macros without a notification",
   "PE.Views.FileMenuPanels.Settings.txtStrictTip": "Use the \"Save\" button to sync the changes you and others make",
   "PE.Views.FileMenuPanels.Settings.txtTabBack": "Use toolbar color as tabs background",
+  "PE.Views.FileMenuPanels.Settings.txtUndoLabel": "Name the last action in the Undo button tooltip",
   "PE.Views.FileMenuPanels.Settings.txtUseAltKey": "Use Alt key to navigate the user interface using the keyboard",
   "PE.Views.FileMenuPanels.Settings.txtUseOptionKey": "Use Option key to navigate the user interface using the keyboard",
   "PE.Views.FileMenuPanels.Settings.txtWarnMacros": "Show Notification",

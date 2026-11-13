@@ -60,6 +60,7 @@ define([
 
             this.actionsMap = {};
             this.eventsMap = {};
+            this.hintSuffix = {};
         },
 
         setApi: function(api) {
@@ -69,7 +70,27 @@ define([
             api && this._applyShortcutsInSDK();
             this._eventsTrigger();
 
+            if (api && api.asc_getUndoLabel) {
+                // #1064: the Undo tooltip can name the step it undoes ("Undo: Typing (Ctrl+Z)")
+                api.asc_registerCallback(window.SSE ? 'asc_onCanUndoChanged' : 'asc_onCanUndo', _.bind(this.updateUndoLabel, this));
+                Common.NotificationCenter.on('undolabel:changed', _.bind(this.updateUndoLabel, this));
+            }
+
             return this;
+        },
+
+        // Opt-in (File > Advanced settings, <prefix>-settings-undo-label); without it the hint stays "Undo".
+        updateUndoLabel: function() {
+            var prefix = this.localStorageKey.replace(/shortcuts$/, ''),
+                suffix = '';
+            if (prefix && Common.localStorage.getBool(prefix + 'settings-undo-label') && this.api && this.api.asc_getUndoLabel) {
+                var label = this.api.asc_getUndoLabel();
+                label && (suffix = ': ' + label);
+            }
+            if ((this.hintSuffix.EditUndo || '') !== suffix) {
+                this.hintSuffix.EditUndo = suffix;
+                (this.eventsMap.EditUndo || []).forEach(function(callback) { callback(); });
+            }
         },
 
         keyCodeToKeyName: function(code) {
@@ -345,7 +366,7 @@ define([
                                 return !shortcut.ascShortcut.asc_IsHidden();
                             })
                             : null;
-                        const hintText = (item.label || '') + (firstShortcut ? ' (' + firstShortcut.keys.join('+') + ')' : '');
+                        const hintText = (item.label || '') + (this.hintSuffix[actionType] || '') + (firstShortcut ? ' (' + firstShortcut.keys.join('+') + ')' : '');
                         
                         if(item.applyCallback) {
                             item.applyCallback(item, hintText);

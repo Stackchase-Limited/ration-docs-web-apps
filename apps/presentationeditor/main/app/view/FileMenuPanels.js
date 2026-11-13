@@ -348,6 +348,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-use-alt-key"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-undo-label"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                         '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -461,6 +464,15 @@ define([], function () {
                 dataHintOffset: 'small'
             });
             (Common.Utils.isIE || Common.Utils.isMac && Common.Utils.isGecko) && this.chUseAltKey.$el.parent().parent().hide();
+
+            // #1064: off by default - the Undo tooltip then reads "Undo" as before
+            this.chUndoLabel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-undo-label'),
+                labelText: this.txtUndoLabel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
 
             this.chScreenReader = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-scrn-reader'),
@@ -900,6 +912,7 @@ define([], function () {
             }
 
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("pe-settings-show-alt-hints"));
+            this.chUndoLabel.setValue(Common.localStorage.getBool("pe-settings-undo-label"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
 
@@ -981,6 +994,8 @@ define([], function () {
             }
             Common.localStorage.setItem("pe-settings-show-alt-hints", this.chUseAltKey.isChecked() ? 1 : 0);
             Common.Utils.InternalSettings.set("pe-settings-show-alt-hints", Common.localStorage.getBool("pe-settings-show-alt-hints"));
+            Common.localStorage.setBool("pe-settings-undo-label", this.chUndoLabel.isChecked());
+            Common.NotificationCenter.trigger('undolabel:changed');
 
             Common.localStorage.setItem("pe-settings-zoom", this.cmbZoom.getValue());
 
@@ -1133,6 +1148,7 @@ define([], function () {
         txtWorkspace: 'Workspace',
         txtHieroglyphs: 'Hieroglyphs',
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
+        txtUndoLabel: 'Name the last action in the Undo button tooltip',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtFastTip: 'Real-time co-editing. All changes are saved automatically',
         txtStrictTip: 'Use the \'Save\' button to sync the changes you and others make',

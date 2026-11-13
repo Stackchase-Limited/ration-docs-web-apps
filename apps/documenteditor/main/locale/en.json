@@ -2959,6 +2959,7 @@
   "DE.Views.FileMenuPanels.Settings.txtTextDirDesc": "This setting will affect only new blank documents",
   "DE.Views.FileMenuPanels.Settings.txtTextLtr": "Left-to-right",
   "DE.Views.FileMenuPanels.Settings.txtTextRtl": "Right-to-left",
+  "DE.Views.FileMenuPanels.Settings.txtUndoLabel": "Name the last action in the Undo button tooltip",
   "DE.Views.FileMenuPanels.Settings.txtUseAltKey": "Use Alt key to navigate the user interface using the keyboard",
   "DE.Views.FileMenuPanels.Settings.txtUseOptionKey": "Use Option key to navigate the user interface using the keyboard",
   "DE.Views.FileMenuPanels.Settings.txtWarnMacros": "Show notification",

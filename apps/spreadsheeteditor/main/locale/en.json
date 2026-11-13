@@ -3534,6 +3534,7 @@
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtTabBack": "Use toolbar color as tabs background",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtTr": "Turkish",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtUk": "Ukrainian",
+  "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtUndoLabel": "Name the last action in the Undo button tooltip",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtUseAltKey": "Use Alt key to navigate the user interface using the keyboard",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtUseOptionKey": "Use Option key to navigate the user interface using the keyboard",
   "SSE.Views.FileMenuPanels.MainSettingsGeneral.txtVi": "Vietnamese",
