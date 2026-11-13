@@ -44,6 +44,7 @@
 define([
     'core',
     'common/main/lib/component/Window',
+    'common/main/lib/view/CommandSearch',
     'documenteditor/main/app/view/Toolbar',
     'documenteditor/main/app/controller/PageLayout',
 ], function () {
@@ -4073,6 +4074,9 @@ define([
         onAppReady: function (config) {
             var me = this;
             me.appOptions = config;
+
+            // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
+            Common.UI.CommandSearch.attach(this, 'de');
 
             var lang = config.lang ? config.lang.toLowerCase() : 'en',
                 langPrefix = lang.split(/[\-_]/)[0];

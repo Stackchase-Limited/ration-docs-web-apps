@@ -651,6 +651,8 @@ define([
             }
 
             me.rendered = true;
+            // Ration Docs #1801: the command search finds the ribbon's buttons from their elements
+            me.cmpEl && me.cmpEl.data('ui-button', me);
 
             me.options.hint && me.createHint(me.options.hint);
 

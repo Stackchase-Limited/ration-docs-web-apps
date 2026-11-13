@@ -45,6 +45,7 @@
 define([
     'core',
     'common/main/lib/component/Window',
+    'common/main/lib/view/CommandSearch',
     'presentationeditor/main/app/collection/SlideThemes',
     'presentationeditor/main/app/controller/Transitions',
     'presentationeditor/main/app/controller/Animation',
@@ -2923,6 +2924,9 @@ define([
         onAppReady: function (config) {
             var me = this;
             me.appOptions = config;
+
+            // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
+            Common.UI.CommandSearch.attach(this, 'pe');
 
             this.btnsComment = [];
             if ( config.canCoAuthoring && config.canComments ) {

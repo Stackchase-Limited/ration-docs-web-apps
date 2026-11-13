@@ -445,6 +445,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-undo-label"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-command-search"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                     '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -562,6 +565,15 @@ define([], function () {
             this.chUndoLabel = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-undo-label'),
                 labelText: this.txtUndoLabel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #1801: off by default - the shortcut then does nothing, as before
+            this.chCommandSearch = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-command-search'),
+                labelText: this.txtCommandSearch + (Common.UI.CommandSearch ? ' (' + Common.UI.CommandSearch.shortcutLabel() + ')' : ''),
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1288,6 +1300,7 @@ define([], function () {
             this.rbNewFormatOdf.setValue(odf);
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("de-settings-show-alt-hints"));
             this.chUndoLabel.setValue(Common.localStorage.getBool("de-settings-undo-label"));
+            this.chCommandSearch.setValue(Common.localStorage.getBool("de-settings-command-search"));
             var rtl = !!Common.Utils.InternalSettings.get("de-settings-def-text-rtl");
             this.rbTextLtr.setValue(!rtl);
             this.rbTextRtl.setValue(rtl);
@@ -1412,6 +1425,7 @@ define([], function () {
             Common.Utils.InternalSettings.set("de-settings-show-alt-hints", Common.localStorage.getBool("de-settings-show-alt-hints"));
             Common.localStorage.setBool("de-settings-undo-label", this.chUndoLabel.isChecked());
             Common.NotificationCenter.trigger('undolabel:changed');
+            Common.localStorage.setBool("de-settings-command-search", this.chCommandSearch.isChecked());
 
             Common.localStorage.setItem("de-settings-zoom", this.cmbZoom.getValue());
 
@@ -1632,6 +1646,7 @@ define([], function () {
         txtHieroglyphs: 'Hieroglyphs',
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
+        txtCommandSearch: 'Command search',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         strShowComments: 'Show comments in text',
         strShowResolvedComments: 'Show resolved comments',

@@ -334,6 +334,9 @@ define([], function () {
                     '<td colspan="2"><div id="fms-chb-undo-label"></div></td>',
                 '</tr>',
                 '<tr>',
+                    '<td colspan="2"><div id="fms-chb-command-search"></div></td>',
+                '</tr>',
+                '<tr>',
                     '<td colspan="2"><div id="fms-chb-smooth-scroll"></div></td>',
                 '</tr>',
                 '<tr>',
@@ -535,6 +538,15 @@ define([], function () {
             this.chUndoLabel = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-undo-label'),
                 labelText: this.txtUndoLabel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #1801: off by default - the shortcut then does nothing, as before
+            this.chCommandSearch = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-command-search'),
+                labelText: this.txtCommandSearch + (Common.UI.CommandSearch ? ' (' + Common.UI.CommandSearch.shortcutLabel() + ')' : ''),
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1188,6 +1200,7 @@ define([], function () {
             this.cmbZoom.setValue(item ? parseInt(item.get('value')) : (value>0 ? value+'%' : 100));
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("sse-settings-show-alt-hints"));
             this.chUndoLabel.setValue(Common.localStorage.getBool("sse-settings-undo-label"));
+            this.chCommandSearch.setValue(Common.localStorage.getBool("sse-settings-command-search"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
 
             /** coauthoring begin **/
@@ -1369,6 +1382,7 @@ define([], function () {
             Common.Utils.InternalSettings.set("sse-settings-show-alt-hints", Common.localStorage.getBool("sse-settings-show-alt-hints"));
             Common.localStorage.setBool("sse-settings-undo-label", this.chUndoLabel.isChecked());
             Common.NotificationCenter.trigger('undolabel:changed');
+            Common.localStorage.setBool("sse-settings-command-search", this.chCommandSearch.isChecked());
 
             Common.localStorage.setItem("sse-settings-zoom", this.cmbZoom.getValue());
 
@@ -1666,6 +1680,7 @@ define([], function () {
         txtHighlightCol: 'Column only',
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
+        txtCommandSearch: 'Command search',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtRegion: 'Region',
         txtProofing: 'Proofing',

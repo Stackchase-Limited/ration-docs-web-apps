@@ -42,6 +42,7 @@
 define([
     'core',
     'common/main/lib/component/Window',
+    'common/main/lib/view/CommandSearch',
     'common/main/lib/view/SearchBar',
     'spreadsheeteditor/main/app/view/define',
     'spreadsheeteditor/main/app/view/Toolbar',
@@ -4882,6 +4883,9 @@ define([
         onAppReady: function (config) {
             var me = this;
             me.appOptions = config;
+
+            // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
+            Common.UI.CommandSearch.attach(this, 'sse');
 
             this.btnsComment = [];
             if ( config.canCoAuthoring && config.canComments ) {
