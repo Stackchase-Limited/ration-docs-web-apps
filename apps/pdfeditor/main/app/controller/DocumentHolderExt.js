@@ -227,6 +227,7 @@ define([], function () {
                 view.mnuCutPage.on('click', _.bind(me.onCutCopyPaste, me));
                 view.mnuPastePageBefore.on('click', _.bind(me.onCutCopyPaste, me));
                 view.mnuPastePageAfter.on('click', _.bind(me.onCutCopyPaste, me));
+                view.mnuExtractPages.on('click', _.bind(me.onExtractPages, me));
                 view.menuChartElement.on('item:click',               _.bind(me.onChartElement, me));
                 view.menuChartElement.menu.items.forEach(item => {
                     if (item.menu) {
@@ -2491,6 +2492,27 @@ define([], function () {
             this.api && this.api.asc_RemovePage();
 
             Common.NotificationCenter.trigger('edit:complete', this.documentHolder);
+        };
+
+        // #1858: save the selected pages as a new PDF, named after the document and the pages, e.g. "Report (2-4, 7).pdf"
+        dh.onExtractPages = function() {
+            if (this.api && this.api.asc_ExtractPages) {
+                var pages = this.api.getSelectedPages();
+                this.api.asc_ExtractPages(this.getExtractPagesFileName(this.api.asc_getDocumentName(), pages), pages);
+            }
+
+            Common.NotificationCenter.trigger('edit:complete', this.documentHolder);
+        };
+
+        dh.getExtractPagesFileName = function(docName, pages) {
+            var base = (docName || '').replace(/\.[^.\/\\]*$/, '') || 'Document',
+                nums = _.uniq(_.map(pages, function(page) { return page + 1; })).sort(function(a, b) { return a - b; }),
+                ranges = [];
+            _.each(nums, function(num) {
+                var last = ranges[ranges.length - 1];
+                (last && last[1] === num - 1) ? (last[1] = num) : ranges.push([num, num]);
+            });
+            return base + ' (' + _.map(ranges, function(r) { return r[0] === r[1] ? r[0] : r[0] + '-' + r[1]; }).join(', ') + ').pdf';
         };
 
         dh.onRotatePage = function(angle, item) {

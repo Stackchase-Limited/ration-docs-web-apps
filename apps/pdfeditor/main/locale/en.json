@@ -2108,6 +2108,7 @@
   "PDFE.Views.DocumentHolder.txtOpacity": "Opacity",
   "PDFE.Views.DocumentHolder.txtOverbar": "Bar over text",
   "PDFE.Views.DocumentHolder.txtPastePage": "Paste page",
+  "PDFE.Views.DocumentHolder.txtExtractPages": "Save pages as new PDF...",
   "PDFE.Views.DocumentHolder.txtPastePageAfter": "Paste page after",
   "PDFE.Views.DocumentHolder.txtPastePageBefore": "Paste page before",
   "PDFE.Views.DocumentHolder.txtPercentage": "Percentage",

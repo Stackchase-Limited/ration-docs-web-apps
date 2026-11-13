@@ -1691,6 +1691,11 @@ define([], function () {
                 caption     : me.textCopy,
                 value : 'copy'
             });
+            // #1858: the selected pages as a new PDF (Save dialog)
+            me.mnuExtractPages = new Common.UI.MenuItem({
+                caption     : me.txtExtractPages,
+                value : 'extract'
+            });
             me.mnuPastePageBefore = new Common.UI.MenuItem({
                 caption     : me.txtPastePageBefore,
                 value : 'paste-before'
@@ -1742,6 +1747,7 @@ define([], function () {
                         me.mnuDeletePage.setVisible(value.isPageSelect===true);
                         me.mnuCopyPage.setVisible(value.isPageSelect===true);
                         me.mnuCutPage.setVisible(value.isPageSelect===true);
+                        me.mnuExtractPages.setVisible(value.isPageSelect===true && !!me.api && !!me.api.asc_ExtractPages);
                         menuPageNewSeparator.setVisible(value.isPageSelect===true);
                         menuPagePasteSeparator.setVisible(value.isPageSelect===true);
                         menuPageDelSeparator.setVisible(value.isPageSelect===true);
@@ -1753,6 +1759,7 @@ define([], function () {
                     var canRemove = me.api.asc_CanRemovePages();
                     me.mnuDeletePage.setDisabled(me._pagesCount<2 || page_deleted || !canRemove);
                     me.mnuCutPage.setDisabled(me._pagesCount<2 || page_deleted || !canRemove);
+                    me.mnuExtractPages.setDisabled(page_deleted || !me.api.asc_CanExtractPages || !me.api.asc_CanExtractPages());
                     var canPaste = me.api.asc_CanPastePage();
                     me.mnuPastePageBefore.setDisabled(!canPaste);
                     me.mnuPastePageAfter.setDisabled(!canPaste);
@@ -1760,6 +1767,7 @@ define([], function () {
                 items: [
                     me.mnuCutPage,
                     me.mnuCopyPage,
+                    me.mnuExtractPages,
                     menuPagePasteSeparator,
                     me.mnuPastePageBefore,
                     me.mnuPastePageAfter,
