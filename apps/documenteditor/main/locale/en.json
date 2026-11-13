@@ -4552,5 +4552,8 @@
   "DE.Views.PrintWithPreview.txtEvenPages": "Only even pages",
   "DE.Controllers.Print.txtManualDuplexTurnOver": "The odd pages are being printed. When they are done, turn the printed stack over and put it back in the paper tray, then click OK to print the even pages.",
   "DE.Views.PrintWithPreview.txtManualDuplex": "Print on both sides manually",
-  "DE.Views.PrintWithPreview.txtManualDuplexDesc": "Odd pages first, then turn the stack over for the even pages"
+  "DE.Views.PrintWithPreview.txtManualDuplexDesc": "Odd pages first, then turn the stack over for the even pages",
+  "Common.UI.QuickAccessPins.txtAdd": "Add to quick access toolbar",
+  "Common.UI.QuickAccessPins.txtRemove": "Remove from quick access toolbar",
+  "DE.Views.FileMenuPanels.Settings.txtQuickAccessPins": "Allow pinning toolbar buttons to the quick access toolbar"
 }

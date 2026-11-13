@@ -357,6 +357,9 @@ define([], function () {
                 '<tr class="edit">',
                     '<td colspan="2"><div id="fms-chb-equation-panel"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-quick-access-pins"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                         '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -493,6 +496,15 @@ define([], function () {
             this.chEquationPanel = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-equation-panel'),
                 labelText: this.txtEquationPanel,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #420: off by default - no right-click menu on ribbon buttons and no pins, as before
+            this.chQuickAccessPins = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-quick-access-pins'),
+                labelText: this.txtQuickAccessPins,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -939,6 +951,7 @@ define([], function () {
             this.chUndoLabel.setValue(Common.localStorage.getBool("pe-settings-undo-label"));
             this.chCommandSearch.setValue(Common.localStorage.getBool("pe-settings-command-search"));
             this.chEquationPanel.setValue(Common.localStorage.getBool("pe-settings-equation-panel"));
+            this.chQuickAccessPins.setValue(Common.localStorage.getBool("pe-settings-quick-access-pins"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
 
@@ -1027,6 +1040,8 @@ define([], function () {
                 Common.localStorage.setBool("pe-settings-equation-panel", this.chEquationPanel.isChecked());
                 Common.NotificationCenter.trigger('equationpanel:changed');
             }
+            Common.localStorage.setBool("pe-settings-quick-access-pins", this.chQuickAccessPins.isChecked());
+            Common.NotificationCenter.trigger('quickaccess:pins');
 
             Common.localStorage.setItem("pe-settings-zoom", this.cmbZoom.getValue());
 
@@ -1182,6 +1197,7 @@ define([], function () {
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
         txtCommandSearch: 'Command search',
         txtEquationPanel: 'Show the Equation panel in the right sidebar when editing an equation',
+        txtQuickAccessPins: 'Allow pinning toolbar buttons to the quick access toolbar',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtFastTip: 'Real-time co-editing. All changes are saved automatically',
         txtStrictTip: 'Use the \'Save\' button to sync the changes you and others make',

@@ -45,6 +45,7 @@ define([
     'core',
     'common/main/lib/component/Window',
     'common/main/lib/view/CommandSearch',
+    'common/main/lib/view/QuickAccessPins',
     'documenteditor/main/app/view/Toolbar',
     'documenteditor/main/app/controller/PageLayout',
 ], function () {
@@ -4077,6 +4078,8 @@ define([
 
             // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
             Common.UI.CommandSearch.attach(this, 'de');
+            // #420: right-click on a ribbon button pins it to the quick access toolbar when it is on in Advanced settings
+            Common.UI.QuickAccessPins.attach(this, 'de');
 
             var lang = config.lang ? config.lang.toLowerCase() : 'en',
                 langPrefix = lang.split(/[\-_]/)[0];

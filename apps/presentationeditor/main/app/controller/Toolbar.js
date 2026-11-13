@@ -46,6 +46,7 @@ define([
     'core',
     'common/main/lib/component/Window',
     'common/main/lib/view/CommandSearch',
+    'common/main/lib/view/QuickAccessPins',
     'presentationeditor/main/app/collection/SlideThemes',
     'presentationeditor/main/app/controller/Transitions',
     'presentationeditor/main/app/controller/Animation',
@@ -2927,6 +2928,8 @@ define([
 
             // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
             Common.UI.CommandSearch.attach(this, 'pe');
+            // #420: right-click on a ribbon button pins it to the quick access toolbar when it is on in Advanced settings
+            Common.UI.QuickAccessPins.attach(this, 'pe');
 
             this.btnsComment = [];
             if ( config.canCoAuthoring && config.canComments ) {

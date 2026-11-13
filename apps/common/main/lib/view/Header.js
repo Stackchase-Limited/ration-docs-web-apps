@@ -566,6 +566,7 @@ define([
                     });
                 });
                 me.btnQuickAccess.menu.on('item:click', function (menu, item) {
+                    if (item.options.pinId) return;     // #420: a pinned ribbon button (QuickAccessPins.js)
                     var props = {};
                     switch (item.value) {
                         case 'save':
@@ -1138,6 +1139,11 @@ define([
 
                     return $html;
                 }
+            },
+
+            // #420: the pinned ribbon buttons (QuickAccessPins.js) change the width of the quick access toolbar
+            updateDocNamePosition: function () {
+                updateDocNamePosition();
             },
 
             setVisible: function (visible) {

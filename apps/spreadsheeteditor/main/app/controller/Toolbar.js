@@ -43,6 +43,7 @@ define([
     'core',
     'common/main/lib/component/Window',
     'common/main/lib/view/CommandSearch',
+    'common/main/lib/view/QuickAccessPins',
     'common/main/lib/view/SearchBar',
     'spreadsheeteditor/main/app/view/define',
     'spreadsheeteditor/main/app/view/Toolbar',
@@ -4886,6 +4887,8 @@ define([
 
             // #1801: Alt+/ (Ctrl+Option+/ on macOS) opens the command search when it is on in Advanced settings
             Common.UI.CommandSearch.attach(this, 'sse');
+            // #420: right-click on a ribbon button pins it to the quick access toolbar when it is on in Advanced settings
+            Common.UI.QuickAccessPins.attach(this, 'sse');
 
             this.btnsComment = [];
             if ( config.canCoAuthoring && config.canComments ) {

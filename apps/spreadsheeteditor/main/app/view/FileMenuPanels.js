@@ -340,6 +340,9 @@ define([], function () {
                     '<td colspan="2"><div id="fms-chb-command-search"></div></td>',
                 '</tr>',
                 '<tr>',
+                    '<td colspan="2"><div id="fms-chb-quick-access-pins"></div></td>',
+                '</tr>',
+                '<tr>',
                     '<td colspan="2"><div id="fms-chb-smooth-scroll"></div></td>',
                 '</tr>',
                 '<tr>',
@@ -550,6 +553,15 @@ define([], function () {
             this.chCommandSearch = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-command-search'),
                 labelText: this.txtCommandSearch + (Common.UI.CommandSearch ? ' (' + Common.UI.CommandSearch.shortcutLabel() + ')' : ''),
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #420: off by default - no right-click menu on ribbon buttons and no pins, as before
+            this.chQuickAccessPins = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-quick-access-pins'),
+                labelText: this.txtQuickAccessPins,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1213,6 +1225,7 @@ define([], function () {
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("sse-settings-show-alt-hints"));
             this.chUndoLabel.setValue(Common.localStorage.getBool("sse-settings-undo-label"));
             this.chCommandSearch.setValue(Common.localStorage.getBool("sse-settings-command-search"));
+            this.chQuickAccessPins.setValue(Common.localStorage.getBool("sse-settings-quick-access-pins"));
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
 
             /** coauthoring begin **/
@@ -1396,6 +1409,8 @@ define([], function () {
             Common.localStorage.setBool("sse-settings-undo-label", this.chUndoLabel.isChecked());
             Common.NotificationCenter.trigger('undolabel:changed');
             Common.localStorage.setBool("sse-settings-command-search", this.chCommandSearch.isChecked());
+            Common.localStorage.setBool("sse-settings-quick-access-pins", this.chQuickAccessPins.isChecked());
+            Common.NotificationCenter.trigger('quickaccess:pins');
 
             Common.localStorage.setItem("sse-settings-zoom", this.cmbZoom.getValue());
 
@@ -1697,6 +1712,7 @@ define([], function () {
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
         txtCommandSearch: 'Command search',
+        txtQuickAccessPins: 'Allow pinning toolbar buttons to the quick access toolbar',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         txtRegion: 'Region',
         txtProofing: 'Proofing',
