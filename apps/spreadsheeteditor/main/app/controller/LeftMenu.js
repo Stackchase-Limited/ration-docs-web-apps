@@ -574,6 +574,11 @@ define([
                 Common.Utils.InternalSettings.set("sse-settings-fill-shortcuts", value);
                 this.api.asc_setFillShortcuts && this.api.asc_setFillShortcuts(value);
 
+                // #2020
+                value = Common.localStorage.getBool("sse-settings-paste-values-shortcut");
+                Common.Utils.InternalSettings.set("sse-settings-paste-values-shortcut", value);
+                this.api.asc_setPasteValuesShortcut && this.api.asc_setPasteValuesShortcut(value);
+
                 value = Common.localStorage.getBool("sse-settings-def-sheet-rtl");
                 Common.Utils.InternalSettings.set("sse-settings-def-sheet-rtl", value);
                 this.api.asc_setDefaultDirection(value);

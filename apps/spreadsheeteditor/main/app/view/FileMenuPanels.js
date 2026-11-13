@@ -269,6 +269,9 @@ define([], function () {
                 '<tr class="edit">',
                     '<td colspan = "2"><div id="fms-chb-fill-shortcuts"></div></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td colspan = "2"><div id="fms-chb-paste-values-shortcut"></div></td>',
+                '</tr>',
                 '<tr class ="editsave divider-group"></tr>',
                 '<tr class="collaboration" >',
                     '<td class="group-name" colspan="2"><label><%= scope.txtCollaboration %></label></td>',
@@ -898,6 +901,15 @@ define([], function () {
                 dataHintOffset: 'small'
             });
 
+            // #2020: Excel's Ctrl+Shift+V (paste values only) in the cell grid; off by default
+            this.chPasteValuesShortcut = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-paste-values-shortcut'),
+                labelText: Common.Utils.isMac ? this.strPasteValuesShortcutMac : this.strPasteValuesShortcut,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
             this.btnCustomizeQuickAccess = new Common.UI.Button({
                 el: $markup.findById('#fms-btn-customize-quick-access')
             });
@@ -1286,6 +1298,7 @@ define([], function () {
             this.chPaste.setValue(Common.Utils.InternalSettings.get("sse-settings-paste-button"));
             this.chTooltip.setValue(Common.Utils.InternalSettings.get("sse-settings-function-tooltip"));
             this.chFillShortcuts.setValue(Common.Utils.InternalSettings.get("sse-settings-fill-shortcuts"));
+            this.chPasteValuesShortcut.setValue(Common.Utils.InternalSettings.get("sse-settings-paste-values-shortcut"));
             //this.chQuickPrint.setValue(Common.Utils.InternalSettings.get("sse-settings-quick-print-button"));
 
             value = this.api.asc_GetCalcSettings();
@@ -1437,6 +1450,7 @@ define([], function () {
             Common.Utils.InternalSettings.set("sse-settings-function-tooltip", this.chTooltip.isChecked() ? 1 : 0);
 
             Common.localStorage.setItem("sse-settings-fill-shortcuts", this.chFillShortcuts.isChecked() ? 1 : 0);
+            Common.localStorage.setItem("sse-settings-paste-values-shortcut", this.chPasteValuesShortcut.isChecked() ? 1 : 0);
 
             this.mode.isEdit && Common.localStorage.setBool("sse-settings-def-sheet-rtl", this.rbSheetRtl.getValue());
 
@@ -1630,6 +1644,8 @@ define([], function () {
         strPasteButton: 'Show Paste Options button when content is pasted',
         strFillShortcuts: 'Ctrl+D and Ctrl+R fill down and right in the cell grid',
         strFillShortcutsMac: '⌘D and ⌘R fill down and right in the cell grid',
+        strPasteValuesShortcut: 'Ctrl+Shift+V pastes values only in the cell grid',
+        strPasteValuesShortcutMac: '⇧⌘V pastes values only in the cell grid',
         txtBe: 'Belarusian',
         txtBg: 'Bulgarian',
         txtCa: 'Catalan',

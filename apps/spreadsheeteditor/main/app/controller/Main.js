@@ -1143,6 +1143,11 @@ define([
                     Common.Utils.InternalSettings.set("sse-settings-fill-shortcuts", value);
                     me.api.asc_setFillShortcuts && me.api.asc_setFillShortcuts(value);
 
+                    // #2020: Ctrl+Shift+V pastes values only - off unless turned on
+                    value = Common.localStorage.getBool("sse-settings-paste-values-shortcut");
+                    Common.Utils.InternalSettings.set("sse-settings-paste-values-shortcut", value);
+                    me.api.asc_setPasteValuesShortcut && me.api.asc_setPasteValuesShortcut(value);
+
                     me.loadAutoCorrectSettings();
 
                     if (me.needToUpdateVersion) {
