@@ -107,6 +107,22 @@ define([
             this._settings[Common.Utils.documentSettingsType.Form] = {panelId: "id-form-settings",  panel: rightMenu.formSettings, btn: rightMenu.btnForm,  hidden: 1, props: {}, locked: false};
             this._settings[Common.Utils.documentSettingsType.SendForSigning] = {panelId: "id-send-for-signing-settings",  panel: rightMenu.sendForSigningSettings, btn: rightMenu.btnSendForSigning,  hidden: 1, props: {}, locked: false};
             this._settings[Common.Utils.documentSettingsType.FillingStatus] = {panelId: "id-filling-status-settings",  panel: rightMenu.fillingStatusSettings, btn: rightMenu.btnFillingStatus,  hidden: 1, props: {}, locked: false};
+            this._settings[Common.Utils.documentSettingsType.Equation] = {panelId: "id-equation-settings",  panel: rightMenu.equationSettings, btn: rightMenu.btnEquation,  hidden: 1, props: {}, locked: false};
+            Common.NotificationCenter.on('equationpanel:changed', _.bind(this.onEquationPanelChanged, this));
+        },
+
+        // #99: File > Advanced settings turned the Equation panel on or off
+        onEquationPanelChanged: function() {
+            var btn = this.rightmenu.btnEquation;
+            if (!btn) return;
+            btn.setVisible(Common.localStorage.getBool('de-settings-equation-panel'));
+            this.rightmenu.setButtons();
+            this.rightmenu.setMoreButton();
+            this._state.inEquation = false;
+            if (this.editMode && this.api) {
+                var selectedElements = this.api.getSelectedElements();
+                selectedElements.length>0 && this.onFocusObject(selectedElements);
+            }
         },
 
         setApi: function(api) {
@@ -270,6 +286,16 @@ define([
             //             this._settings[i].locked = true;
             //     }
             // }
+
+            // #99: the Equation panel (when turned on) is there while the cursor is in an equation and comes up on entering one
+            var eqPanel = this._settings[Common.Utils.documentSettingsType.Equation];
+            if (eqPanel && eqPanel.btn && in_equation && Common.localStorage.getBool('de-settings-equation-panel')) {
+                var paraPanel = this._settings[Common.Utils.documentSettingsType.Paragraph];
+                eqPanel.hidden = 0;
+                eqPanel.locked = paraPanel.hidden ? isProtected : paraPanel.locked;
+                if (!this._state.inEquation) eqPanel.needShow = true;
+            }
+            this._state.inEquation = in_equation && eqPanel && !eqPanel.hidden;
 
             if (!this._settings[Common.Utils.documentSettingsType.MailMerge].locked) { // disable MailMerge-InsertField when disable btnInsertTable
                 this._settings[Common.Utils.documentSettingsType.MailMerge].locked = !can_add_table || in_equation;
@@ -504,6 +530,7 @@ define([
                 this.rightmenu.tableSettings.disableControls(disabled);
                 this.rightmenu.imageSettings.disableControls(disabled);
                 this.rightmenu.formSettings && this.rightmenu.formSettings.disableControls(disabled);
+                this.rightmenu.equationSettings && this.rightmenu.equationSettings.disableControls(disabled);
                 if (!allowMerge && this.rightmenu.mergeSettings) {
                     this.rightmenu.mergeSettings.disableControls(disabled);
                     disabled && this.rightmenu.btnMailMerge.setDisabled(disabled);
@@ -524,6 +551,7 @@ define([
                     // this.rightmenu.btnHeaderFooter.setDisabled(disabled);
                     this.rightmenu.btnShape.setDisabled(disabled);
                     this.rightmenu.btnTextArt.setDisabled(disabled);
+                    this.rightmenu.btnEquation && this.rightmenu.btnEquation.setDisabled(disabled);
                     // this.rightmenu.btnChart.setDisabled(disabled);
                     this.rightmenu.btnForm && this.rightmenu.btnForm.setDisabled(disabled);
                     this.rightmenu.btnFillingStatus && this.rightmenu.btnFillingStatus.setDisabled(disabled);

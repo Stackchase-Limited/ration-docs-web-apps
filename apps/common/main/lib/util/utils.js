@@ -123,7 +123,8 @@ define([], function () {
                 Slicer: 12,
                 Form: 13,
                 FillingStatus: 14,
-                SendForSigning: 15
+                SendForSigning: 15,
+                Equation: 16 // Ration Docs #99
             },
             importTextType = {
                 DRM: 0,

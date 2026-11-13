@@ -448,6 +448,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-command-search"></div></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td colspan="2"><div id="fms-chb-equation-panel"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                     '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -574,6 +577,15 @@ define([], function () {
             this.chCommandSearch = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-command-search'),
                 labelText: this.txtCommandSearch + (Common.UI.CommandSearch ? ' (' + Common.UI.CommandSearch.shortcutLabel() + ')' : ''),
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+
+            // #99: off by default - no Equation panel in the right sidebar, as before
+            this.chEquationPanel = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-equation-panel'),
+                labelText: this.txtEquationPanel,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1301,6 +1313,7 @@ define([], function () {
             this.chUseAltKey.setValue(Common.Utils.InternalSettings.get("de-settings-show-alt-hints"));
             this.chUndoLabel.setValue(Common.localStorage.getBool("de-settings-undo-label"));
             this.chCommandSearch.setValue(Common.localStorage.getBool("de-settings-command-search"));
+            this.chEquationPanel.setValue(Common.localStorage.getBool("de-settings-equation-panel"));
             var rtl = !!Common.Utils.InternalSettings.get("de-settings-def-text-rtl");
             this.rbTextLtr.setValue(!rtl);
             this.rbTextRtl.setValue(rtl);
@@ -1426,6 +1439,10 @@ define([], function () {
             Common.localStorage.setBool("de-settings-undo-label", this.chUndoLabel.isChecked());
             Common.NotificationCenter.trigger('undolabel:changed');
             Common.localStorage.setBool("de-settings-command-search", this.chCommandSearch.isChecked());
+            if (Common.localStorage.getBool("de-settings-equation-panel") !== this.chEquationPanel.isChecked()) {
+                Common.localStorage.setBool("de-settings-equation-panel", this.chEquationPanel.isChecked());
+                Common.NotificationCenter.trigger('equationpanel:changed');
+            }
 
             Common.localStorage.setItem("de-settings-zoom", this.cmbZoom.getValue());
 
@@ -1647,6 +1664,7 @@ define([], function () {
         txtUseAltKey: 'Use Alt key to navigate the user interface using the keyboard',
         txtUndoLabel: 'Name the last action in the Undo button tooltip',
         txtCommandSearch: 'Command search',
+        txtEquationPanel: 'Show the Equation panel in the right sidebar when editing an equation',
         txtUseOptionKey: 'Use Option key to navigate the user interface using the keyboard',
         strShowComments: 'Show comments in text',
         strShowResolvedComments: 'Show resolved comments',

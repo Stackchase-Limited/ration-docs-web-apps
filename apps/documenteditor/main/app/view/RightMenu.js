@@ -64,6 +64,7 @@ define([
     'documenteditor/main/app/view/FormSettings',
     'documenteditor/main/app/view/SendForSigningSettings',
     'documenteditor/main/app/view/FillingStatusSettings',
+    'common/main/lib/view/EquationSettings',
     'common/main/lib/component/Scroller',
     'common/main/lib/component/ListView',
 ], function (menuTemplate, $, _, Backbone) {
@@ -204,6 +205,20 @@ define([
                 this.btnShape.on('click',           this.onBtnMenuClick.bind(this));
                 this.btnTextArt.on('click',         this.onBtnMenuClick.bind(this));
     
+                // #99: the Equation panel, opt-in (File > Advanced settings); the button stays hidden while it is off
+                this.btnEquation = new Common.UI.Button({
+                    hint: this.txtEquationSettings,
+                    asctype: Common.Utils.documentSettingsType.Equation,
+                    enableToggle: true,
+                    disabled: true,
+                    iconCls: 'btn-equation',
+                    toggleGroup: 'tabpanelbtnsGroup',
+                    allowMouseEventsOnDisabled: true
+                });
+                this._settings[Common.Utils.documentSettingsType.Equation] = {panel: "id-equation-settings", btn: this.btnEquation};
+                this.btnEquation.setElement($markup.findById('#id-right-menu-equation'), false);   this.btnEquation.render().setVisible(Common.localStorage.getBool('de-settings-equation-panel'));
+                this.btnEquation.on('click',        this.onBtnMenuClick.bind(this));
+
                 this.paragraphSettings = new DE.Views.ParagraphSettings();
                 // this.headerSettings = new DE.Views.HeaderFooterSettings();
                 this.imageSettings = new DE.Views.ImageSettings();
@@ -211,6 +226,14 @@ define([
                 this.tableSettings = new DE.Views.TableSettings();
                 this.shapeSettings = new DE.Views.ShapeSettings();
                 this.textartSettings = new DE.Views.TextArtSettings();
+                this.equationSettings = new Common.Views.EquationSettings({
+                    el: $markup.findById('#id-equation-settings'),
+                    prefix: 'de',
+                    getEquationGroups: function() {
+                        DE.getController('Toolbar').onMathTypes();
+                        return DE.getCollection('EquationGroups');
+                    }
+                });
 
                 if (mode && mode.canCoAuthoring && mode.canUseMailMerge && Common.UI.LayoutManager.isElementVisible('toolbar-collaboration-mailmerge')) {
                     this.btnMailMerge = new Common.UI.Button({
@@ -357,6 +380,7 @@ define([
             // if(this.chartSettings) this.chartSettings.setApi(api).on('editcomplete', _fire_editcomplete).on('updatescroller', _updateScroller);
             if(this.tableSettings) this.tableSettings.setApi(api).on('editcomplete', _fire_editcomplete).on('eyedropper', _.bind(_isEyedropperStart, this));
             if(this.shapeSettings) this.shapeSettings.setApi(api).on('editcomplete', _fire_editcomplete).on('eyedropper', _.bind(_isEyedropperStart, this)).on('updatescroller', _updateScroller);
+            if (this.equationSettings) this.equationSettings.setApi(api).on('editcomplete', _fire_editcomplete);
             if(this.textartSettings) this.textartSettings.setApi(api).on('editcomplete', _fire_editcomplete).on('eyedropper', _.bind(_isEyedropperStart, this)).on('updatescroller', _updateScroller);
             if (this.mergeSettings) this.mergeSettings.setApi(api).on('editcomplete', _fire_editcomplete);
             if (this.signatureSettings) this.signatureSettings.setApi(api).on('editcomplete', _fire_editcomplete);
@@ -506,7 +530,7 @@ define([
         },
 
         setButtons: function () {
-            var allButtons = [this.btnText, this.btnTable, this.btnImage, this.btnShape, this.btnTextArt,
+            var allButtons = [this.btnText, this.btnTable, this.btnImage, this.btnShape, this.btnTextArt, this.btnEquation,
                     this.btnMailMerge, this.btnSignature, this.btnForm, this.btnSendForSigning, this.btnFillingStatus];
             Common.UI.SideMenu.prototype.setButtons.apply(this, [allButtons]);
         },
@@ -543,6 +567,7 @@ define([
         txtFormSettings:            'Form Settings',
         txtSendForSigning:          'Send for signing',
         txtFillingStatus:           'Filling status',
+        txtEquationSettings:        'Equation Settings',
         ariaRightMenu:              'Right menu'
     }, DE.Views.RightMenu || {}));
 });
