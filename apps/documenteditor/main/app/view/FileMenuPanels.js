@@ -430,6 +430,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-complex-line-break"></div></td>',
                 '</tr>',
+                '<tr class="resume-position">',
+                    '<td colspan="2"><div id="fms-chb-resume-position"></div></td>',
+                '</tr>',
                 '<tr class="edit">',
                     '<td colspan="2"><span id="fms-chb-align-guides"></span></td>',
                 '</tr>',
@@ -585,6 +588,14 @@ define([], function () {
             this.chComplexLineBreak = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-complex-line-break'),
                 labelText: this.txtComplexLineBreak,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            // #1675: on reopening a local file, offer to put the caret back where it was (desktop only)
+            this.chResumePosition = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-resume-position'),
+                labelText: this.txtResumePosition,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1184,6 +1195,7 @@ define([], function () {
             $('tr.quick-print', this.el)[mode.canQuickPrint && !(mode.compactHeader && mode.isEdit) ? 'show' : 'hide']();
             $('tr.new-format', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.text-dir', this.el)[mode.isEdit && mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
+            $('tr.resume-position', this.el)[mode.isDesktopApp && mode.isOffline ? 'show' : 'hide']();
             $('tr.macros', this.el)[(mode.customization && mode.customization.macros===false) ? 'hide' : 'show']();
             if ( !Common.UI.Themes.available() ) {
                 $('tr.themes, tr.themes + tr.divider', this.el).hide();
@@ -1270,6 +1282,7 @@ define([], function () {
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
             this.chSmoothWheel.setValue(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
             this.chComplexLineBreak.setValue(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
+            this.chResumePosition.setValue(Common.Utils.InternalSettings.get("de-settings-resume-position"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
             value = (value!==null) ? parseInt(value) : (this.mode.customization && this.mode.customization.zoom ? parseInt(this.mode.customization.zoom) : 100);
@@ -1382,6 +1395,10 @@ define([], function () {
             Common.Utils.InternalSettings.set("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
             Common.localStorage.setBool("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
             Common.Utils.InternalSettings.set("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
+            Common.localStorage.setBool("de-settings-resume-position", this.chResumePosition.isChecked());
+            Common.Utils.InternalSettings.set("de-settings-resume-position", this.chResumePosition.isChecked());
+            // turned off: forget the places kept so far
+            !this.chResumePosition.isChecked() && Common.localStorage.removeItem('de-resume-positions');
 
             /** coauthoring begin **/
             Common.localStorage.setItem("de-settings-livecomment", this.chLiveComment.isChecked() ? 1 : 0);
@@ -1602,6 +1619,7 @@ define([], function () {
         txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
         txtSmoothWheel: 'Smooth scrolling with the mouse wheel',
         txtComplexLineBreak: 'Break Thai, Lao, Khmer and Myanmar lines between words',
+        txtResumePosition: 'Offer to continue where you left off when a document is reopened',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
         txtNewFormatDesc: 'Offered first when a new document is saved for the first time',

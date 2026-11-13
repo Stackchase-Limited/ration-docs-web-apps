@@ -1336,6 +1336,8 @@ define([
                 this.api.asc_setSmoothWheelScroll && this.api.asc_setSmoothWheelScroll(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
                 // #371: Thai/Lao/Khmer/Myanmar lines break between words (Advanced settings, off by default)
                 Common.Utils.InternalSettings.set("de-settings-complex-line-break", Common.localStorage.getBool("de-settings-complex-line-break"));
+                // #1675: offer to continue where the file was left (Advanced settings, off by default; see initResumePosition)
+                Common.Utils.InternalSettings.set("de-settings-resume-position", Common.localStorage.getBool("de-settings-resume-position"));
                 this.api.asc_setComplexScriptLineBreak && this.api.asc_setComplexScriptLineBreak(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
 
                 value = Common.localStorage.getItem("de-settings-zoom");
@@ -1621,6 +1623,7 @@ define([
                 $(document).on('contextmenu', _.bind(me.onContextMenu, me));
                 Common.Gateway.documentReady();
                 this._state.requireUserAction = false;
+                this.initResumePosition();
 
                 $('#editor-container').css('overflow', '');
                 $('.doc-placeholder').remove();
@@ -1628,6 +1631,106 @@ define([
                 this.appOptions.user.guest && this.appOptions.canRenameAnonymous && (Common.Utils.InternalSettings.get("guest-username")===null) && this.showRenameUserDialog();
                 if (this._needToSaveAsFile) // warning received before document is ready
                     this.getApplication().getController('LeftMenu').leftMenu.showMenu('file:saveas');
+            },
+
+            // #1675: remember the caret of each local file and, when the file is opened again, offer to go back there
+            // (Advanced settings, off by default). Kept in localStorage under a hash of the path, most recent first.
+            resumePositionsKey: 'de-resume-positions',
+            resumePositionsMax: 100,
+
+            resumePositionHash: function(path) {
+                var h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+                path = String(path).replace(/\\/g, '/');
+                for (var i = 0; i < path.length; i++) {
+                    var ch = path.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ ch, 2654435761);
+                    h2 = Math.imul(h2 ^ ch, 1597334677);
+                }
+                h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+                h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+                return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+            },
+
+            getResumePositions: function() {
+                try {
+                    var list = JSON.parse(Common.localStorage.getItem(this.resumePositionsKey) || '[]');
+                    return _.isArray(list) ? _.filter(list, function(item) { return item && typeof item.k === 'string' && item.c; }) : [];
+                } catch (e) {
+                    return [];
+                }
+            },
+
+            findResumePosition: function(hash) {
+                var item = _.findWhere(this.getResumePositions(), {k: hash});
+                return item ? item.c : null;
+            },
+
+            storeResumePosition: function(hash, caret) {
+                var list = _.reject(this.getResumePositions(), function(item) { return item.k === hash; });
+                list.unshift({k: hash, c: caret});
+                list.length > this.resumePositionsMax && (list.length = this.resumePositionsMax);
+                Common.localStorage.setItem(this.resumePositionsKey, JSON.stringify(list));
+            },
+
+            initResumePosition: function() {
+                var desktop = Common.Controllers.Desktop;
+                if (!Common.Utils.InternalSettings.get("de-settings-resume-position") || !this.appOptions.isOffline ||
+                        !this.api.asc_GetCaretPath || !desktop || !desktop.isActive() || !desktop.isFeatureAvailable('LocalFileGetSourcePath'))
+                    return;
+
+                var path = desktop.call('LocalFileGetSourcePath');
+                if (!path || typeof path !== 'string')
+                    return;
+
+                var me = this,
+                    hash = this.resumePositionHash(path),
+                    saved = this.findResumePosition(hash),
+                    timer, tip;
+                saved && _.isEqual(saved, this.api.asc_GetCaretPath()) && (saved = null);     // already there
+                var recording = !saved;     // the caret at open must not overwrite the place being offered
+                var record = function() {
+                    timer && clearTimeout(timer);
+                    timer = null;
+                    if (!recording || !Common.Utils.InternalSettings.get("de-settings-resume-position"))
+                        return;
+                    var caret = me.api.asc_GetCaretPath();
+                    caret && me.storeResumePosition(hash, caret);
+                };
+                var later = function() {
+                    timer && clearTimeout(timer);
+                    timer = setTimeout(record, 1000);
+                };
+                var done = function() {
+                    if (recording) return;
+                    recording = true;
+                    tip && tip.close();
+                    tip = null;
+                    later();
+                };
+                this.api.asc_registerCallback('asc_onFocusObject', later);
+                this.api.asc_registerCallback('asc_onDocumentModifiedChanged', function() {
+                    me.api.isDocumentModified() && done();
+                });
+                $(window).on('unload', function() { timer && record(); });
+
+                if (saved) {
+                    tip = new Common.UI.SynchronizeTip({
+                        extCls: 'no-arrow',
+                        placement: 'bottom',
+                        target: $('.toolbar'),
+                        text: this.textResumePosition,
+                        showLink: false,
+                        showButton: true,
+                        textButton: this.textResumeContinue
+                    });
+                    tip.on('buttonclick', function() {
+                        me.api.asc_MoveCursorToCaretPath(saved);
+                        done();
+                        Common.NotificationCenter.trigger('edit:complete');
+                    });
+                    tip.on('closeclick', done);
+                    tip.show();
+                }
             },
 
             onLicenseChanged: function(params) {
@@ -3599,6 +3702,8 @@ define([
                 data && this.api.asc_openDocumentFromBytes(new Uint8Array(data));
             },
 
+            textResumePosition: 'Last time you were working elsewhere in this document.',
+            textResumeContinue: 'Continue where you left off',
             errorLang: 'The interface language is not loaded.<br>Please contact your Document Server administrator.'
         }
     })(), DE.Controllers.Main || {}))
