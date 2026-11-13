@@ -38,3 +38,12 @@
       }
   }
 }
+
+// Animation > Media > Pause: the icon sets have no big pause icon (Play and Stop use the preview icons), so its
+// two bars are drawn here in the icon colour of the theme
+.btn_item .icon.toolbar__icon.animation-media-pause {
+  background-image: linear-gradient(to right, transparent 9px, @icon-normal 9px, @icon-normal 13px, transparent 13px, transparent 15px, @icon-normal 15px, @icon-normal 19px, transparent 19px);
+  background-size: 28px 16px;
+  background-position: 0 6px;
+  background-repeat: no-repeat;
+}

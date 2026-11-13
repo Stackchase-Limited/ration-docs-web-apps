@@ -201,6 +201,7 @@ define([
                 activeEffect    : this._state.Effect,
                 groupValue      : this._state.EffectGroup,
                 lockEmphasis    : this._state.lockEmphasis,
+                lockMedia       : this._state.lockMedia,
                 handler         : function(result, value) {
                     if (result == 'ok') {
                         if (me.api) {
@@ -403,8 +404,18 @@ define([
                     this._state.lockEmphasis = true;
                 }
             }
+            // the Media effects (Play/Pause/Stop) are for a selected video or audio only
+            this._state.lockMedia = !(this.api.asc_getMediaSettings && this.api.asc_getMediaSettings());
             if (this._state.onactivetab)
                 this.setSettings();
+        },
+
+        lockMediaEffects: function (store) {
+            var lock = !!this._state.lockMedia;
+            store && store.each(function(item){
+                if (item.get('group') === 'menu-effect-group-media')
+                    item.set('disabled', lock);
+            });
         },
 
         setSettings: function () {
@@ -548,6 +559,8 @@ define([
                                                                             item.get('value') === AscFormat.EMPHASIS_TEETER || item.get('value') === AscFormat.EMPHASIS_BLINK))
                 item.set('disabled', !!me._state.lockEmphasis);
             });
+            this.lockMediaEffects(store);
+            this.lockMediaEffects(fieldStore);
             this.setLocked();
         },
 
@@ -568,7 +581,9 @@ define([
             if(type == AscFormat.ANIM_PRESET_NONE) return;
 
             this._state.noAnimationDuration = this._state.noAnimationRepeat = false;
-            if((group == AscFormat.PRESET_CLASS_ENTR && type == AscFormat.ENTRANCE_APPEAR) || (group == AscFormat.PRESET_CLASS_EXIT && type == AscFormat.EXIT_DISAPPEAR)) {
+            // a Media effect is a command to the player (its length is the media's, not the effect's)
+            if((group == AscFormat.PRESET_CLASS_ENTR && type == AscFormat.ENTRANCE_APPEAR) || (group == AscFormat.PRESET_CLASS_EXIT && type == AscFormat.EXIT_DISAPPEAR) ||
+                group == AscFormat.PRESET_CLASS_MEDIACALL) {
                 this._state.noAnimationDuration = this._state.noAnimationRepeat = true;
             }
             else if((group == AscFormat.PRESET_CLASS_EMPH) &&
@@ -612,6 +627,7 @@ define([
             this.arrEmphasisAddEffect.forEach(function(item){
                 item.set('disabled', !!me._state.lockEmphasis);
             });
+            this.lockMediaEffects(picker.store);
             picker.scroller.update({alwaysVisibleY: true});
         },
 

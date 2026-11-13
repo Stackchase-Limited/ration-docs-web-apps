@@ -64,6 +64,7 @@ define([], function () { 'use strict';
             this._state=[];
             this.handler =   this.options.handler;
             this.lockEmphasis = !!this.options.lockEmphasis;
+            this.lockMedia = !!this.options.lockMedia;
             this.EffectGroupData = Common.define.effectData.getEffectGroupData();
             this._state.activeGroup = this.EffectGroupData[0].id;
             this._state.activeGroupValue = this.EffectGroupData[0].value;
@@ -159,6 +160,7 @@ define([], function () { 'use strict';
 
             }
 
+            var lockMedia = this.lockMedia && this._state.activeGroup==='menu-effect-group-media';
             arr = arr.map(function(el) {
                 return {
                     displayValue: el.displayValue,
@@ -166,7 +168,7 @@ define([], function () { 'use strict';
                     group: el.level,
                     iconCls: el.iconCls,
                     value: el.value,
-                    disabled: el.disabled,
+                    disabled: el.disabled || lockMedia,
                     tip: el.displayValue
                 }
             });

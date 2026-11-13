@@ -48,6 +48,10 @@ define(function(){ 'use strict';
             textEmphasis: 'Emphasis Effect',
             textExit: 'Exit Effect',
             textPath: 'Motion Path',
+            textMedia: 'Media',
+            textPlay: 'Play',
+            textPause: 'Pause',
+            textStop: 'Stop',
             textAppear: 'Appear',
             textFade: 'Fade',
             textFlyIn: 'Fly in',
@@ -247,7 +251,8 @@ define(function(){ 'use strict';
                     {id: 'menu-effect-group-entrance',  value: AscFormat.PRESET_CLASS_ENTR,     caption: this.textEntrance,     iconClsCustom: 'animation-entrance-custom'},
                     {id: 'menu-effect-group-emphasis',  value: AscFormat.PRESET_CLASS_EMPH,     caption: this.textEmphasis,     iconClsCustom: 'animation-emphasis-custom'},
                     {id: 'menu-effect-group-exit',      value: AscFormat.PRESET_CLASS_EXIT,     caption: this.textExit,         iconClsCustom: 'animation-exit-custom'},
-                    {id: 'menu-effect-group-path',      value: AscFormat.PRESET_CLASS_PATH,     caption: this.textPath,         iconClsCustom: 'animation-motion-paths-custom'}
+                    {id: 'menu-effect-group-path',      value: AscFormat.PRESET_CLASS_PATH,     caption: this.textPath,         iconClsCustom: 'animation-motion-paths-custom'},
+                    {id: 'menu-effect-group-media',     value: AscFormat.PRESET_CLASS_MEDIACALL, caption: this.textMedia,       iconClsCustom: 'btn-animation-preview-start'}
                 ];
             },
 
@@ -297,7 +302,10 @@ define(function(){ 'use strict';
                     {group: 'menu-effect-group-path',       value: AscFormat.MOTION_TURN_DOWN,                  iconCls: 'animation-motion-paths-turns',            displayValue: this.textTurns,       familyEffect: 'pathturns'},
                     {group: 'menu-effect-group-path',       value: AscFormat.MOTION_CIRCLE,                     iconCls: 'animation-motion-paths-shapes',           displayValue: this.textShapes,      familyEffect: 'pathshapes'},
                     {group: 'menu-effect-group-path',       value: AscFormat.MOTION_HORIZONTAL_FIGURE_8_FOUR,   iconCls: 'animation-motion-paths-loops',            displayValue: this.textLoops,       familyEffect: 'pathloops'},
-                    {group: 'menu-effect-group-path',       value: AscFormat.MOTION_CUSTOM_PATH,                iconCls: 'animation-motion-paths-custom-path',      displayValue: this.textCustomPath}
+                    {group: 'menu-effect-group-path',       value: AscFormat.MOTION_CUSTOM_PATH,                iconCls: 'animation-motion-paths-custom-path',      displayValue: this.textCustomPath},
+                    {group: 'menu-effect-group-media',      value: AscFormat.MEDIACALL_PLAY,                    iconCls: 'btn-animation-preview-start',             displayValue: this.textPlay},
+                    {group: 'menu-effect-group-media',      value: AscFormat.MEDIACALL_PAUSE,                   iconCls: 'animation-media-pause',                   displayValue: this.textPause},
+                    {group: 'menu-effect-group-media',      value: AscFormat.MEDIACALL_STOP,                    iconCls: 'btn-animation-preview-stop',              displayValue: this.textStop}
                 ];
             },
 
@@ -486,8 +494,10 @@ define(function(){ 'use strict';
                     {group: 'menu-effect-group-path',       level: 'menu-effect-level-special',         value: AscFormat.MOTION_POINTY_STAR,                iconCls: 'animation-motion-paths-point-star',    displayValue: this.textPointStar},
                     {group: 'menu-effect-group-path',       level: 'menu-effect-level-special',         value: AscFormat.MOTION_SWOOSH,                     iconCls: 'animation-motion-paths-swoosh',    displayValue: this.textSwoosh},
                     {group: 'menu-effect-group-path',       level: 'menu-effect-level-special',         value: AscFormat.MOTION_VERTICAL_FIGURE_8,          iconCls: 'animation-motion-paths-vertical-figure-8',    displayValue: this.textVerticalFigure,      familyEffect: 'pathloops'},
-                    {group: 'menu-effect-group-path',       level: 'menu-effect-level-special',         value: AscFormat.MOTION_CUSTOM_PATH,                iconCls: 'animation-motion-paths-custom-path',    displayValue: this.textCustomPath,  notsupported: true}
-
+                    {group: 'menu-effect-group-path',       level: 'menu-effect-level-special',         value: AscFormat.MOTION_CUSTOM_PATH,                iconCls: 'animation-motion-paths-custom-path',    displayValue: this.textCustomPath,  notsupported: true},
+                    {group: 'menu-effect-group-media',      level: 'menu-effect-level-basic',           value: AscFormat.MEDIACALL_PLAY,                    iconCls: 'btn-animation-preview-start',    displayValue: this.textPlay},
+                    {group: 'menu-effect-group-media',      level: 'menu-effect-level-basic',           value: AscFormat.MEDIACALL_PAUSE,                   iconCls: 'animation-media-pause',    displayValue: this.textPause},
+                    {group: 'menu-effect-group-media',      level: 'menu-effect-level-basic',           value: AscFormat.MEDIACALL_STOP,                    iconCls: 'btn-animation-preview-stop',    displayValue: this.textStop}
                 ];
             },
 
