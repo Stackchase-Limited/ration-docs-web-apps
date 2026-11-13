@@ -296,7 +296,11 @@ define([
                 break;
             case 'print': Common.NotificationCenter.trigger('print', this.leftMenu); break;
             case 'exit': Common.NotificationCenter.trigger('goback'); break;
-            case 'duplicate': Common.Gateway.requestDuplicate(); break;
+            case 'duplicate':
+                // #2045: desktop local file - the current state opens as an unsaved copy in a new tab
+                if (this.mode.isDesktopApp && this.mode.isOffline) this.api.asc_DuplicateDocument();
+                else Common.Gateway.requestDuplicate();
+                break;
             case 'send-email': Common.Gateway.requestSendByEmail(); break;
             case 'delete': Common.Gateway.requestDelete(); break;
             case 'edit':

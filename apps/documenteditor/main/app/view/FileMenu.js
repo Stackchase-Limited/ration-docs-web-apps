@@ -474,7 +474,10 @@ define([
             this.miPrint[this.mode.canPrint && !this.mode.canPreviewPrint ?'show':'hide']();
             this.miPrintWithPreview[this.mode.canPreviewPrint?'show':'hide']();
             this.miRename[(this.mode.canRename && !this.mode.isDesktopApp) ?'show':'hide']();
-            this.miDuplicate[(this.mode.canRequestDuplicate && !this.mode.isDesktopApp) ?'show':'hide']();
+            // #2045: in the desktop app a local file can be duplicated into a new tab (unsaved copy of its current state)
+            var canDuplicateLocal = this.mode.isDesktopApp && this.mode.isOffline && !this.mode.isPDFForm && !!this.api &&
+                                    !!this.api.asc_CanDuplicateDocument && this.api.asc_CanDuplicateDocument();
+            this.miDuplicate[(this.mode.canRequestDuplicate && !this.mode.isDesktopApp || canDuplicateLocal) ?'show':'hide']();
             this.miSendEmail[(this.mode.canRequestSendByEmail && !this.mode.isDesktopApp) ?'show':'hide']();
             this.miDelete[(this.mode.canRequestDelete && !this.mode.isDesktopApp) ?'show':'hide']();
             this.miProtect[(this.mode.isSignatureSupport || this.mode.isPasswordSupport) ?'show':'hide']();
