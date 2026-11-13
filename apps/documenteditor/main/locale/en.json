@@ -2948,6 +2948,7 @@
   "DE.Views.FileMenuPanels.Settings.txtShiftWheel": "Shift + mouse wheel scrolls horizontally",
   "DE.Views.FileMenuPanels.Settings.txtSmoothWheel": "Smooth scrolling with the mouse wheel",
   "DE.Views.FileMenuPanels.Settings.txtComplexLineBreak": "Break Thai, Lao, Khmer and Myanmar lines between words",
+  "DE.Views.FileMenuPanels.Settings.txtImeUnderline": "Underline text while an input method composes it",
   "DE.Views.FileMenuPanels.Settings.txtResumePosition": "Offer to continue where you left off when a document is reopened",
   "DE.Views.FileMenuPanels.Settings.txtShowTrackChanges": "Show track changes",
   "DE.Views.FileMenuPanels.Settings.txtSpellCheck": "Spell checking",

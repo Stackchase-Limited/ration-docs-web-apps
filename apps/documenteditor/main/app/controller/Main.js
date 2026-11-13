@@ -1339,6 +1339,9 @@ define([
                 // #1675: offer to continue where the file was left (Advanced settings, off by default; see initResumePosition)
                 Common.Utils.InternalSettings.set("de-settings-resume-position", Common.localStorage.getBool("de-settings-resume-position"));
                 this.api.asc_setComplexScriptLineBreak && this.api.asc_setComplexScriptLineBreak(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
+                // #2100: underline text an input method is still composing (Advanced settings, on by default)
+                Common.Utils.InternalSettings.set("de-settings-ime-underline", Common.localStorage.getBool("de-settings-ime-underline", true));
+                this.api.asc_setCompositeInputUnderline && this.api.asc_setCompositeInputUnderline(Common.Utils.InternalSettings.get("de-settings-ime-underline"));
 
                 value = Common.localStorage.getItem("de-settings-zoom");
                 Common.Utils.InternalSettings.set("de-settings-zoom", value);

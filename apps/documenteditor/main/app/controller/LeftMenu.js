@@ -497,6 +497,8 @@ define([
             this.api.asc_setSmoothWheelScroll && this.api.asc_setSmoothWheelScroll(!!Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
             // #371 (Advanced settings)
             this.api.asc_setComplexScriptLineBreak && this.api.asc_setComplexScriptLineBreak(!!Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
+            // #2100 (Advanced settings)
+            this.api.asc_setCompositeInputUnderline && this.api.asc_setCompositeInputUnderline(false !== Common.Utils.InternalSettings.get("de-settings-ime-underline"));
 
             // #517 (set in Advanced settings, desktop only)
             this.api.asc_setNewFileSaveFormat && this.api.asc_setNewFileSaveFormat(Common.Utils.InternalSettings.get("app-settings-new-file-odf") ? Asc.c_oAscFileType.ODT : 0);

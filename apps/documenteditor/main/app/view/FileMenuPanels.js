@@ -430,6 +430,9 @@ define([], function () {
                 '<tr>',
                     '<td colspan="2"><div id="fms-chb-complex-line-break"></div></td>',
                 '</tr>',
+                '<tr>',
+                    '<td colspan="2"><div id="fms-chb-ime-underline"></div></td>',
+                '</tr>',
                 '<tr class="resume-position">',
                     '<td colspan="2"><div id="fms-chb-resume-position"></div></td>',
                 '</tr>',
@@ -600,6 +603,14 @@ define([], function () {
             this.chComplexLineBreak = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-complex-line-break'),
                 labelText: this.txtComplexLineBreak,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            // #2100: underline text an input method is still composing (off for input methods that style their own)
+            this.chImeUnderline = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-ime-underline'),
+                labelText: this.txtImeUnderline,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -1295,6 +1306,7 @@ define([], function () {
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
             this.chSmoothWheel.setValue(Common.Utils.InternalSettings.get("de-settings-smooth-wheel"));
             this.chComplexLineBreak.setValue(Common.Utils.InternalSettings.get("de-settings-complex-line-break"));
+            this.chImeUnderline.setValue(false !== Common.Utils.InternalSettings.get("de-settings-ime-underline"));
             this.chResumePosition.setValue(Common.Utils.InternalSettings.get("de-settings-resume-position"));
 
             var value = Common.Utils.InternalSettings.get("de-settings-zoom");
@@ -1410,6 +1422,8 @@ define([], function () {
             Common.Utils.InternalSettings.set("de-settings-smooth-wheel", this.chSmoothWheel.isChecked());
             Common.localStorage.setBool("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
             Common.Utils.InternalSettings.set("de-settings-complex-line-break", this.chComplexLineBreak.isChecked());
+            Common.localStorage.setBool("de-settings-ime-underline", this.chImeUnderline.isChecked());
+            Common.Utils.InternalSettings.set("de-settings-ime-underline", this.chImeUnderline.isChecked());
             Common.localStorage.setBool("de-settings-resume-position", this.chResumePosition.isChecked());
             Common.Utils.InternalSettings.set("de-settings-resume-position", this.chResumePosition.isChecked());
             // turned off: forget the places kept so far
@@ -1635,6 +1649,7 @@ define([], function () {
         txtShiftWheel: 'Shift + mouse wheel scrolls horizontally',
         txtSmoothWheel: 'Smooth scrolling with the mouse wheel',
         txtComplexLineBreak: 'Break Thai, Lao, Khmer and Myanmar lines between words',
+        txtImeUnderline: 'Underline text while an input method composes it',
         txtResumePosition: 'Offer to continue where you left off when a document is reopened',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtNewFormat: 'Format for new documents',
