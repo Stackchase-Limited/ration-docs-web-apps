@@ -373,6 +373,9 @@ define([], function () {
                 '<tr class="edit">',
                     '<td colspan="2"><div id="fms-chb-annotation-bar"></div></td>',
                 '</tr>',
+                '<tr class="edit">',
+                    '<td colspan="2"><div id="fms-chb-textbox-last-style"></div></td>',
+                '</tr>',
                 /*'<tr class="quick-print">',
                     '<td colspan="2"><div style="display: flex;"><div id="fms-chb-quick-print"></div>',
                     '<span style ="display: flex; flex-direction: column;"><label><%= scope.txtQuickPrint %></label>',
@@ -438,6 +441,14 @@ define([], function () {
             this.chUseAnnotateBar = new Common.UI.CheckBox({
                 el: $markup.findById('#fms-chb-annotation-bar'),
                 labelText: this.txtUseAnnotateBar,
+                dataHint: '2',
+                dataHintDirection: 'left',
+                dataHintOffset: 'small'
+            });
+            // #1687: a new text box takes the style of the last one; off by default
+            this.chTextBoxLastStyle = new Common.UI.CheckBox({
+                el: $markup.findById('#fms-chb-textbox-last-style'),
+                labelText: this.txtTextBoxLastStyle,
                 dataHint: '2',
                 dataHintDirection: 'left',
                 dataHintOffset: 'small'
@@ -807,6 +818,7 @@ define([], function () {
             this.chScreenReader.setValue(Common.Utils.InternalSettings.get("app-settings-screen-reader"));
             this.chShiftWheel.setValue(Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
             this.chUseAnnotateBar.setValue(Common.Utils.InternalSettings.get("pdfe-settings-annot-bar"));
+            this.chTextBoxLastStyle.setValue(Common.Utils.InternalSettings.get("pdfe-settings-textbox-last-style"));
 
             var value = Common.Utils.InternalSettings.get("pdfe-settings-zoom");
             value = (value!==null) ? parseInt(value) : (this.mode.customization && this.mode.customization.zoom ? parseInt(this.mode.customization.zoom) : 100);
@@ -887,6 +899,8 @@ define([], function () {
             Common.Utils.InternalSettings.set("app-settings-shift-wheel-hor", this.chShiftWheel.isChecked());
             Common.localStorage.setItem("pdfe-settings-annot-bar", this.chUseAnnotateBar.isChecked() ? 1 : 0);
             Common.Utils.InternalSettings.set("pdfe-settings-annot-bar", Common.localStorage.getBool("pdfe-settings-annot-bar"));
+            Common.localStorage.setBool("pdfe-settings-textbox-last-style", this.chTextBoxLastStyle.isChecked());
+            Common.Utils.InternalSettings.set("pdfe-settings-textbox-last-style", this.chTextBoxLastStyle.isChecked());
 
             /** coauthoring begin **/
             Common.Utils.InternalSettings.set("pdfe-settings-livecomment", this.chLiveComment.isChecked());
@@ -1021,6 +1035,7 @@ define([], function () {
         txtCm: 'Centimeter',
         txtPt: 'Point',
         txtUseAnnotateBar: 'Use the mini toolbar when selecting text',
+        txtTextBoxLastStyle: 'New text boxes use the last style',
         txtCustomizeQuickAccess: 'Customize quick access',
         txtTabBack: 'Use toolbar color as tabs background',
         strTabStyle: 'Tab style',

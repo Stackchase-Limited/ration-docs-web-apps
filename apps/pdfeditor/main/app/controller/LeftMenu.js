@@ -485,6 +485,8 @@ define([
         applySettings: function(menu) {
             // #852 (Advanced settings)
             this.api.asc_setShiftWheelHorizontal && this.api.asc_setShiftWheelHorizontal(!!Common.Utils.InternalSettings.get("app-settings-shift-wheel-hor"));
+            // #1687
+            this.api.asc_setTextBoxLastStyle && this.api.asc_setTextBoxLastStyle(!!Common.Utils.InternalSettings.get("pdfe-settings-textbox-last-style"));
 
             var value;
 

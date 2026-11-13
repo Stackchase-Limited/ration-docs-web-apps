@@ -1105,6 +1105,10 @@ define([
                 Common.Utils.InternalSettings.set("pdfe-settings-annot-bar", value);
                 value = Common.localStorage.getBool("pdfe-settings-annot-sel-bar", true);
                 Common.Utils.InternalSettings.set("pdfe-settings-annot-sel-bar", value);
+                // #1687: new text boxes take the last text box's style - off unless turned on
+                value = Common.localStorage.getBool("pdfe-settings-textbox-last-style");
+                Common.Utils.InternalSettings.set("pdfe-settings-textbox-last-style", value);
+                me.api.asc_setTextBoxLastStyle && me.api.asc_setTextBoxLastStyle(value);
 
                 /** coauthoring begin **/
                 me.onPdfModeCoAuthApply();
