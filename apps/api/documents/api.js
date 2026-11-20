@@ -1295,7 +1295,10 @@
         iframe.allowFullscreen = true;
         iframe.setAttribute("allowfullscreen",""); // for IE11
         iframe.setAttribute("onmousewheel",""); // for Safari on Mac
-        iframe.setAttribute("allow", "autoplay; camera; microphone; display-capture; clipboard-write;");
+        // Ration Docs: the desktop app hosts the editors in this iframe too (web-apps/apps/api/documents/index.html)
+        // and sdkjs copies through navigator.clipboard there, so it keeps clipboard-write; web pages do not grant it.
+        iframe.setAttribute("allow", "autoplay; camera; microphone; display-capture;" +
+                                     (config.editorConfig && config.editorConfig.targetApp==='desktop' ? " clipboard-write;" : ""));
 
 		if (config.type == "mobile")
 		{
