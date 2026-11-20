@@ -105,6 +105,11 @@ define([
                     'view:hide': _.bind(function (leftmenu, state) {
                         this.view.chLeftMenu.setValue(!state, true);
                     }, this)
+                },
+                'RightMenu': {
+                    'view:hide': _.bind(function (rightmenu, state) {
+                        this.view && this.view.chRightMenu && this.view.chRightMenu.setValue(!state, true);
+                    }, this)
                 }
             });
         },

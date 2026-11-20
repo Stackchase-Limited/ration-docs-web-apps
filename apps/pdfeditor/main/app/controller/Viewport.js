@@ -354,10 +354,10 @@ define([
             Common.localStorage.getBool("pdfe-hidden-leftmenu", value) && this.getApplication().getController('LeftMenu').getView('LeftMenu').hide();
         },
 
-        applyEditorMode: function(forceShowRightMenu) {
+        applyEditorMode: function(initRightMenu) {
             if (!this.viewport) return;
 
-            if ((this.mode.isPDFEdit || forceShowRightMenu) && this._initEditing) {
+            if ((this.mode.isPDFEdit || initRightMenu) && this._initEditing) {
                 var rightmenuController = this.getApplication().getController('RightMenu'),
                     rightMenuView   = rightmenuController.getView('RightMenu');
 
@@ -375,10 +375,13 @@ define([
 
                 this._initEditing = false;
             }
-            if (!this._initEditing && !this._forceShowRightMenu) {
-                const needShow = (this.mode.isPDFEdit || forceShowRightMenu) && !Common.Utils.InternalSettings.get("pdfe-hidden-rightmenu");
-                this.getApplication().getController('RightMenu').onRightMenuHide(undefined, needShow, true);
-                this._forceShowRightMenu = (forceShowRightMenu && needShow);
+            // initRightMenu: only make sure the right panel exists (a plugin is being docked into it);
+            // RightMenu.addNewPlugin shows it. On a mode change the panel follows the mode, but stays
+            // while a plugin is docked in it, so the plugin is not hidden away.
+            if (!this._initEditing && !initRightMenu) {
+                var rightmenuController = this.getApplication().getController('RightMenu'),
+                    needShow = (this.mode.isPDFEdit || rightmenuController.hasPlugins()) && !Common.Utils.InternalSettings.get("pdfe-hidden-rightmenu");
+                rightmenuController.onRightMenuHide(undefined, needShow, true);
             }
         },
 

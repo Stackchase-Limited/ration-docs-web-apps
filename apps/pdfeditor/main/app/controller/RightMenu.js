@@ -427,6 +427,7 @@ define([
                     Common.localStorage.setBool('pdfe-hidden-rightmenu', !status);
                     Common.Utils.InternalSettings.set("pdfe-hidden-rightmenu", !status);
                 }
+                !view && this.rightmenu.fireEvent('view:hide', [this, !status]);
             }
 
             Common.NotificationCenter.trigger('layout:changed', 'main');
@@ -434,9 +435,23 @@ define([
         },
 
         addNewPlugin: function (button, $button, $panel) {
-            this.getApplication().getController('Viewport').applyEditorMode(true);
+            this.getApplication().getController('Viewport').applyEditorMode(true); // render the panel once, does not show/hide it
+            if (this.rightmenu.$el.is(':hidden')) {
+                this.onRightMenuHide(undefined, true, false);
+            }
+
             this.rightmenu.insertButton(button, $button);
             this.rightmenu.insertPanel($panel);
+        },
+
+        hasPlugins: function () { // a plugin is docked in the right panel
+            var buttons = this.rightmenu && this.rightmenu.buttons || [];
+            for (var i=0; i<buttons.length; i++) {
+                var btn = buttons[i];
+                if (btn && btn.options && btn.options.type === 'plugin' && btn.cmpEl && this.rightmenu.$el.has(btn.cmpEl).length)
+                    return true;
+            }
+            return false;
         },
 
         openPlugin: function (guid) {
